@@ -14,16 +14,20 @@ import java.util.List;
 @DynamicUpdate
 @DynamicInsert
 @Entity
-@Table(name = "settlements_name")
+@Table(name = "names_administrative_units")
 public class SettlementName {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "ua_name", nullable = false, unique = true)
     @NonNull
-    private String name;
+    private String ua_name;
+
+    @Column(name = "en_name", nullable = false, unique = true)
+    @NonNull
+    private String en_name;
 
     @Column(name = "current_data")
     private boolean currentData;

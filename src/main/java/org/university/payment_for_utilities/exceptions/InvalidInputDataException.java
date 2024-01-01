@@ -1,0 +1,7 @@
+package org.university.payment_for_utilities.exceptions;
+
+public class InvalidInputDataException extends RuntimeException {
+    public InvalidInputDataException(String message) {
+        super(message);
+    }
+}

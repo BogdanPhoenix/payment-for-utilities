@@ -9,6 +9,6 @@ class PaymentForUtilitiesApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Assertions.assertTrue(true);
+
 	}
 }

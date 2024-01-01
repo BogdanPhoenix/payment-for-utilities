@@ -21,9 +21,13 @@ public class Oblast {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "ua_name", nullable = false, unique = true)
     @NonNull
-    private String name;
+    private String uaName;
+
+    @Column(name = "en_name", nullable = false, unique = true)
+    @NonNull
+    private String enName;
 
     @Column(name = "current_data")
     private boolean currentData;

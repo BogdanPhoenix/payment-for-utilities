@@ -31,7 +31,7 @@ public class Settlement {
     private String index;
 
     @ManyToOne
-    @Column(name = "id_name", nullable = false)
+    @JoinColumn(name = "id_name", nullable = false)
     @NonNull
     private SettlementName name;
 
