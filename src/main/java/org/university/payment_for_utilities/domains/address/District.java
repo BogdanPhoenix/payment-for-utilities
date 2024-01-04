@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.domains.TableInfo;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @DynamicInsert
 @Entity
 @Table(name = "districts")
-public class District {
+public class District implements TableInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -35,6 +36,8 @@ public class District {
     @ManyToMany(mappedBy = "districts")
     private List<Oblast> oblasts;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "district_settlements",
@@ -43,4 +46,11 @@ public class District {
             uniqueConstraints = @UniqueConstraint(columnNames = {"id_district", "id_settlement"})
     )
     private List<Settlement> settlements;
+
+    @Override
+    public boolean isEmpty() {
+        return id == null ||
+                uaName.isEmpty() ||
+                enName.isEmpty();
+    }
 }

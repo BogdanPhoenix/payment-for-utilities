@@ -2,33 +2,28 @@ package org.university.payment_for_utilities.services.implementations.address;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.university.payment_for_utilities.domains.pojo.requests.address.OblastRequest;
-import org.university.payment_for_utilities.domains.pojo.requests.address.OblastUpdateRequest;
-import org.university.payment_for_utilities.exceptions.EmptyRequestException;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.repositories.address.OblastRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
+import org.university.payment_for_utilities.pojo.update_request.address.OblastUpdateRequest;
+import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
+import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class OblastServiceTest extends CrudServiceTest {
+@SpringBootTest
+class OblastServiceTest extends TransliterationServiceTest {
     @Autowired
-    public OblastServiceTest(OblastRepository repository){
-        service = new OblastServiceImpl(repository);
+    public OblastServiceTest(OblastService service) {
+        this.service = service;
         initRequest();
     }
 
-    private void initRequest(){
+    @Override
+    protected void initRequest(){
         emptyRequest = OblastRequest
                 .builder()
                 .uaName("")
                 .build();
 
-        firstReques = OblastRequest
+        firstRequest = OblastRequest
                 .builder()
                 .uaName("Рівненська")
                 .enName("Rivnenska")
@@ -42,14 +37,15 @@ class OblastServiceTest extends CrudServiceTest {
 
         correctUpdateRequest = OblastUpdateRequest
                 .builder()
-                .oldValue(firstReques)
+                .oldValue(firstRequest)
                 .newValue(secondRequest)
                 .build();
     }
 
     @Test
     @DisplayName("Checking for an exception when data in an incorrect format was passed in a request.")
-    void testAddValueThrowInvalidInputData(){
+    @Override
+    protected void testAddValueThrowInvalidInputData() {
         var withNum = OblastRequest
                 .builder()
                 .uaName("Рівн5енська")
@@ -61,22 +57,18 @@ class OblastServiceTest extends CrudServiceTest {
                 .enName("Rivnenska")
                 .build();
 
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(withNum)
-        );
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(withSpecialCharacter)
-        );
+        testAddValueThrowInvalidInputData(withNum, withSpecialCharacter);
     }
 
     @Test
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    void testUpdateValueCorrectWithOneChangedParameter(){
+    @Override
+    protected void testUpdateValueCorrectWithOneChangedParameter(){
         var otherName = "other";
 
         var updateRequest = OblastUpdateRequest
                 .builder()
-                .oldValue(firstReques)
+                .oldValue(firstRequest)
                 .newValue(OblastRequest
                         .builder()
                         .uaName("")
@@ -85,17 +77,13 @@ class OblastServiceTest extends CrudServiceTest {
                 )
                 .build();
 
-        var response = service.addValue(firstReques);
-        var updateResponse = service.updateValue(updateRequest);
-
-        assertEquals(updateResponse.getId(), response.getId());
-        assertEquals(updateResponse.getUaName(), response.getUaName());
-        assertEquals(updateResponse.getEnName(), otherName);
+        testUpdateValueCorrectWithOneChangedParameter(updateRequest);
     }
 
     @Test
     @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    void testUpdateValueThrowRequestEmpty(){
+    @Override
+    protected void testUpdateValueThrowRequestEmpty(){
         var emptyUpdateRequest = OblastUpdateRequest
                 .builder()
                 .build();
@@ -103,31 +91,22 @@ class OblastServiceTest extends CrudServiceTest {
         var requestOldValueEmpty = OblastUpdateRequest
                 .builder()
                 .oldValue(emptyRequest)
-                .newValue(firstReques)
+                .newValue(firstRequest)
                 .build();
 
         var requestNewValueEmpty = OblastUpdateRequest
                 .builder()
-                .oldValue(firstReques)
+                .oldValue(firstRequest)
                 .newValue(emptyRequest)
                 .build();
 
-        assertThrows(EmptyRequestException.class,
-                () -> service.updateValue(emptyUpdateRequest)
-        );
-
-        assertThrows(EmptyRequestException.class,
-                () -> service.updateValue(requestOldValueEmpty)
-        );
-
-        assertThrows(EmptyRequestException.class,
-                () -> service.updateValue(requestNewValueEmpty)
-        );
+        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
     }
 
     @Test
     @DisplayName("Check for exceptions when data was transferred in an incorrect format in an update request.")
-    void testUpdateValueThrowInvalidInputData(){
+    @Override
+    protected void testUpdateValueThrowInvalidInputData(){
         var incorrectRequest = OblastRequest
                 .builder()
                 .uaName("Рівне5нська")
@@ -136,23 +115,16 @@ class OblastServiceTest extends CrudServiceTest {
 
         var correctOnlyOldValue = OblastUpdateRequest
                 .builder()
-                .oldValue(firstReques)
+                .oldValue(firstRequest)
                 .newValue(incorrectRequest)
                 .build();
 
         var correctOnlyNewValue = OblastUpdateRequest
                 .builder()
                 .oldValue(incorrectRequest)
-                .newValue(firstReques)
+                .newValue(firstRequest)
                 .build();
 
-        service.addValue(firstReques);
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.updateValue(correctOnlyOldValue)
-        );
-        assertThrows(InvalidInputDataException.class,
-                () -> service.updateValue(correctOnlyNewValue)
-        );
+        testUpdateValueThrowInvalidInputData(correctOnlyOldValue, correctOnlyNewValue);
     }
 }

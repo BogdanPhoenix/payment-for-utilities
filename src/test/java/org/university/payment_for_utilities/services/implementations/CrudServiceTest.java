@@ -3,10 +3,9 @@ package org.university.payment_for_utilities.services.implementations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.Request;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.UpdateRequest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
@@ -16,25 +15,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class CrudServiceTest {
-    protected Request firstReques;
+@SpringBootTest
+public abstract class CrudServiceTest {
+    protected Request firstRequest;
     protected Request secondRequest;
     protected Request emptyRequest;
     protected UpdateRequest correctUpdateRequest;
-
     protected CrudService service;
 
+    protected abstract void initRequest();
+    protected abstract void testUpdateValueCorrectWithOneChangedParameter();
+    protected abstract void testUpdateValueThrowRequestEmpty();
+
     @AfterEach
-    void clearTable(){
+    public void clearTable(){
         service.removeAll();
     }
 
     @Test
     @DisplayName("Checks the output of all table entities.")
     void testGetAllEntities(){
-        service.addValue(firstReques);
+        service.addValue(firstRequest);
         service.addValue(secondRequest);
 
         var entities = service.getAll();
@@ -47,8 +48,8 @@ public class CrudServiceTest {
     @Test
     @DisplayName("Check for adding data to the database.")
     void testAddValueCorrectName(){
-        var actualWithCyrillicLetters = service.addValue(firstReques);
-        assertThat(actualWithCyrillicLetters.getId()).isNotNull();
+        var response = service.addValue(firstRequest);
+        assertThat(response.getId()).isNotNull();
     }
 
     @Test
@@ -62,29 +63,30 @@ public class CrudServiceTest {
     @Test
     @DisplayName("Checking for an exception when the query passed data that already exists in the database table.")
     void testAddValueThrowDuplicate(){
-        service.addValue(firstReques);
+        service.addValue(firstRequest);
         assertThrows(DuplicateException.class,
-                () -> service.addValue(firstReques)
+                () -> service.addValue(firstRequest)
         );
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    void testUpdateValueCorrect(){
-        var response = service.addValue(firstReques);
-        var updateResponse = service.updateValue(correctUpdateRequest);
+    protected void testUpdateValueThrowRequestEmpty(UpdateRequest emptyUpdateRequest, UpdateRequest requestOldValueEmpty, UpdateRequest requestNewValueEmpty){
+        assertThrows(EmptyRequestException.class,
+                () -> service.updateValue(emptyUpdateRequest)
+        );
 
-        var newValue = correctUpdateRequest.getNewValue();
+        assertThrows(EmptyRequestException.class,
+                () -> service.updateValue(requestOldValueEmpty)
+        );
 
-        assertEquals(updateResponse.getId(), response.getId());
-        assertEquals(updateResponse.getUaName(), newValue.getUaName());
-        assertEquals(updateResponse.getEnName(), newValue.getEnName());
+        assertThrows(EmptyRequestException.class,
+                () -> service.updateValue(requestNewValueEmpty)
+        );
     }
 
     @Test
     @DisplayName("Checks for exceptions when the update request passes a new area name that already exists in the database table.")
     void testUpdateValueThrowDuplicate(){
-        service.addValue(firstReques);
+        service.addValue(firstRequest);
         service.addValue(secondRequest);
 
         assertThrows(DuplicateException.class,
@@ -103,10 +105,12 @@ public class CrudServiceTest {
     @Test
     @DisplayName("Checking the correct deletion of data from the table using the entity identifier.")
     void testRemoveValueCorrect(){
-        var responseAdd = service.addValue(firstReques);
+        var responseAdd = service.addValue(firstRequest);
         var responseRemove = service.removeValue(responseAdd.getId());
 
-        assertEquals(responseAdd, responseRemove);
+//        assertEquals(responseAdd, responseRemove);
+        assertThat(responseAdd)
+                .isEqualTo(responseRemove);
     }
 
     @Test
@@ -121,7 +125,7 @@ public class CrudServiceTest {
     @Test
     @DisplayName("Check if all data is deleted from the table.")
     void testRemoveAll(){
-        service.addValue(firstReques);
+        service.addValue(firstRequest);
         service.addValue(secondRequest);
 
         var numDeleteItems = service.removeAll();

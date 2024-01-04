@@ -40,6 +40,8 @@ public class Contract {
     @Column(name = "current_data")
     private boolean currentData;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Receipt> receipts;
 }

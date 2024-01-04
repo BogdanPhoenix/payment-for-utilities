@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.domains.TableInfo;
 
 import java.util.List;
 
@@ -15,9 +16,9 @@ import java.util.List;
 @DynamicInsert
 @Entity
 @Table(name = "settlements",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"id_type", "index", "id_name"})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"id_type", "zip_code", "id_name"})
 )
-public class Settlement {
+public class Settlement implements TableInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -25,10 +26,12 @@ public class Settlement {
 
     @ManyToOne
     @JoinColumn(name = "id_type", nullable = false)
+    @NonNull
     private TypeSettlement type;
 
-    @Column(name = "index", length = 5, nullable = false, unique = true)
-    private String index;
+    @Column(name = "zip_code", length = 5, nullable = false, unique = true)
+    @NonNull
+    private String zipCode;
 
     @ManyToOne
     @JoinColumn(name = "id_name", nullable = false)
@@ -38,9 +41,21 @@ public class Settlement {
     @Column(name = "current_data")
     private boolean currentData;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "settlements")
     private List<District> districts;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "settlement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AddressResidence> addresses;
+
+    @Override
+    public boolean isEmpty() {
+        return id == null ||
+                type.isEmpty() ||
+                zipCode .isEmpty() ||
+                name.isEmpty();
+    }
 }

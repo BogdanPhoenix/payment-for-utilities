@@ -2,12 +2,12 @@ package org.university.payment_for_utilities.services.implementations;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.Request;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.UpdateRequest;
-import org.university.payment_for_utilities.domains.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.domains.TableInfo;
+import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -21,8 +21,21 @@ import java.util.Optional;
 public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> implements CrudService {
     private static final String MESSAGE_SUCCESS_VALIDATION = "Input data has been successfully validated";
 
+    protected final String fatalMessageAddEntity;
+    protected final String fatalMessageUpdateEntity;
+    protected final String fatalMessageFindOldEntity;
+
     protected J repository;
     protected String tableName;
+
+    protected CrudServiceAbstract(J repository, String tableName) {
+        this.repository = repository;
+        this.tableName = tableName;
+
+        fatalMessageAddEntity = String.format("You sent an empty request when trying to add a new record to the \"%s\" table.", tableName);
+        fatalMessageUpdateEntity = "You sent an empty query in the \"%s\" field when trying to update a record in the \"" + tableName + "\" table.";
+        fatalMessageFindOldEntity = String.format("Failed to find an entity in the \"%s\" table by the old value when updating the table entity.", tableName);
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -73,34 +86,15 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
         return numDeleteItems;
     }
 
-    protected void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException{
-        String messageValidateRequest = String.format("You sent an empty request when trying to add a new record to the \"%s\" table.", tableName);
-
+    protected void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         log.info("Input to the addValue() method");
-
-        validateRequestEmpty(request, messageValidateRequest);
-        validateName(request);
-        validateDuplicate(request);
-
+        validationProcedureAddValue(request);
         log.info(MESSAGE_SUCCESS_VALIDATION);
     }
 
     protected T validateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
-        String messageValidateRequest = "You sent an empty query in the \"%s\" field when trying to update a record in the \"" + tableName + "\" table.";
-
         log.info("Input to the updateValue() method");
-
-        validateRequestEmpty(updateRequest.getOldValue(), String.format(messageValidateRequest, "oldValue"));
-        validateRequestEmpty(updateRequest.getNewValue(), String.format(messageValidateRequest, "newValue"));
-        validateName(updateRequest.getOldValue());
-        validateName(updateRequest.getNewValue());
-        validateDuplicate(updateRequest.getNewValue());
-
-        var entity = findOldEntity(updateRequest)
-                .orElseThrow(() -> new NotFindEntityInDataBaseException(
-                        String.format("Failed to find an entity in the \"%s\" table by the old value when updating the table entity.", tableName))
-                );
-
+        var entity = validationProcedureValidateUpdate(updateRequest);
         log.info(MESSAGE_SUCCESS_VALIDATION);
 
         return entity;
@@ -122,7 +116,7 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
         return oblast;
     }
 
-    private void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
+    protected void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
         if(!isRequestEmpty(request)){
             return;
         }
@@ -132,46 +126,36 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
     }
 
     private boolean isRequestEmpty(Request request){
-        return request == null ||
-                request.getUaName() == null ||
-                request.getEnName() == null;
+        return request == null || request.isEmpty();
     }
 
-    private void validateName(@NonNull Request request){
-        if(isValidName(request.getUaName()) && isValidName(request.getEnName())){
-            return;
-        }
-
-        var message = String.format("The data in the %s and %s query should contain only Cyrillic and Latin letters, hyphens, and spaces.",
-                request.getUaName(), request.getEnName());
-        log.error(message);
-        throw new InvalidInputDataException(message);
-    }
-
-    @Contract(pure = true)
-    private boolean isValidName(@NonNull String name) {
-        return name
-                .toUpperCase()
-                .matches("^[А-ЯІЇҐA-Z\\-\\s]*$");
-    }
-
-    private void validateDuplicate(@NonNull Request request) throws DuplicateException {
+    protected void validateDuplicate(@NonNull Request request) throws DuplicateException {
         if(!isDuplicate(request)){
             return;
         }
 
-        var message = String.format("The \"%s\" entity is already present in the \"%s\" table.", request.getEnName(), tableName);
+        var message = String.format("The \"%s\" entity is already present in the \"%s\" table.", request, tableName);
         log.error(message);
         throw new DuplicateException(message);
     }
 
-    protected String updatePrimitive(String oldValue, @NonNull String newValue){
-        return newValue.isEmpty() ? oldValue : newValue;
+    protected String updateAttribute(@NonNull String oldValue, @NonNull String newValue){
+        return newValue.isEmpty()
+                ? oldValue
+                : newValue;
     }
 
-    protected abstract boolean isDuplicate(@NonNull Request request);
+    protected <R extends TableInfo> R updateAttribute(R oldValue, R newValue){
+        return newValue == null || newValue.isEmpty()
+                ? oldValue
+                : newValue;
+    }
+
     protected abstract T createEntity(Request request);
     protected abstract Response createResponse(T entity);
     protected abstract void updateEntity(T entity, @NonNull UpdateRequest updateRequest);
+    protected abstract void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException;
+    protected abstract T validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException;
     protected abstract Optional<T> findOldEntity(@NonNull UpdateRequest updateRequest);
+    protected abstract boolean isDuplicate(@NonNull Request request);
 }

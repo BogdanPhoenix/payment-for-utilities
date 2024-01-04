@@ -41,6 +41,8 @@ public class RegisteredUser {
     @OneToOne(mappedBy = "registered", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private InfoAboutUser infoUser;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_payment_addresses",
@@ -50,6 +52,8 @@ public class RegisteredUser {
     )
     private List<AddressResidence> addresses;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "registered_user_banks",
@@ -59,6 +63,8 @@ public class RegisteredUser {
     )
     private List<Bank> banks;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "registeredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contract> contracts;
 }

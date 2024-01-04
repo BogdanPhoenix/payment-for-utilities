@@ -1,43 +1,33 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.District;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.Request;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.UpdateRequest;
-import org.university.payment_for_utilities.domains.pojo.responses.address.DistrictResponse;
-import org.university.payment_for_utilities.domains.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
+import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
+import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.DistrictRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
-import java.util.Optional;
-
-@Slf4j
 @Service
-@RequiredArgsConstructor
-public class DistrictServiceImpl extends CrudServiceAbstract<District, DistrictRepository> implements DistrictService {
+public class DistrictServiceImpl extends TransliterationService<District, DistrictRepository> implements DistrictService {
     @Autowired
     public DistrictServiceImpl(DistrictRepository repository){
-        this.repository = repository;
-        this.tableName = "Districts";
-    }
-
-    @Override
-    protected boolean isDuplicate(@NonNull Request request) {
-        var entity = repository.findByEnName(request.getEnName());
-        return entity.isPresent();
+        super(repository, "Districts");
     }
 
     @Override
     protected District createEntity(@NonNull Request request){
+        var districtRequest = (DistrictRequest) request;
+
         return District
                 .builder()
-                .uaName(request.getUaName())
-                .enName(request.getEnName())
+                .uaName(districtRequest.getUaName())
+                .enName(districtRequest.getEnName())
                 .currentData(true)
                 .build();
     }
@@ -54,30 +44,21 @@ public class DistrictServiceImpl extends CrudServiceAbstract<District, DistrictR
 
     @Override
     protected void updateEntity(@NonNull District entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = updateRequest.getOldValue();
-        var newValue = updateRequest.getNewValue();
+        var oldValue = (DistrictRequest) updateRequest.getOldValue();
+        var newValue = (DistrictRequest) updateRequest.getNewValue();
 
         entity.setUaName(
-                updatePrimitive(
+                updateAttribute(
                         oldValue.getUaName(),
                         newValue.getUaName()
                 )
         );
 
         entity.setEnName(
-                updatePrimitive(
+                updateAttribute(
                         oldValue.getEnName(),
                         newValue.getEnName()
                 )
         );
-    }
-
-    @Override
-    protected Optional<District> findOldEntity(@NonNull UpdateRequest updateRequest) {
-        return repository
-                .findByEnName(updateRequest
-                        .getOldValue()
-                        .getEnName()
-                );
     }
 }

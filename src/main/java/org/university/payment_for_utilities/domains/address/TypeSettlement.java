@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.university.payment_for_utilities.domains.address.Settlement;
+import org.university.payment_for_utilities.domains.TableInfo;
 
 import java.util.List;
 
@@ -16,19 +16,32 @@ import java.util.List;
 @DynamicInsert
 @Entity
 @Table(name = "types_settlement")
-public class TypeSettlement {
+public class TypeSettlement implements TableInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "ua_name", nullable = false, unique = true)
     @NonNull
-    private String name;
+    private String uaName;
+
+    @Column(name = "en_name", nullable = false, unique = true)
+    @NonNull
+    private String enName;
 
     @Column(name = "current_data")
     private boolean currentData;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Settlement> settlements;
+
+    @Override
+    public boolean isEmpty() {
+        return id == null ||
+                uaName.isEmpty() ||
+                enName.isEmpty();
+    }
 }

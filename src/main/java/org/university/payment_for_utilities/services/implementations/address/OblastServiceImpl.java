@@ -1,41 +1,32 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.Oblast;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.Request;
-import org.university.payment_for_utilities.domains.pojo.requests.address.interfaces.UpdateRequest;
-import org.university.payment_for_utilities.domains.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
+import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.OblastRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
-import org.university.payment_for_utilities.domains.pojo.responses.address.OblastResponse;
+import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
 
-import java.util.Optional;
-
-@Slf4j
 @Service
-public class OblastServiceImpl extends CrudServiceAbstract<Oblast, OblastRepository> implements OblastService {
+public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepository> implements OblastService {
     @Autowired
     public OblastServiceImpl(OblastRepository repository){
-        this.repository = repository;
-        this.tableName = "Oblasts";
-    }
-
-    @Override
-    protected boolean isDuplicate(@NonNull Request request) {
-        var entity = repository.findByEnName(request.getEnName());
-        return entity.isPresent();
+        super(repository, "Oblasts");
     }
 
     @Override
     protected Oblast createEntity(@NonNull Request request){
+        var oblastRequest = (OblastRequest) request;
         return Oblast
                 .builder()
-                .uaName(request.getUaName())
-                .enName(request.getEnName())
+                .uaName(oblastRequest.getUaName())
+                .enName(oblastRequest.getEnName())
                 .currentData(true)
                 .build();
     }
@@ -52,30 +43,21 @@ public class OblastServiceImpl extends CrudServiceAbstract<Oblast, OblastReposit
 
     @Override
     protected void updateEntity(@NonNull Oblast entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = updateRequest.getOldValue();
-        var newValue = updateRequest.getNewValue();
+        var oldValue = (OblastRequest) updateRequest.getOldValue();
+        var newValue = (OblastRequest) updateRequest.getNewValue();
 
         entity.setUaName(
-                updatePrimitive(
+                updateAttribute(
                         oldValue.getUaName(),
                         newValue.getUaName()
                 )
         );
 
         entity.setEnName(
-                updatePrimitive(
+                updateAttribute(
                         oldValue.getEnName(),
                         newValue.getEnName()
                 )
         );
-    }
-
-    @Override
-    protected Optional<Oblast> findOldEntity(@NonNull UpdateRequest updateRequest){
-        return repository
-                .findByEnName(updateRequest
-                        .getOldValue()
-                        .getEnName()
-                );
     }
 }
