@@ -1,6 +1,6 @@
-package org.university.payment_for_utilities.pojo.update_request.address.interfaces;
+package org.university.payment_for_utilities.pojo.update_request.interfaces;
 
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 
 /**
  * An interface representing the request structure for updating an entity that can be used to interact with the system.

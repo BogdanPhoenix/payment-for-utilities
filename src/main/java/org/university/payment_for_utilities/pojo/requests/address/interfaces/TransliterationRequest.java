@@ -1,5 +1,7 @@
 package org.university.payment_for_utilities.pojo.requests.address.interfaces;
 
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+
 /**
  * An interface representing the query structure that must necessarily contain the name of the entity in Ukrainian and English that can be used to interact with the system.
  */

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
-import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 
 @Data
 @Builder

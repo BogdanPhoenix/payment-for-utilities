@@ -3,7 +3,7 @@ package org.university.payment_for_utilities.pojo.requests.address;
 import lombok.Builder;
 import lombok.Data;
 import org.university.payment_for_utilities.domains.address.Settlement;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 
 @Data
 @Builder

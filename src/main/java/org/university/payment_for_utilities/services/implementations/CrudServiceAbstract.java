@@ -6,9 +6,9 @@ import org.jetbrains.annotations.Contract;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.domains.TableInfo;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
-import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -21,6 +21,7 @@ import java.util.Optional;
 @Slf4j
 public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepository<T, Long>> implements CrudService {
     protected static final String MESSAGE_SUCCESS_VALIDATION = "Input data has been successfully validated";
+    private static final String NAME_TEMPLATE = "^[A-ZА-ЯІЇҐ\\-\\s]*$";
 
     protected final String fatalMessageAddEntity;
     protected final String fatalMessageUpdateEntity;
@@ -66,6 +67,16 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return createResponse(result);
     }
 
+    protected void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+        log.info("Input to the addValue() method");
+
+        validateRequestEmpty(request, fatalMessageAddEntity);
+        validationProcedureAddValue(request);
+        validateDuplicate(request);
+
+        log.info(MESSAGE_SUCCESS_VALIDATION);
+    }
+
     @Transactional
     @Override
     public Response updateValue(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException, NotFindEntityInDataBaseException {
@@ -77,13 +88,19 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return createResponse(result);
     }
 
-    @Transactional
-    @Override
-    public Response removeValue(Long id) throws NotFindEntityInDataBaseException {
-        var entity = validateFindEntity(id);
+    protected T validateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+        log.info("Input to the updateValue() method");
 
-        repository.deleteById(id);
-        return createResponse(entity);
+        validateRequestEmpty(updateRequest.getOldValue(), fatalMessageUpdateEntity);
+        validationProcedureValidateUpdate(updateRequest);
+        validateDuplicate(updateRequest.getNewValue());
+
+        var entity = findOldEntity(updateRequest.getOldValue())
+                .orElseThrow(() -> new NotFindEntityInDataBaseException(fatalMessageFindOldEntity));
+
+        log.info(MESSAGE_SUCCESS_VALIDATION);
+
+        return entity;
     }
 
     @Transactional
@@ -95,26 +112,28 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return createResponse(entity);
     }
 
-    @Transactional
-    @Override
-    public Long removeAll() {
-        var numDeleteItems = repository.count();
-        repository.deleteAll();
-        return numDeleteItems;
-    }
+    protected T validateFindEntity(@NonNull Request request) throws NotFindEntityInDataBaseException {
+        log.info("Input to the removeValue() method");
 
-    protected void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
-        log.info("Input to the addValue() method");
-        validationProcedureAddValue(request);
-        log.info(MESSAGE_SUCCESS_VALIDATION);
-    }
+        var entity = findOldEntity(request)
+                .orElseThrow(() ->
+                        new NotFindEntityInDataBaseException(
+                                String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request)
+                        )
+                );
 
-    protected T validateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
-        log.info("Input to the updateValue() method");
-        var entity = validationProcedureValidateUpdate(updateRequest);
         log.info(MESSAGE_SUCCESS_VALIDATION);
 
         return entity;
+    }
+
+    @Transactional
+    @Override
+    public Response removeValue(Long id) throws NotFindEntityInDataBaseException {
+        var entity = validateFindEntity(id);
+
+        repository.deleteById(id);
+        return createResponse(entity);
     }
 
     protected T validateFindEntity(Long id) throws NotFindEntityInDataBaseException {
@@ -133,20 +152,12 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return oblast;
     }
 
-
-    protected T validateFindEntity(@NonNull Request request) throws NotFindEntityInDataBaseException {
-        log.info("Input to the removeValue() method");
-
-        var entity = findOldEntity(request)
-                .orElseThrow(() ->
-                        new NotFindEntityInDataBaseException(
-                                String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request)
-                        )
-                );
-
-        log.info(MESSAGE_SUCCESS_VALIDATION);
-
-        return entity;
+    @Transactional
+    @Override
+    public Long removeAll() {
+        var numDeleteItems = repository.count();
+        repository.deleteAll();
+        return numDeleteItems;
     }
 
     protected void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
@@ -177,6 +188,23 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                 .isPresent();
     }
 
+    protected void validateName(@NonNull String name) throws InvalidInputDataException{
+        if(isValidString(name)){
+            return;
+        }
+
+        var message = String.format("The data in the %s query should contain only Cyrillic and Latin letters, hyphens, and spaces.", name);
+        log.error(message);
+        throw new InvalidInputDataException(message);
+    }
+
+    @Contract(pure = true)
+    protected boolean isValidString(@NonNull String name) {
+        return name
+                .toUpperCase()
+                .matches(NAME_TEMPLATE);
+    }
+
     protected String updateAttribute(@NonNull String oldValue, @NonNull String newValue){
         return newValue.isEmpty()
                 ? oldValue
@@ -189,18 +217,11 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                 : newValue;
     }
 
-    @Contract(pure = true)
-    protected boolean isValidString(@NonNull String name) {
-        return name
-                .toUpperCase()
-                .matches("^[A-ZА-ЯІЇҐ\\-\\s]*$");
-    }
-
     protected abstract T createEntity(Request request);
     protected abstract T createEntity(Response response);
     protected abstract Response createResponse(T entity);
-    protected abstract void updateEntity(T entity, @NonNull UpdateRequest updateRequest);
-    protected abstract void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException;
-    protected abstract T validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException;
+    protected abstract void updateEntity(@NonNull T entity, @NonNull UpdateRequest updateRequest);
+    protected abstract void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException;
+    protected abstract void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException;
     protected abstract Optional<T> findOldEntity(@NonNull Request request);
 }

@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.pojo.update_request.address;
+package org.university.payment_for_utilities.pojo.update_request.bank;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,7 @@ import org.university.payment_for_utilities.pojo.update_request.interfaces.Updat
 
 @Data
 @Builder
-public class OblastUpdateRequest implements UpdateRequest {
+public class BankUpdateRequest implements UpdateRequest {
     private Request oldValue;
     private Request newValue;
 }

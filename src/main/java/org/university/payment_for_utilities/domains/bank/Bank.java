@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.domains.TableInfo;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @DynamicInsert
 @Entity
 @Table(name = "banks")
-public class Bank {
+public class Bank implements TableInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -56,4 +57,12 @@ public class Bank {
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "banks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RegisteredUser> users;
+
+    @Override
+    public boolean isEmpty() {
+        return name.isEmpty() ||
+                webSite.isEmpty() ||
+                edrpou.isEmpty() ||
+                mfo.isEmpty();
+    }
 }

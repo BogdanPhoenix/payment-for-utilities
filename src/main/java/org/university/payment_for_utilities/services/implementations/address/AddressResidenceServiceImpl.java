@@ -4,15 +4,12 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
-import org.university.payment_for_utilities.exceptions.DuplicateException;
-import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
-import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
@@ -22,6 +19,10 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResidence, AddressResidenceRepository> implements AddressResidenceService {
+    private static final String NUM_HOUSE_TEMPLATE = "^[\\dA-ZА-ЯІЇҐ\\-\\s]+$";
+    private static final String NUM_ENTRANCE_TEMPLATE = "^\\d{0,3}$";
+    private static final String NUM_APARTMENT_TEMPLATE = "^\\d{0,5}$";
+
     protected AddressResidenceServiceImpl(AddressResidenceRepository repository) {
         super(repository, "Addresses residence");
     }
@@ -115,41 +116,35 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var addressRequest = (AddressResidenceRequest) request;
 
-        validateRequestEmpty(addressRequest, fatalMessageAddEntity);
         validateStreet(addressRequest.getUaNameStreet());
         validateStreet(addressRequest.getEnNameStreet());
         validateNumHouse(addressRequest);
         validateNumEntrance(addressRequest);
         validateNumApartment(addressRequest);
-        validateDuplicate(addressRequest);
     }
 
     @Override
-    protected AddressResidence validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
         var oldValue = (AddressResidenceRequest) updateRequest.getOldValue();
         var newValue = (AddressResidenceRequest) updateRequest.getNewValue();
 
-        validateRequestEmpty(oldValue, fatalMessageAddEntity);
-
         validateStreet(oldValue.getUaNameStreet());
         validateStreet(oldValue.getEnNameStreet());
-        validateNumHouse(oldValue);
-        validateNumEntrance(oldValue);
-        validateNumApartment(oldValue);
 
         validateStreet(newValue.getUaNameStreet());
         validateStreet(newValue.getEnNameStreet());
+
+        validateNumHouse(oldValue);
         validateNumHouse(newValue);
+
+        validateNumEntrance(oldValue);
         validateNumEntrance(newValue);
+
+        validateNumApartment(oldValue);
         validateNumApartment(newValue);
-
-        validateDuplicate(newValue);
-
-        return findOldEntity(oldValue)
-                .orElseThrow(() -> new NotFindEntityInDataBaseException(fatalMessageFindOldEntity));
     }
 
     private void validateStreet(@NonNull String name) throws InvalidInputDataException {
@@ -175,7 +170,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     private boolean isValidNumHouse(@NonNull String numHouse){
         return numHouse
                 .toUpperCase()
-                .matches("^[\\dA-ZА-ЯІЇҐ\\-\\s]+$");
+                .matches(NUM_HOUSE_TEMPLATE);
     }
 
     private void validateNumEntrance(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
@@ -189,7 +184,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private boolean isValidNumEntrance(@NonNull String numEntrance){
-        return numEntrance.matches("^\\d{0,3}$");
+        return numEntrance.matches(NUM_ENTRANCE_TEMPLATE);
     }
 
     private void validateNumApartment(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
@@ -203,7 +198,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private boolean isValidNumApartment(@NonNull String numApartment){
-        return numApartment.matches("^\\d{0,5}$");
+        return numApartment.matches(NUM_APARTMENT_TEMPLATE);
     }
 
     @Override

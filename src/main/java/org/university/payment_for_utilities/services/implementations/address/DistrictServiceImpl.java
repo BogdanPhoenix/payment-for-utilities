@@ -5,12 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.District;
 import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
-import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.DistrictRepository;
-import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
 @Service

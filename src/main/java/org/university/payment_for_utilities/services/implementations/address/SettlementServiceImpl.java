@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
-import org.university.payment_for_utilities.pojo.update_request.address.interfaces.UpdateRequest;
-import org.university.payment_for_utilities.pojo.responses.address.interfaces.Response;
+import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
 import org.university.payment_for_utilities.repositories.address.SettlementRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
@@ -23,6 +22,8 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, SettlementRepository> implements SettlementService {
+    private static final String INDEX_TEMPLATE = "^\\d{5}$";
+
     @Autowired
     public SettlementServiceImpl(SettlementRepository repository) {
         super(repository, "Settlements");
@@ -93,10 +94,16 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     @Override
     protected void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         var settlementRequest = (SettlementRequest) request;
-
-        validateRequestEmpty(settlementRequest, fatalMessageAddEntity);
         validateZipCode(settlementRequest.getZipCode());
-        validateDuplicate(settlementRequest);
+    }
+
+    @Override
+    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
+        var oldValue = (SettlementRequest) updateRequest.getOldValue();
+        var newValue = (SettlementRequest) updateRequest.getNewValue();
+
+        validateZipCode(oldValue.getZipCode());
+        validateZipCode(newValue.getZipCode());
     }
 
     private void validateZipCode(@NonNull String zipCode) throws InvalidInputDataException{
@@ -111,21 +118,7 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
 
     private boolean isValidIndex(@NonNull String zipCode) {
         return zipCode
-                .matches("^\\d{5}$");
-    }
-
-    @Override
-    protected Settlement validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
-        var oldValue = (SettlementRequest) updateRequest.getOldValue();
-        var newValue = (SettlementRequest) updateRequest.getNewValue();
-
-        validateRequestEmpty(oldValue, String.format(fatalMessageUpdateEntity, "oldValue"));
-        validateZipCode(oldValue.getZipCode());
-        validateZipCode(newValue.getZipCode());
-        validateDuplicate(newValue);
-
-        return findOldEntity(oldValue)
-                .orElseThrow(() -> new NotFindEntityInDataBaseException(fatalMessageFindOldEntity));
+                .matches(INDEX_TEMPLATE);
     }
 
     @Override

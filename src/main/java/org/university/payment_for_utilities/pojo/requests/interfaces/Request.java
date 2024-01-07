@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.pojo.requests.address.interfaces;
+package org.university.payment_for_utilities.pojo.requests.interfaces;
 
 /**
  * An interface representing the query structure that can be used to interact with the system.

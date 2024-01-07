@@ -1,5 +1,7 @@
 package org.university.payment_for_utilities.pojo.responses.address.interfaces;
 
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+
 /**
  * The interface that defines the response for transliteration extends the basic response interface.
  */

@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.pojo.responses.address.interfaces;
+package org.university.payment_for_utilities.pojo.responses.interfaces;
 
 /**
  * An interface that represents a response structure that can be used to interact with the system.
