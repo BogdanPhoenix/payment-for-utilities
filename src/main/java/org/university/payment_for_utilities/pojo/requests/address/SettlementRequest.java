@@ -15,8 +15,8 @@ public class SettlementRequest implements Request {
 
     @Override
     public boolean isEmpty() {
-        return type == null ||
-                zipCode == null ||
-                name == null;
+        return this.type == null || this.type.isEmpty() ||
+                this.zipCode == null || this.zipCode.isEmpty() ||
+                this.name == null || this.name.isEmpty();
     }
 }

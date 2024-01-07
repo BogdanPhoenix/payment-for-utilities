@@ -2,6 +2,7 @@ package org.university.payment_for_utilities.services.implementations;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.domains.TableInfo;
@@ -18,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> implements CrudService {
-    private static final String MESSAGE_SUCCESS_VALIDATION = "Input data has been successfully validated";
+public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepository<T, Long>> implements CrudService {
+    protected static final String MESSAGE_SUCCESS_VALIDATION = "Input data has been successfully validated";
 
     protected final String fatalMessageAddEntity;
     protected final String fatalMessageUpdateEntity;
@@ -33,7 +34,7 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
         this.tableName = tableName;
 
         fatalMessageAddEntity = String.format("You sent an empty request when trying to add a new record to the \"%s\" table.", tableName);
-        fatalMessageUpdateEntity = "You sent an empty query in the \"%s\" field when trying to update a record in the \"" + tableName + "\" table.";
+        fatalMessageUpdateEntity = String.format("You sent an empty query in the \"oldValue\" field when trying to update a record in the \"%s\" table.", tableName);
         fatalMessageFindOldEntity = String.format("Failed to find an entity in the \"%s\" table by the old value when updating the table entity.", tableName);
     }
 
@@ -45,6 +46,13 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
                 .stream()
                 .map(this::createResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Response getById(Long id) throws NotFindEntityInDataBaseException{
+        var entity = validateFindEntity(id);
+        return createResponse(entity);
     }
 
     @Transactional
@@ -72,9 +80,18 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
     @Transactional
     @Override
     public Response removeValue(Long id) throws NotFindEntityInDataBaseException {
-        var entity = validateRemove(id);
+        var entity = validateFindEntity(id);
 
         repository.deleteById(id);
+        return createResponse(entity);
+    }
+
+    @Transactional
+    @Override
+    public Response removeValue(@NonNull Request request) throws NotFindEntityInDataBaseException {
+        var entity = validateFindEntity(request);
+
+        repository.deleteById(entity.getId());
         return createResponse(entity);
     }
 
@@ -100,7 +117,7 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
         return entity;
     }
 
-    protected T validateRemove(Long id) throws NotFindEntityInDataBaseException {
+    protected T validateFindEntity(Long id) throws NotFindEntityInDataBaseException {
         log.info("Input to the removeValue() method");
 
         var oblast = repository
@@ -114,6 +131,22 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
         log.info(MESSAGE_SUCCESS_VALIDATION);
 
         return oblast;
+    }
+
+
+    protected T validateFindEntity(@NonNull Request request) throws NotFindEntityInDataBaseException {
+        log.info("Input to the removeValue() method");
+
+        var entity = findOldEntity(request)
+                .orElseThrow(() ->
+                        new NotFindEntityInDataBaseException(
+                                String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request)
+                        )
+                );
+
+        log.info(MESSAGE_SUCCESS_VALIDATION);
+
+        return entity;
     }
 
     protected void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
@@ -139,6 +172,11 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
         throw new DuplicateException(message);
     }
 
+    protected boolean isDuplicate(@NonNull Request request){
+        return findOldEntity(request)
+                .isPresent();
+    }
+
     protected String updateAttribute(@NonNull String oldValue, @NonNull String newValue){
         return newValue.isEmpty()
                 ? oldValue
@@ -151,11 +189,18 @@ public abstract class CrudServiceAbstract<T, J extends JpaRepository<T, Long>> i
                 : newValue;
     }
 
+    @Contract(pure = true)
+    protected boolean isValidString(@NonNull String name) {
+        return name
+                .toUpperCase()
+                .matches("^[A-ZА-ЯІЇҐ\\-\\s]*$");
+    }
+
     protected abstract T createEntity(Request request);
+    protected abstract T createEntity(Response response);
     protected abstract Response createResponse(T entity);
     protected abstract void updateEntity(T entity, @NonNull UpdateRequest updateRequest);
     protected abstract void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException;
     protected abstract T validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException;
-    protected abstract Optional<T> findOldEntity(@NonNull UpdateRequest updateRequest);
-    protected abstract boolean isDuplicate(@NonNull Request request);
+    protected abstract Optional<T> findOldEntity(@NonNull Request request);
 }

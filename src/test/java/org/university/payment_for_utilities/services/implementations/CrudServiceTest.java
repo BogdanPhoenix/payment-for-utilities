@@ -12,8 +12,7 @@ import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseEx
 import org.university.payment_for_utilities.services.interfaces.CrudService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public abstract class CrudServiceTest {
@@ -46,8 +45,25 @@ public abstract class CrudServiceTest {
     }
 
     @Test
+    @DisplayName("Check if you can retrieve an entity from a table by its identifier.")
+    void testGetByIdCorrect(){
+        var response = service.addValue(firstRequest);
+        var responseById = service.getById(response.getId());
+
+        assertThat(responseById)
+                .isEqualTo(response);
+    }
+
+    @Test
+    @DisplayName("Checks whether an exception can be thrown if you try to retrieve an entity from a table by an invalid identifier.")
+    void testGetByIdThrow(){
+        assertThrows(NotFindEntityInDataBaseException.class,
+                () -> service.getById(1L));
+    }
+
+    @Test
     @DisplayName("Check for adding data to the database.")
-    void testAddValueCorrectName(){
+    void testAddValueCorrect(){
         var response = service.addValue(firstRequest);
         assertThat(response.getId()).isNotNull();
     }
@@ -77,10 +93,6 @@ public abstract class CrudServiceTest {
         assertThrows(EmptyRequestException.class,
                 () -> service.updateValue(requestOldValueEmpty)
         );
-
-        assertThrows(EmptyRequestException.class,
-                () -> service.updateValue(requestNewValueEmpty)
-        );
     }
 
     @Test
@@ -104,11 +116,10 @@ public abstract class CrudServiceTest {
 
     @Test
     @DisplayName("Checking the correct deletion of data from the table using the entity identifier.")
-    void testRemoveValueCorrect(){
+    public void testRemoveValueCorrect(){
         var responseAdd = service.addValue(firstRequest);
         var responseRemove = service.removeValue(responseAdd.getId());
 
-//        assertEquals(responseAdd, responseRemove);
         assertThat(responseAdd)
                 .isEqualTo(responseRemove);
     }
@@ -132,5 +143,18 @@ public abstract class CrudServiceTest {
 
         assertThat(numDeleteItems)
                 .isEqualTo(2L);
+    }
+
+    @Test
+    @DisplayName("Check if the request is empty.")
+    void testRequestIsEmpty(){
+        assertTrue(emptyRequest.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Check that the request is not empty.")
+    void testRequestIsNotEmpty(){
+        assertFalse(firstRequest.isEmpty());
+        assertFalse(secondRequest.isEmpty());
     }
 }

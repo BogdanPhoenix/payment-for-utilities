@@ -42,6 +42,19 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     }
 
     @Override
+    protected Settlement createEntity(Response response) {
+        var settlementResponse = (SettlementResponse) response;
+        return Settlement
+                .builder()
+                .id(settlementResponse.getId())
+                .type(settlementResponse.getType())
+                .zipCode(settlementResponse.getZipCode())
+                .name(settlementResponse.getName())
+                .currentData(true)
+                .build();
+    }
+
+    @Override
     protected Response createResponse(@NonNull Settlement entity) {
         return SettlementResponse
                 .builder()
@@ -107,29 +120,20 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         var newValue = (SettlementRequest) updateRequest.getNewValue();
 
         validateRequestEmpty(oldValue, String.format(fatalMessageUpdateEntity, "oldValue"));
-        validateRequestEmpty(newValue, String.format(fatalMessageUpdateEntity, "newValue"));
         validateZipCode(oldValue.getZipCode());
         validateZipCode(newValue.getZipCode());
         validateDuplicate(newValue);
 
-        return findOldEntity(updateRequest)
+        return findOldEntity(oldValue)
                 .orElseThrow(() -> new NotFindEntityInDataBaseException(fatalMessageFindOldEntity));
     }
 
     @Override
-    protected Optional<Settlement> findOldEntity(@NonNull UpdateRequest updateRequest) {
-        var settlementRequest = (SettlementRequest) updateRequest.getOldValue();
+    protected Optional<Settlement> findOldEntity(@NonNull Request request) {
+        var settlementRequest = (SettlementRequest) request;
         return repository
                 .findByZipCode(
                         settlementRequest.getZipCode()
                 );
-    }
-
-    @Override
-    protected boolean isDuplicate(@NonNull Request request) {
-        var settlementRequest = (SettlementRequest) request;
-        return repository
-                .findByZipCode(settlementRequest.getZipCode())
-                .isPresent();
     }
 }

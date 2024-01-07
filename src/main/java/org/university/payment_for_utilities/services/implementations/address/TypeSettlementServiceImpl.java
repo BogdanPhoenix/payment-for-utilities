@@ -32,6 +32,18 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
     }
 
     @Override
+    protected TypeSettlement createEntity(Response response) {
+        var typeResponse = (TypeSettlementResponse) response;
+        return TypeSettlement
+                .builder()
+                .id(typeResponse.getId())
+                .uaName(typeResponse.getUaName())
+                .enName(typeResponse.getEnName())
+                .currentData(true)
+                .build();
+    }
+
+    @Override
     protected Response createResponse(@NonNull TypeSettlement entity) {
         return TypeSettlementResponse
                 .builder()

@@ -32,6 +32,18 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
     }
 
     @Override
+    protected Oblast createEntity(Response response) {
+        var oblastResponse = (OblastResponse) response;
+        return Oblast
+                .builder()
+                .id(oblastResponse.getId())
+                .uaName(oblastResponse.getUaName())
+                .enName(oblastResponse.getEnName())
+                .currentData(true)
+                .build();
+    }
+
+    @Override
     protected Response createResponse(@NonNull Oblast entity){
         return OblastResponse
                 .builder()

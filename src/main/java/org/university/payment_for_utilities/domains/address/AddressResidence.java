@@ -64,8 +64,7 @@ public class AddressResidence implements TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return id == null ||
-                settlement.isEmpty() ||
+        return settlement.isEmpty() ||
                 uaNameStreet.isEmpty() ||
                 enNameStreet.isEmpty() ||
                 numHouse.isEmpty();

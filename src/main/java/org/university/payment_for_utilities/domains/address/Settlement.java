@@ -53,8 +53,7 @@ public class Settlement implements TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return id == null ||
-                type.isEmpty() ||
+        return type.isEmpty() ||
                 zipCode .isEmpty() ||
                 name.isEmpty();
     }

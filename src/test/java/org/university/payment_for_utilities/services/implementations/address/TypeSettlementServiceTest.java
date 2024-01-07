@@ -1,39 +1,41 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
 import org.university.payment_for_utilities.pojo.update_request.address.TypeSettlementUpdateRequest;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
 
 @SpringBootTest
+@Import(AddressEntitiesRequestTestContextConfiguration.class)
 class TypeSettlementServiceTest extends TransliterationServiceTest {
+    @Autowired
+    @Qualifier("typeSettlementCityRequest")
+    private TypeSettlementRequest cityRequest;
+    @Autowired
+    @Qualifier("typeSettlementVillageRequest")
+    private TypeSettlementRequest villageRequest;
+
     @Autowired
     public TypeSettlementServiceTest(TypeSettlementService service){
         this.service = service;
-        initRequest();
     }
 
+    @BeforeEach
     @Override
     protected void initRequest() {
+        firstRequest = cityRequest;
+        secondRequest = villageRequest;
+
         emptyRequest = TypeSettlementRequest
                 .builder()
                 .uaName("")
-                .build();
-
-        firstRequest = TypeSettlementRequest
-                .builder()
-                .uaName("Зброди")
-                .enName("Zbrody")
-                .build();
-
-        secondRequest = TypeSettlementRequest
-                .builder()
-                .uaName("Василівка")
-                .enName("Vasylivka")
                 .build();
 
         correctUpdateRequest = TypeSettlementUpdateRequest
@@ -49,13 +51,13 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
     protected void testAddValueThrowInvalidInputData(){
         var withNum = TypeSettlementRequest
                 .builder()
-                .uaName("Збро6ди")
-                .enName("Zbrody")
+                .uaName("міс6то")
+                .enName("city")
                 .build();
         var withSpecialCharacter = TypeSettlementRequest
                 .builder()
-                .uaName("Зброди")
-                .enName("Zbrody@")
+                .uaName("місто")
+                .enName("city@")
                 .build();
 
         testAddValueThrowInvalidInputData(withNum, withSpecialCharacter);
@@ -110,8 +112,8 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
     protected void testUpdateValueThrowInvalidInputData(){
         var incorrectRequest = TypeSettlementRequest
                 .builder()
-                .uaName("Збро6ди")
-                .enName("Zbrody")
+                .uaName("міс6то")
+                .enName("city")
                 .build();
 
         var correctOnlyOldValue = TypeSettlementUpdateRequest

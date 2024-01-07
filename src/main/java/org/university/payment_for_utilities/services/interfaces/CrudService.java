@@ -19,6 +19,14 @@ public interface CrudService {
     List<Response> getAll();
 
     /**
+     * Returns the entity by the specified identifier.
+     *
+     * @param id must not be {@literal null}.
+     * @return the table entity.
+     */
+    Response getById(Long id) throws NotFindEntityInDataBaseException;
+
+    /**
      * Creates an object according to the specified request.
      *
      * @param request must not be {@literal null}.
@@ -49,6 +57,15 @@ public interface CrudService {
      * @throws NotFindEntityInDataBaseException if the table does not contain the entity to be deleted.
      */
     Response removeValue(Long id) throws NotFindEntityInDataBaseException;
+
+    /**
+     * Deletes an entity from the table by the specified query.
+     *
+     * @param request must not be {@literal null}.
+     * @return response for the deleted entity; never {@literal null}.
+     * @throws NotFindEntityInDataBaseException if the table does not contain the entity to be deleted.
+     */
+    Response removeValue(@NonNull Request request) throws NotFindEntityInDataBaseException;
 
     /**
      * Deletes all entities from the table.

@@ -40,8 +40,7 @@ public class TypeSettlement implements TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return id == null ||
-                uaName.isEmpty() ||
+        return uaName.isEmpty() ||
                 enName.isEmpty();
     }
 }

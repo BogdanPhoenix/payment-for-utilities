@@ -2,75 +2,50 @@ package org.university.payment_for_utilities.services.implementations.address;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
-import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
-import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
-import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 import org.university.payment_for_utilities.pojo.update_request.address.SettlementUpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
-import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
-import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(AddressEntitiesRequestTestContextConfiguration.class)
 class SettlementServiceTest extends CrudServiceTest {
-    private final TypeSettlementService typeService;
-    private final SettlementNameService nameService;
-
     private TypeSettlement type;
-    private SettlementName nameRivne;
-    private SettlementName nameKyiv;
 
     @Autowired
-    public SettlementServiceTest(SettlementService service, TypeSettlementService typeService, SettlementNameService nameService) {
+    private SettlementNameServiceImpl nameService;
+    @Autowired
+    @Qualifier("nameKyivRequest")
+    private SettlementNameRequest nameKyivRequest;
+    @Autowired
+    @Qualifier("settlementRequest")
+    private SettlementRequest settlementRequest;
+
+    @Autowired
+    public SettlementServiceTest(SettlementService service) {
         this.service = service;
-        this.typeService = typeService;
-        this.nameService = nameService;
-        initRequest();
     }
 
+    @BeforeEach
     @Override
     protected void initRequest() {
-        var typeRequest = TypeSettlementRequest
-                .builder()
-                .uaName("тестове значення")
-                .enName("test value")
-                .build();
-
-        var nameRivneRequest = SettlementNameRequest
-                .builder()
-                .uaName("Рівне")
-                .enName("Rivne")
-                .build();
-
-        var nameKyivRequest = SettlementNameRequest
-                .builder()
-                .uaName("Київ")
-                .enName("Kyiv")
-                .build();
-
-        type = createType(typeRequest);
-        nameRivne = createName(nameRivneRequest);
-        nameKyiv = createName(nameKyivRequest);
+        var nameKyiv = createName(nameKyivRequest);
+        firstRequest = settlementRequest;
+        type = settlementRequest.getType();
 
         emptyRequest = SettlementRequest
                 .builder()
                 .zipCode("")
-                .build();
-
-        firstRequest = SettlementRequest
-                .builder()
-                .type(type)
-                .zipCode("12345")
-                .name(nameRivne)
                 .build();
 
         secondRequest = SettlementRequest
@@ -87,33 +62,16 @@ class SettlementServiceTest extends CrudServiceTest {
                 .build();
     }
 
-    private TypeSettlement createType(TypeSettlementRequest request) {
-        var response = (TypeSettlementResponse) typeService.addValue(request);
-        return TypeSettlement
-                .builder()
-                .id(response.getId())
-                .uaName(response.getUaName())
-                .enName(response.getEnName())
-                .currentData(true)
-                .build();
-    }
-
     private SettlementName createName(SettlementNameRequest request){
-        var response = (SettlementNameResponse) nameService.addValue(request);
-        return SettlementName
-                .builder()
-                .id(response.getId())
-                .uaName(response.getUaName())
-                .enName(response.getEnName())
-                .currentData(true)
-                .build();
+        var response = nameService.addValue(request);
+        return nameService.createEntity(response);
     }
 
+    @AfterEach
     @Override
     public void clearTable() {
         super.clearTable();
-        typeService.removeAll();
-        nameService.removeAll();
+        nameService.removeValue(nameKyivRequest);
     }
 
     @Test
@@ -175,37 +133,21 @@ class SettlementServiceTest extends CrudServiceTest {
     @Test
     @DisplayName("Check for exceptions when an invalid zip code format was passed in the request.")
     void testIndexThrowInvalidInputData(){
-        var incorrectIndexWithLetterRequest  = SettlementRequest
-                .builder()
-                .type(type)
-                .zipCode("d5645")
-                .name(nameRivne)
-                .build();
+        var request = (SettlementRequest) firstRequest;
 
-        var incorrectIndexWithSpecialCharacterRequest  = SettlementRequest
-                .builder()
-                .type(type)
-                .zipCode("45$36")
-                .name(nameKyiv)
-                .build();
-
-        var incorrectIndexWithUnequalLengthRequest  = SettlementRequest
-                .builder()
-                .type(type)
-                .zipCode("4")
-                .name(nameRivne)
-                .build();
-
+        request.setZipCode("d5645");
         assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(incorrectIndexWithLetterRequest)
+                () -> service.addValue(request)
         );
 
+        request.setZipCode("45$36");
         assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(incorrectIndexWithSpecialCharacterRequest)
+                () -> service.addValue(request)
         );
 
+        request.setZipCode("4");
         assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(incorrectIndexWithUnequalLengthRequest)
+                () -> service.addValue(request)
         );
     }
 }

@@ -2,37 +2,38 @@ package org.university.payment_for_utilities.services.implementations.address;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
 import org.university.payment_for_utilities.pojo.update_request.address.DistrictUpdateRequest;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
 @SpringBootTest
+@Import(AddressEntitiesRequestTestContextConfiguration.class)
 class DistrictServiceTest extends TransliterationServiceTest {
+    @Autowired
+    @Qualifier("districtRivneRequest")
+    private DistrictRequest rivneRequest;
+    @Autowired
+    @Qualifier("districtBelotserkivskyiRequest")
+    private DistrictRequest belotserkivskyiRequest;
+
     @Autowired
     public DistrictServiceTest(DistrictService service) {
         this.service = service;
-        initRequest();
     }
 
+    @BeforeEach
     @Override
     protected void initRequest(){
+        firstRequest = rivneRequest;
+        secondRequest = belotserkivskyiRequest;
+
         emptyRequest = DistrictRequest
                 .builder()
                 .uaName("")
-                .build();
-
-        firstRequest = DistrictRequest
-                .builder()
-                .uaName("Рівненський")
-                .enName("Rivne")
-                .build();
-
-        secondRequest = DistrictRequest
-                .builder()
-                .uaName("Білоцерківський")
-                .enName("Belotserkivskyi")
                 .build();
 
         correctUpdateRequest = DistrictUpdateRequest

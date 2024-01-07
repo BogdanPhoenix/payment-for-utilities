@@ -1,10 +1,12 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
+import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.update_request.address.OblastUpdateRequest;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
 import org.university.payment_for_utilities.pojo.update_request.address.SettlementNameUpdateRequest;
@@ -12,30 +14,29 @@ import org.university.payment_for_utilities.services.implementations.Translitera
 import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
 
 @SpringBootTest
+@Import(AddressEntitiesRequestTestContextConfiguration.class)
 class SettlementNameServiceTest extends TransliterationServiceTest {
+    @Autowired
+    @Qualifier("nameRivneRequest")
+    private SettlementNameRequest rivneRequest;
+    @Autowired
+    @Qualifier("nameKyivRequest")
+    private SettlementNameRequest kyivRequest;
+
     @Autowired
     public SettlementNameServiceTest(SettlementNameService service){
         this.service = service;
-        initRequest();
     }
 
+    @BeforeEach
     @Override
     protected void initRequest() {
+        firstRequest = rivneRequest;
+        secondRequest = kyivRequest;
+
         emptyRequest = SettlementNameRequest
                 .builder()
                 .uaName("")
-                .build();
-
-        firstRequest = SettlementNameRequest
-                .builder()
-                .uaName("Гринівка")
-                .enName("Hrynivka")
-                .build();
-
-        secondRequest = SettlementNameRequest
-                .builder()
-                .uaName("Липівка")
-                .enName("Lypivka")
                 .build();
 
         correctUpdateRequest = SettlementNameUpdateRequest

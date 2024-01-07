@@ -12,7 +12,7 @@ public class TypeSettlementRequest implements TransliterationRequest {
 
     @Override
     public boolean isEmpty() {
-        return this.uaName == null ||
-                this.enName == null;
+        return this.uaName.isEmpty() ||
+                this.enName.isEmpty();
     }
 }

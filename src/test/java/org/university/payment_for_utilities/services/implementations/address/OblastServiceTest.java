@@ -2,37 +2,38 @@ package org.university.payment_for_utilities.services.implementations.address;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
 import org.university.payment_for_utilities.pojo.update_request.address.OblastUpdateRequest;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 
 @SpringBootTest
+@Import(AddressEntitiesRequestTestContextConfiguration.class)
 class OblastServiceTest extends TransliterationServiceTest {
+    @Autowired
+    @Qualifier("oblastRivneRequest")
+    private OblastRequest rivneRequest;
+    @Autowired
+    @Qualifier("oblastKyivRequest")
+    private OblastRequest kyivRequest;
+
     @Autowired
     public OblastServiceTest(OblastService service) {
         this.service = service;
-        initRequest();
     }
 
+    @BeforeEach
     @Override
     protected void initRequest(){
+        firstRequest = rivneRequest;
+        secondRequest = kyivRequest;
+
         emptyRequest = OblastRequest
                 .builder()
                 .uaName("")
-                .build();
-
-        firstRequest = OblastRequest
-                .builder()
-                .uaName("Рівненська")
-                .enName("Rivnenska")
-                .build();
-
-        secondRequest = OblastRequest
-                .builder()
-                .uaName("Київська")
-                .enName("Kyivska")
                 .build();
 
         correctUpdateRequest = OblastUpdateRequest

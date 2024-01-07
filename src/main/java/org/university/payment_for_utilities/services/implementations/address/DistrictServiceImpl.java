@@ -23,11 +23,22 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
     @Override
     protected District createEntity(@NonNull Request request){
         var districtRequest = (DistrictRequest) request;
-
         return District
                 .builder()
                 .uaName(districtRequest.getUaName())
                 .enName(districtRequest.getEnName())
+                .currentData(true)
+                .build();
+    }
+
+    @Override
+    protected District createEntity(@NonNull Response response){
+        var districtResponse = (DistrictResponse) response;
+        return District
+                .builder()
+                .id(districtResponse.getId())
+                .uaName(districtResponse.getUaName())
+                .enName(districtResponse.getEnName())
                 .currentData(true)
                 .build();
     }
