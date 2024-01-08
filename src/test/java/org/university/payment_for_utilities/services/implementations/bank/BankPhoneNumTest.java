@@ -15,8 +15,7 @@ import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
-import org.university.payment_for_utilities.pojo.update_request.bank.BankPhoneNumUpdateRequest;
-import org.university.payment_for_utilities.pojo.update_request.bank.BankUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 
@@ -51,11 +50,7 @@ class BankPhoneNumTest extends CrudServiceTest {
                 .phoneNum("380964213564")
                 .build();
 
-        correctUpdateRequest = BankUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     @Test
@@ -76,7 +71,7 @@ class BankPhoneNumTest extends CrudServiceTest {
                 .phoneNum("380444521365")
                 .build();
 
-        var updateRequest = BankUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(secondRequest)
                 .newValue(newValue)
@@ -88,29 +83,6 @@ class BankPhoneNumTest extends CrudServiceTest {
         assertEquals(response.getId(), updateResponse.getId());
         assertEquals(response.getBank(), updateResponse.getBank());
         assertEquals(newValue.getPhoneNum(), updateResponse.getPhoneNum());
-    }
-
-    @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty() {
-        var emptyUpdateRequest = BankPhoneNumUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = BankPhoneNumUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(secondRequest)
-                .build();
-
-        var requestNewValueEmpty = BankPhoneNumUpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
     }
 
     @ParameterizedTest

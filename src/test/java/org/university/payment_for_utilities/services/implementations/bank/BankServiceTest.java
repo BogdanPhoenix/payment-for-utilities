@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.update_request.bank.BankUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 
@@ -50,11 +50,7 @@ class BankServiceTest extends CrudServiceTest {
                 .mfo("380805")
                 .build();
 
-        correctUpdateRequest = BankUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     @Test
@@ -69,7 +65,7 @@ class BankServiceTest extends CrudServiceTest {
                 .mfo("")
                 .build();
 
-        var updateRequest = BankUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(secondRequest)
                 .newValue(newValue)
@@ -83,29 +79,6 @@ class BankServiceTest extends CrudServiceTest {
         assertEquals(response.getWebSite(), updateResponse.getWebSite());
         assertEquals(newValue.getEdrpou(), updateResponse.getEdrpou());
         assertEquals(response.getMfo(), updateResponse.getMfo());
-    }
-
-    @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty() {
-        var emptyUpdateRequest = BankUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = BankUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(secondRequest)
-                .build();
-
-        var requestNewValueEmpty = BankUpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
     }
 
     @Test

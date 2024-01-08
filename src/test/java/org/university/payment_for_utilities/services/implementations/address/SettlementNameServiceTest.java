@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.university.payment_for_utilities.pojo.update_request.address.OblastUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
-import org.university.payment_for_utilities.pojo.update_request.address.SettlementNameUpdateRequest;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
 
@@ -39,11 +38,7 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
                 .uaName("")
                 .build();
 
-        correctUpdateRequest = SettlementNameUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     @Test
@@ -71,7 +66,7 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter(){
         var otherName = "other";
 
-        var updateRequest = SettlementNameUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(firstRequest)
                 .newValue(SettlementNameRequest
@@ -86,29 +81,6 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
     }
 
     @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty(){
-        var emptyUpdateRequest = SettlementNameUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = SettlementNameUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(firstRequest)
-                .build();
-
-        var requestNewValueEmpty = SettlementNameUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
-    }
-
-    @Test
     @DisplayName("Check for exceptions when data was transferred in an incorrect format in an update request.")
     @Override
     protected void testUpdateValueThrowInvalidInputData(){
@@ -118,18 +90,6 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
                 .enName("Hrynivka")
                 .build();
 
-        var correctOnlyOldValue = OblastUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(incorrectRequest)
-                .build();
-
-        var correctOnlyNewValue = OblastUpdateRequest
-                .builder()
-                .oldValue(incorrectRequest)
-                .newValue(firstRequest)
-                .build();
-
-        testUpdateValueThrowInvalidInputData(correctOnlyOldValue, correctOnlyNewValue);
+        testUpdateValueThrowInvalidInputData(incorrectRequest);
     }
 }

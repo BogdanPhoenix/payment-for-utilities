@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.university.payment_for_utilities.domains.TableInfo;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.address.interfaces.TransliterationRequest;
-import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.repositories.TableSearcherRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;

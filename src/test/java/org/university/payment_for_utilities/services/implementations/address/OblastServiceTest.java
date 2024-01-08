@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
-import org.university.payment_for_utilities.pojo.update_request.address.OblastUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 
@@ -36,7 +36,7 @@ class OblastServiceTest extends TransliterationServiceTest {
                 .uaName("")
                 .build();
 
-        correctUpdateRequest = OblastUpdateRequest
+        correctUpdateRequest = UpdateRequest
                 .builder()
                 .oldValue(firstRequest)
                 .newValue(secondRequest)
@@ -67,7 +67,7 @@ class OblastServiceTest extends TransliterationServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter(){
         var otherName = "other";
 
-        var updateRequest = OblastUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(firstRequest)
                 .newValue(OblastRequest
@@ -82,29 +82,6 @@ class OblastServiceTest extends TransliterationServiceTest {
     }
 
     @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty(){
-        var emptyUpdateRequest = OblastUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = OblastUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(firstRequest)
-                .build();
-
-        var requestNewValueEmpty = OblastUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
-    }
-
-    @Test
     @DisplayName("Check for exceptions when data was transferred in an incorrect format in an update request.")
     @Override
     protected void testUpdateValueThrowInvalidInputData(){
@@ -114,18 +91,6 @@ class OblastServiceTest extends TransliterationServiceTest {
                 .enName("Rivne")
                 .build();
 
-        var correctOnlyOldValue = OblastUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(incorrectRequest)
-                .build();
-
-        var correctOnlyNewValue = OblastUpdateRequest
-                .builder()
-                .oldValue(incorrectRequest)
-                .newValue(firstRequest)
-                .build();
-
-        testUpdateValueThrowInvalidInputData(correctOnlyOldValue, correctOnlyNewValue);
+        testUpdateValueThrowInvalidInputData(incorrectRequest);
     }
 }

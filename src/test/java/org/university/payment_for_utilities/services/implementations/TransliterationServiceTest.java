@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.address.interfaces.TransliterationRequest;
 import org.university.payment_for_utilities.pojo.responses.address.interfaces.TransliterationResponse;
-import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,19 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
         assertEquals(updateResponse.getEnName(), otherName);
     }
 
-    protected void testUpdateValueThrowInvalidInputData(UpdateRequest correctOnlyOldValue, UpdateRequest correctOnlyNewValue) {
+    protected void testUpdateValueThrowInvalidInputData(Request incorrectRequest) {
+        var correctOnlyOldValue = UpdateRequest
+                .builder()
+                .oldValue(firstRequest)
+                .newValue(incorrectRequest)
+                .build();
+
+        var correctOnlyNewValue = UpdateRequest
+                .builder()
+                .oldValue(incorrectRequest)
+                .newValue(firstRequest)
+                .build();
+
         service.addValue(firstRequest);
 
         assertThrows(InvalidInputDataException.class,

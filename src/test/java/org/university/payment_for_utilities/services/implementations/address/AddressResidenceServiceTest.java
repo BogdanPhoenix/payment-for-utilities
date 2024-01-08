@@ -10,8 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
-import org.university.payment_for_utilities.pojo.update_request.address.AddressResidenceUpdateRequest;
-import org.university.payment_for_utilities.pojo.update_request.address.SettlementUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 
@@ -50,11 +49,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
                 .numApartment("")
                 .build();
 
-        correctUpdateRequest = AddressResidenceUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     @Test
@@ -73,7 +68,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
                 .numApartment("")
                 .build();
 
-        var updateRequest = SettlementUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(firstRequest)
                 .newValue(newValue)
@@ -85,28 +80,5 @@ class AddressResidenceServiceTest extends CrudServiceTest {
         assertEquals(response.getId(), updateResponse.getId());
         assertEquals(response.getSettlement(), updateResponse.getSettlement());
         assertEquals(numHouse, updateResponse.getNumHouse());
-    }
-
-    @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty() {
-        var emptyUpdateRequest = AddressResidenceUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = AddressResidenceUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(firstRequest)
-                .build();
-
-        var requestNewValueEmpty = AddressResidenceUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
     }
 }

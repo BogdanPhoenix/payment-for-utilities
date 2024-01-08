@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
@@ -22,9 +22,16 @@ public abstract class CrudServiceTest {
     protected UpdateRequest correctUpdateRequest;
     protected CrudService service;
 
-    protected abstract void initRequest();
     protected abstract void testUpdateValueCorrectWithOneChangedParameter();
-    protected abstract void testUpdateValueThrowRequestEmpty();
+
+
+    protected void initRequest(){
+        correctUpdateRequest = UpdateRequest
+                .builder()
+                .oldValue(firstRequest)
+                .newValue(secondRequest)
+                .build();
+    }
 
     @AfterEach
     public void clearTable(){
@@ -85,7 +92,19 @@ public abstract class CrudServiceTest {
         );
     }
 
-    protected void testUpdateValueThrowRequestEmpty(UpdateRequest emptyUpdateRequest, UpdateRequest requestOldValueEmpty, UpdateRequest requestNewValueEmpty){
+    @Test
+    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
+    void testUpdateValueThrowRequestEmpty(){
+        var emptyUpdateRequest = UpdateRequest
+                .builder()
+                .build();
+
+        var requestOldValueEmpty = UpdateRequest
+                .builder()
+                .oldValue(emptyRequest)
+                .newValue(firstRequest)
+                .build();
+
         assertThrows(EmptyRequestException.class,
                 () -> service.updateValue(emptyUpdateRequest)
         );

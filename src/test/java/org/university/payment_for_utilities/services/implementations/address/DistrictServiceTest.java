@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
-import org.university.payment_for_utilities.pojo.update_request.address.DistrictUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
@@ -36,11 +36,7 @@ class DistrictServiceTest extends TransliterationServiceTest {
                 .uaName("")
                 .build();
 
-        correctUpdateRequest = DistrictUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     @Test
@@ -67,7 +63,7 @@ class DistrictServiceTest extends TransliterationServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter() {
         var otherName = "other";
 
-        var updateRequest = DistrictUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(firstRequest)
                 .newValue(DistrictRequest
@@ -82,29 +78,6 @@ class DistrictServiceTest extends TransliterationServiceTest {
     }
 
     @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty(){
-        var emptyUpdateRequest = DistrictUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = DistrictUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(firstRequest)
-                .build();
-
-        var requestNewValueEmpty = DistrictUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
-    }
-
-    @Test
     @DisplayName("Check for exceptions when data was transferred in an incorrect format in an update request.")
     @Override
     protected void testUpdateValueThrowInvalidInputData(){
@@ -114,18 +87,6 @@ class DistrictServiceTest extends TransliterationServiceTest {
                 .enName("Rivne")
                 .build();
 
-        var correctOnlyOldValue = DistrictUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(incorrectRequest)
-                .build();
-
-        var correctOnlyNewValue = DistrictUpdateRequest
-                .builder()
-                .oldValue(incorrectRequest)
-                .newValue(firstRequest)
-                .build();
-
-        testUpdateValueThrowInvalidInputData(correctOnlyOldValue, correctOnlyNewValue);
+        testUpdateValueThrowInvalidInputData(incorrectRequest);
     }
 }

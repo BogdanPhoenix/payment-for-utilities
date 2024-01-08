@@ -14,7 +14,7 @@ import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
-import org.university.payment_for_utilities.pojo.update_request.address.SettlementUpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
@@ -61,11 +61,7 @@ class SettlementServiceTest extends CrudServiceTest {
                 .name(nameKyiv)
                 .build();
 
-        correctUpdateRequest = SettlementUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     private SettlementName createName(SettlementNameRequest request){
@@ -98,7 +94,7 @@ class SettlementServiceTest extends CrudServiceTest {
                 .name(name)
                 .build();
 
-        var updateRequest = SettlementUpdateRequest
+        var updateRequest = UpdateRequest
                 .builder()
                 .oldValue(firstRequest)
                 .newValue(newValue)
@@ -111,29 +107,6 @@ class SettlementServiceTest extends CrudServiceTest {
         assertEquals(updateResponse.getType(), response.getType());
         assertEquals(updateResponse.getZipCode(), newIndex);
         assertEquals(updateResponse.getName(), response.getName());
-    }
-
-    @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    @Override
-    protected void testUpdateValueThrowRequestEmpty() {
-        var emptyUpdateRequest = SettlementUpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = SettlementUpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(firstRequest)
-                .build();
-
-        var requestNewValueEmpty = SettlementUpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(emptyRequest)
-                .build();
-
-        testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
     }
 
     @ParameterizedTest

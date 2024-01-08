@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.interfaces.UpdateRequest;
+import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.SettlementNameRepository;
