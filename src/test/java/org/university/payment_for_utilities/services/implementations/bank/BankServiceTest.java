@@ -1,8 +1,12 @@
 package org.university.payment_for_utilities.services.implementations.bank;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +17,8 @@ import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 import org.university.payment_for_utilities.pojo.update_request.bank.BankUpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -113,55 +119,45 @@ class BankServiceTest extends CrudServiceTest {
         );
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("testPhoneEdrpous")
     @DisplayName("Check for exceptions when the request has an invalid EDRPOU format.")
-    void testWedEdrpouThrowInvalidInputDataException(){
+    void testWedEdrpouThrowInvalidInputDataException(String edrpou){
         var request = (BankRequest) firstRequest;
 
-        request.setEdrpou("14360b570");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-
-        request.setEdrpou("143605%70");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-
-        request.setEdrpou("1436");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-
-        request.setEdrpou("1436750570");
+        request.setEdrpou(edrpou);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("testPhoneMfos")
     @DisplayName("Check for exceptions when the request has an invalid MFO format.")
-    void testWedMfoThrowInvalidInputDataException(){
+    void testWedMfoThrowInvalidInputDataException(String mfo){
         var request = (BankRequest) firstRequest;
 
-        request.setMfo("305f299");
+        request.setMfo(mfo);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );
+    }
 
-        request.setMfo("305#299");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
+    private static @NonNull Stream<Arguments> testPhoneEdrpous(){
+        return Stream.of(
+                Arguments.of("14360b570"),
+                Arguments.of("143605%70"),
+                Arguments.of("1436"),
+                Arguments.of("1436750570")
         );
+    }
 
-        request.setMfo("3099");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-
-        request.setMfo("30529999");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
+    private static @NonNull Stream<Arguments> testPhoneMfos(){
+        return Stream.of(
+                Arguments.of("305f299"),
+                Arguments.of("305#299"),
+                Arguments.of("3099"),
+                Arguments.of("30529999")
         );
     }
 }

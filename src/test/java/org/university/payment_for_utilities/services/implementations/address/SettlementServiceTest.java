@@ -1,6 +1,10 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +18,8 @@ import org.university.payment_for_utilities.pojo.update_request.address.Settleme
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -130,24 +136,23 @@ class SettlementServiceTest extends CrudServiceTest {
         testUpdateValueThrowRequestEmpty(emptyUpdateRequest, requestOldValueEmpty, requestNewValueEmpty);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("testPhoneZipCodes")
     @DisplayName("Check for exceptions when an invalid zip code format was passed in the request.")
-    void testIndexThrowInvalidInputData(){
+    void testIndexThrowInvalidInputData(String zipCode){
         var request = (SettlementRequest) firstRequest;
 
-        request.setZipCode("d5645");
+        request.setZipCode(zipCode);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );
+    }
 
-        request.setZipCode("45$36");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-
-        request.setZipCode("4");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
+    private static @NonNull Stream<Arguments> testPhoneZipCodes(){
+        return Stream.of(
+                Arguments.of("d5645"),
+                Arguments.of("45$36"),
+                Arguments.of("4")
         );
     }
 }
