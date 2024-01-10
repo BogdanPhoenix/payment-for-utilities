@@ -4,9 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
+import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 
 import java.util.List;
+
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
 
 @Data
 @Builder
@@ -16,28 +22,30 @@ import java.util.List;
 @DynamicInsert
 @Entity
 @Table(name = "companies")
-public class Company {
+public class Company implements TableInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_address", nullable = false, unique = true)
     @NonNull
     private AddressResidence address;
 
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
+    @JoinColumn(name = "id_edrpou", nullable = false, unique = true)
+    @NonNull
+    private Edrpou edrpou;
+
+    @OneToOne
+    @JoinColumn(name = "id_website", nullable = false, unique = true)
+    @NonNull
+    private Website website;
+
     @Column(name = "name", nullable = false, unique = true)
     @NonNull
     private String name;
-
-    @Column(name = "web_site", length = 500, nullable = false, unique = true)
-    @NonNull
-    private String webSite;
-
-    @Column(name = "edrpou", length = 8, nullable = false, unique = true)
-    @NonNull
-    private String edrpou;
 
     @Column(name = "current_account", length = 14, nullable = false, unique = true)
     @NonNull
@@ -55,4 +63,12 @@ public class Company {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CompanyTariff> tariffs;
+
+    @Override
+    public boolean isEmpty() {
+        return address.isEmpty() ||
+                name.isEmpty() ||
+                website.isEmpty() ||
+                edrpou.isEmpty();
+    }
 }

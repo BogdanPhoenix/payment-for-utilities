@@ -30,6 +30,9 @@ class BankPhoneNumTest extends CrudServiceTest {
     @Autowired
     @Qualifier("bankPhoneNumRequest")
     private BankPhoneNumRequest bankPhoneNumRequest;
+    @Autowired
+    @Qualifier("raiffeisenBankUpdate")
+    private Bank raiffeisenBankUpdate;
 
     @Autowired
     public BankPhoneNumTest(BankPhoneNumService service) { this.service = service; }
@@ -59,15 +62,7 @@ class BankPhoneNumTest extends CrudServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter() {
         var newValue = BankPhoneNumRequest
                 .builder()
-                .bank(
-                        Bank
-                                .builder()
-                                .name("")
-                                .webSite("")
-                                .edrpou("")
-                                .mfo("")
-                                .build()
-                )
+                .bank(raiffeisenBankUpdate)
                 .phoneNum("380444521365")
                 .build();
 
@@ -81,7 +76,7 @@ class BankPhoneNumTest extends CrudServiceTest {
         var updateResponse = (BankPhoneNumResponse) service.updateValue(updateRequest);
 
         assertEquals(response.getId(), updateResponse.getId());
-        assertEquals(response.getBank(), updateResponse.getBank());
+        assertEquals(newValue.getBank(), updateResponse.getBank());
         assertEquals(newValue.getPhoneNum(), updateResponse.getPhoneNum());
     }
 

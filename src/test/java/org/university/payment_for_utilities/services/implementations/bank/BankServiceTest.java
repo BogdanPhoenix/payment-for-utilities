@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
@@ -29,6 +31,18 @@ class BankServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("privateBankRequest")
     private BankRequest privateBankRequest;
+    @Autowired
+    @Qualifier("raiffeisenBankWebsite")
+    private Website raiffeisenBankWebsite;
+    @Autowired
+    @Qualifier("raiffeisenBankUpdateWebsite")
+    private Website raiffeisenBankUpdateWebsite;
+    @Autowired
+    @Qualifier("raiffeisenBankEdrpou")
+    private Edrpou raiffeisenBankEdrpou;
+    @Autowired
+    @Qualifier("raiffeisenBankUpdateEdrpou")
+    private Edrpou raiffeisenBankUpdateEdrpou;
 
     @Autowired
     public BankServiceTest(BankService service){ this.service = service; }
@@ -45,8 +59,8 @@ class BankServiceTest extends CrudServiceTest {
         secondRequest = BankRequest
                 .builder()
                 .name("Raiffeisen Bank")
-                .webSite("https://raiffeisen.ua/")
-                .edrpou("14305909")
+                .webSite(raiffeisenBankWebsite)
+                .edrpou(raiffeisenBankEdrpou)
                 .mfo("380805")
                 .build();
 
@@ -59,9 +73,9 @@ class BankServiceTest extends CrudServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter() {
         var newValue = BankRequest
                 .builder()
-                .name("Private Bank")
-                .webSite("")
-                .edrpou("14380701")
+                .name("Raiffeisen Bank Ua")
+                .webSite(raiffeisenBankUpdateWebsite)
+                .edrpou(raiffeisenBankUpdateEdrpou)
                 .mfo("")
                 .build();
 
@@ -76,32 +90,9 @@ class BankServiceTest extends CrudServiceTest {
 
         assertEquals(response.getId(), updateResponse.getId());
         assertEquals(newValue.getName(), updateResponse.getName());
-        assertEquals(response.getWebSite(), updateResponse.getWebSite());
+        assertEquals(newValue.getWebSite(), updateResponse.getWebSite());
         assertEquals(newValue.getEdrpou(), updateResponse.getEdrpou());
         assertEquals(response.getMfo(), updateResponse.getMfo());
-    }
-
-    @Test
-    @DisplayName("Check exceptions when the request has an incorrect format of the bank's website.")
-    void testWedSiteThrowInvalidInputDataException(){
-        var request = (BankRequest) firstRequest;
-
-        request.setWebSite("privatbank.ua");
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("testPhoneEdrpous")
-    @DisplayName("Check for exceptions when the request has an invalid EDRPOU format.")
-    void testWedEdrpouThrowInvalidInputDataException(String edrpou){
-        var request = (BankRequest) firstRequest;
-
-        request.setEdrpou(edrpou);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
     }
 
     @ParameterizedTest
@@ -113,15 +104,6 @@ class BankServiceTest extends CrudServiceTest {
         request.setMfo(mfo);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
-        );
-    }
-
-    private static @NonNull Stream<Arguments> testPhoneEdrpous(){
-        return Stream.of(
-                Arguments.of("14360b570"),
-                Arguments.of("143605%70"),
-                Arguments.of("1436"),
-                Arguments.of("1436750570")
         );
     }
 

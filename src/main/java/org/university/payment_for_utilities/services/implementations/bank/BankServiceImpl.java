@@ -4,6 +4,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.Bank;
+import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
@@ -19,8 +21,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> implements BankService {
-    private static final String WEBSITE_TEMPLATE = "^(http|https)://.+";
-    private static final String EDRPOU_TEMPLATE = "^\\d{8}$";
     private static final String MFO_TEMPLATE = "^\\d{6}$";
 
     protected BankServiceImpl(BankRepository repository) {
@@ -33,7 +33,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         return Bank
                 .builder()
                 .name(bankRequest.getName())
-                .webSite(bankRequest.getWebSite())
+                .website(bankRequest.getWebSite())
                 .edrpou(bankRequest.getEdrpou())
                 .mfo(bankRequest.getMfo())
                 .currentData(true)
@@ -47,7 +47,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
                 .builder()
                 .id(bankResponse.getId())
                 .name(bankResponse.getName())
-                .webSite(bankResponse.getWebSite())
+                .website(bankResponse.getWebSite())
                 .edrpou(bankResponse.getEdrpou())
                 .mfo(bankResponse.getMfo())
                 .currentData(true)
@@ -60,7 +60,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
                 .builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .webSite(entity.getWebSite())
+                .webSite(entity.getWebsite())
                 .edrpou(entity.getEdrpou())
                 .mfo(entity.getMfo())
                 .build();
@@ -77,7 +77,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
                         newValue.getName()
                 )
         );
-        entity.setWebSite(
+        entity.setWebsite(
                 updateAttribute(
                         oldValue.getWebSite(),
                         newValue.getWebSite()
@@ -125,23 +125,21 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         validateMfo(newValue.getMfo());
     }
 
-    private void validateWebSite(@NonNull String webSite) throws InvalidInputDataException {
+    private void validateWebSite(@NonNull Website webSite) throws InvalidInputDataException {
         if (isWebSite(webSite)){
             return;
         }
 
-        var message = String.format("The link you provided: \"%s\" to the bank's website was not validated. It must match the following template: \"%s\".", webSite, WEBSITE_TEMPLATE);
+        var message = String.format("The link you provided: \"%s\" to the bank's website has not been validated.", webSite);
         log.error(message);
         throw new InvalidInputDataException(message);
     }
 
-    private boolean isWebSite(@NonNull String webSite){
-        return webSite.isEmpty() ||
-                webSite.toLowerCase()
-                .matches(WEBSITE_TEMPLATE);
+    private boolean isWebSite(@NonNull Website webSite){
+        return !webSite.isEmpty();
     }
 
-    private void validateEdrpou(@NonNull String edrpou) throws InvalidInputDataException {
+    private void validateEdrpou(@NonNull Edrpou edrpou) throws InvalidInputDataException {
         if (isEdrpou(edrpou)){
             return;
         }
@@ -151,9 +149,8 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         throw new InvalidInputDataException(message);
     }
 
-    private boolean isEdrpou(@NonNull String edrpou){
-        return edrpou
-                .matches(EDRPOU_TEMPLATE);
+    private boolean isEdrpou(@NonNull Edrpou edrpou){
+        return !edrpou.isEmpty();
     }
 
     private void validateMfo(@NonNull String mfo) throws InvalidInputDataException {
@@ -175,8 +172,8 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     protected Optional<Bank> findOldEntity(@NonNull Request request) {
         var bankRequest = (BankRequest) request;
         return repository
-                .findByEdrpou(
-                        bankRequest.getEdrpou()
+                .findByMfo(
+                        bankRequest.getMfo()
                 );
     }
 }

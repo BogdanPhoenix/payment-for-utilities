@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.services.implementations;
+package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.address.interfaces.Tra
 import org.university.payment_for_utilities.pojo.responses.address.interfaces.TransliterationResponse;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
+import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

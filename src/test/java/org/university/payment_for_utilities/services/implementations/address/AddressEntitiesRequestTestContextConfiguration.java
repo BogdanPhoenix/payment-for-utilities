@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
+import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
 import org.university.payment_for_utilities.pojo.requests.address.*;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.address")
+@Import(DataBaseConfiguration.class)
 public class AddressEntitiesRequestTestContextConfiguration {
     @Autowired
     private TypeSettlementServiceImpl typeService;
