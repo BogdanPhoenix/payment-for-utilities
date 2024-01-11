@@ -31,7 +31,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         return Bank
                 .builder()
                 .name(bankRequest.name())
-                .website(bankRequest.webSite())
+                .website(bankRequest.website())
                 .edrpou(bankRequest.edrpou())
                 .mfo(bankRequest.mfo())
                 .currentData(true)
@@ -45,7 +45,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
                 .builder()
                 .id(bankResponse.id())
                 .name(bankResponse.name())
-                .website(bankResponse.webSite())
+                .website(bankResponse.website())
                 .edrpou(bankResponse.edrpou())
                 .mfo(bankResponse.mfo())
                 .currentData(true)
@@ -58,7 +58,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
                 .builder()
                 .id(entity.getId())
                 .name(entity.getName())
-                .webSite(entity.getWebsite())
+                .website(entity.getWebsite())
                 .edrpou(entity.getEdrpou())
                 .mfo(entity.getMfo())
                 .build();
@@ -77,8 +77,8 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         );
         entity.setWebsite(
                 updateAttribute(
-                        oldValue.webSite(),
-                        newValue.webSite()
+                        oldValue.website(),
+                        newValue.website()
                 )
         );
         entity.setEdrpou(

@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.services.implementations.bank;
+package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.university.payment_for_utilities.domains.bank.Bank;
+import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
-import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
+import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
-import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 
 import java.util.stream.Stream;
 
@@ -25,28 +25,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@Import(BankEntitiesRequestTestContextConfiguration.class)
-class BankPhoneNumTest extends CrudServiceTest {
+@Import(CompanyEntitiesRequestTestContextConfiguration.class)
+class CompanyPhoneNumServiceTest extends CrudServiceTest {
     @Autowired
-    @Qualifier("bankPhoneNumRequest")
-    private BankPhoneNumRequest bankPhoneNumRequest;
+    @Qualifier("companyPhoneNumRequest")
+    private CompanyPhoneNumRequest companyPhoneNumRequest;
 
     @Autowired
-    public BankPhoneNumTest(BankPhoneNumService service) { this.service = service; }
+    public CompanyPhoneNumServiceTest(CompanyPhoneNumService service) { this.service = service; }
 
     @BeforeEach
     @Override
     protected void initRequest() {
-        firstRequest = bankPhoneNumRequest;
-        var bank = bankPhoneNumRequest.bank();
+        firstRequest = companyPhoneNumRequest;
+        var company = companyPhoneNumRequest.company();
 
-        emptyRequest = BankPhoneNumRequest
+        emptyRequest = CompanyPhoneNumRequest
                 .empty();
 
-        secondRequest = BankPhoneNumRequest
+        secondRequest = CompanyPhoneNumRequest
                 .builder()
-                .bank(bank)
-                .phoneNum("380964213564")
+                .company(company)
+                .phoneNum("380421003698")
                 .build();
 
         super.initRequest();
@@ -56,17 +56,17 @@ class BankPhoneNumTest extends CrudServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var response = (BankPhoneNumResponse) service.addValue(secondRequest);
-        var expectedResponse = BankPhoneNumResponse
+        var response = (CompanyPhoneNumResponse) service.addValue(secondRequest);
+        var expectedResponse = CompanyPhoneNumResponse
                 .builder()
                 .id(response.id())
-                .bank(bankPhoneNumRequest.bank())
-                .phoneNum("380444521365")
+                .company(response.company())
+                .phoneNum("380444961365")
                 .build();
 
-        var newValue = BankPhoneNumRequest
+        var newValue = CompanyPhoneNumRequest
                 .builder()
-                .bank(Bank.empty())
+                .company(Company.empty())
                 .phoneNum(expectedResponse.phoneNum())
                 .build();
 
@@ -76,7 +76,7 @@ class BankPhoneNumTest extends CrudServiceTest {
                 .newValue(newValue)
                 .build();
 
-        var updateResponse = (BankPhoneNumResponse) service.updateValue(updateRequest);
+        var updateResponse = (CompanyPhoneNumResponse) service.updateValue(updateRequest);
 
         assertThat(updateResponse)
                 .isEqualTo(expectedResponse);
@@ -86,10 +86,10 @@ class BankPhoneNumTest extends CrudServiceTest {
     @MethodSource("testPhoneNums")
     @DisplayName("Check the exceptions when an invalid mobile phone number format is passed in the request.")
     void testPhoneThrowInvalidInputDataException(String num){
-        var bankPhoneNumRequest = (BankPhoneNumRequest) firstRequest;
-        var request = BankPhoneNumRequest
+        var companyPhoneNumRequest = (CompanyPhoneNumRequest) firstRequest;
+        var request = CompanyPhoneNumRequest
                 .builder()
-                .bank(bankPhoneNumRequest.bank())
+                .company(companyPhoneNumRequest.company())
                 .phoneNum(num)
                 .build();
 

@@ -21,13 +21,12 @@ import org.university.payment_for_utilities.services.interfaces.address.Settleme
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
 class SettlementServiceTest extends CrudServiceTest {
-    private TypeSettlement type;
-
     @Autowired
     private SettlementNameServiceImpl nameService;
     @Autowired
@@ -47,7 +46,7 @@ class SettlementServiceTest extends CrudServiceTest {
     protected void initRequest() {
         var nameKyiv = createName(nameKyivRequest);
         firstRequest = settlementRequest;
-        type = settlementRequest.type();
+        TypeSettlement type = settlementRequest.type();
 
         emptyRequest = SettlementRequest
                 .empty();
@@ -78,15 +77,20 @@ class SettlementServiceTest extends CrudServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var newIndex = "14523";
-        var name = SettlementName
-                .empty();
+        var response = (SettlementResponse) service.addValue(firstRequest);
+        var expectedResponse = SettlementResponse
+                .builder()
+                .id(response.id())
+                .type(settlementRequest.type())
+                .zipCode("14523")
+                .name(settlementRequest.name())
+                .build();
 
         var newValue = SettlementRequest
                 .builder()
-                .type(type)
-                .zipCode(newIndex)
-                .name(name)
+                .type(TypeSettlement.empty())
+                .zipCode(expectedResponse.zipCode())
+                .name(SettlementName.empty())
                 .build();
 
         var updateRequest = UpdateRequest
@@ -95,13 +99,10 @@ class SettlementServiceTest extends CrudServiceTest {
                 .newValue(newValue)
                 .build();
 
-        var response = (SettlementResponse) service.addValue(firstRequest);
         var updateResponse = (SettlementResponse) service.updateValue(updateRequest);
 
-        assertEquals(updateResponse.id(), response.id());
-        assertEquals(updateResponse.type(), response.type());
-        assertEquals(updateResponse.zipCode(), newIndex);
-        assertEquals(updateResponse.name(), response.name());
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest

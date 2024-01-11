@@ -2,7 +2,6 @@ package org.university.payment_for_utilities.services.implementations.bank;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
@@ -13,15 +12,14 @@ import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResp
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.bank.BankPhoneNumRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.PhoneNumServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 
 import java.util.Optional;
 
 @Slf4j
 @Service
-public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, BankPhoneNumRepository> implements BankPhoneNumService {
-    private static final String PHONE_NUM_TEMPLATE = "^380\\d{9}$";
+public class BankPhoneNumServiceImpl extends PhoneNumServiceAbstract<BankPhoneNum, BankPhoneNumRepository> implements BankPhoneNumService {
     public BankPhoneNumServiceImpl(BankPhoneNumRepository repository) {
         super(repository, "Bank phone nums");
     }
@@ -44,6 +42,7 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
                 .id(bankPhoneNumResponse.id())
                 .bank(bankPhoneNumResponse.bank())
                 .phoneNum(bankPhoneNumResponse.phoneNum())
+                .currentData(true)
                 .build();
     }
 
@@ -93,8 +92,8 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
         validatePhoneNum(newValue.phoneNum());
     }
 
-    private void validateBank(Bank bank) throws InvalidInputDataException{
-        if(isValidBank(bank)){
+    private void validateBank(Bank bank) throws InvalidInputDataException {
+        if (isValidBank(bank)) {
             return;
         }
 
@@ -103,24 +102,8 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
         throw new InvalidInputDataException(message);
     }
 
-    private boolean isValidBank(Bank bank){
-        return bank != null && !bank.isEmpty();
-    }
-
-    private void validatePhoneNum(String phoneNum) throws InvalidInputDataException{
-        if(isValidPhoneNum(phoneNum)){
-            return;
-        }
-
-        var message = String.format("The mobile phone number you provided was not validated: \"%s\". The phone number must consist of twelve digits and start with \"380\".", phoneNum);
-        log.error(message);
-        throw new InvalidInputDataException(message);
-    }
-
-    @Contract(pure = true)
-    private boolean isValidPhoneNum(@NonNull String phoneNum){
-        return phoneNum
-                .matches(PHONE_NUM_TEMPLATE);
+    private boolean isValidBank(@NonNull Bank bank) {
+        return !bank.isEmpty();
     }
 
     @Override

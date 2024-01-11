@@ -19,11 +19,11 @@ import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
-import org.university.payment_for_utilities.services.interfaces.CompanyService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -70,13 +70,24 @@ class CompanyServiceTest extends CrudServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter() {
+        var response = (CompanyResponse) service.addValue(secondRequest);
+        var expectedResponse = CompanyResponse
+                .builder()
+                .id(response.id())
+                .address(addressResidence)
+                .edrpou(edrpou)
+                .website(website)
+                .name("Київ-обленерго")
+                .currentAccount("72341000245521")
+                .build();
+
         var newValue = CompanyRequest
                 .builder()
                 .address(AddressResidence.empty())
                 .edrpou(Edrpou.empty())
                 .website(Website.empty())
-                .name("Київ-обленерго")
-                .currentAccount("72341000245521")
+                .name(expectedResponse.name())
+                .currentAccount(expectedResponse.currentAccount())
                 .build();
 
         var updateRequest = UpdateRequest
@@ -85,15 +96,10 @@ class CompanyServiceTest extends CrudServiceTest {
                 .newValue(newValue)
                 .build();
 
-        var response = (CompanyResponse) service.addValue(secondRequest);
         var updateResponse = (CompanyResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.id(), updateResponse.id());
-        assertEquals(newValue.name(), updateResponse.name());
-        assertEquals(response.address(), updateResponse.address());
-        assertEquals(response.edrpou(), updateResponse.edrpou());
-        assertEquals(response.website(), updateResponse.website());
-        assertEquals(newValue.currentAccount(), updateResponse.currentAccount());
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest

@@ -9,7 +9,7 @@ import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 public record BankResponse(
         Long id,
         String name,
-        Website webSite,
+        Website website,
         Edrpou edrpou,
         String mfo
 ) implements Response {

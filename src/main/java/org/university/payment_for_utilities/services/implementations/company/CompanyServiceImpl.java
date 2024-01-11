@@ -12,7 +12,7 @@ import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
-import org.university.payment_for_utilities.services.interfaces.CompanyService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
 import java.util.Optional;
 

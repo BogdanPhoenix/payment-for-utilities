@@ -14,7 +14,7 @@ import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
@@ -56,15 +56,26 @@ class AddressResidenceServiceTest extends CrudServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var numHouse = "41";
+        var response = (AddressResidenceResponse) service.addValue(firstRequest);
 
-        var newValue = AddressResidenceRequest
+        var expectedResponse = AddressResidenceResponse
                 .builder()
+                .id(response.id())
                 .settlement(settlement)
                 .uaNameStreet("вулиця стара")
                 .enNameStreet("old street")
-                .numHouse(numHouse)
+                .numHouse("41")
                 .numEntrance("5")
+                .numApartment("305")
+                .build();
+
+        var newValue = AddressResidenceRequest
+                .builder()
+                .settlement(expectedResponse.settlement())
+                .uaNameStreet(expectedResponse.uaNameStreet())
+                .enNameStreet(expectedResponse.enNameStreet())
+                .numHouse(expectedResponse.numHouse())
+                .numEntrance(expectedResponse.numEntrance())
                 .numApartment("")
                 .build();
 
@@ -74,11 +85,9 @@ class AddressResidenceServiceTest extends CrudServiceTest {
                 .newValue(newValue)
                 .build();
 
-        var response = (AddressResidenceResponse) service.addValue(firstRequest);
         var updateResponse = (AddressResidenceResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.id(), updateResponse.id());
-        assertEquals(response.settlement(), updateResponse.settlement());
-        assertEquals(numHouse, updateResponse.numHouse());
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse);
     }
 }

@@ -22,7 +22,7 @@ import org.university.payment_for_utilities.services.interfaces.bank.BankService
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -35,14 +35,8 @@ class BankServiceTest extends CrudServiceTest {
     @Qualifier("raiffeisenBankWebsite")
     private Website raiffeisenBankWebsite;
     @Autowired
-    @Qualifier("raiffeisenBankUpdateWebsite")
-    private Website raiffeisenBankUpdateWebsite;
-    @Autowired
     @Qualifier("raiffeisenBankEdrpou")
     private Edrpou raiffeisenBankEdrpou;
-    @Autowired
-    @Qualifier("raiffeisenBankUpdateEdrpou")
-    private Edrpou raiffeisenBankUpdateEdrpou;
 
     @Autowired
     public BankServiceTest(BankService service){ this.service = service; }
@@ -70,12 +64,22 @@ class BankServiceTest extends CrudServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter() {
+        var response = (BankResponse) service.addValue(secondRequest);
+        var expectedResponse = BankResponse
+                .builder()
+                .id(response.id())
+                .name("Raiffeisen Bank Ua")
+                .website(raiffeisenBankWebsite)
+                .edrpou(raiffeisenBankEdrpou)
+                .mfo("423147")
+                .build();
+
         var newValue = BankRequest
                 .builder()
-                .name("Raiffeisen Bank Ua")
-                .website(raiffeisenBankUpdateWebsite)
-                .edrpou(raiffeisenBankUpdateEdrpou)
-                .mfo("")
+                .name(expectedResponse.name())
+                .website(Website.empty())
+                .edrpou(Edrpou.empty())
+                .mfo(expectedResponse.mfo())
                 .build();
 
         var updateRequest = UpdateRequest
@@ -84,14 +88,10 @@ class BankServiceTest extends CrudServiceTest {
                 .newValue(newValue)
                 .build();
 
-        var response = (BankResponse) service.addValue(secondRequest);
         var updateResponse = (BankResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.id(), updateResponse.id());
-        assertEquals(newValue.name(), updateResponse.name());
-        assertEquals(newValue.website(), updateResponse.webSite());
-        assertEquals(newValue.edrpou(), updateResponse.edrpou());
-        assertEquals(response.mfo(), updateResponse.mfo());
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest
