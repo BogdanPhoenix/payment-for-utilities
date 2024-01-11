@@ -88,20 +88,26 @@ class BankServiceTest extends CrudServiceTest {
         var response = (BankResponse) service.addValue(secondRequest);
         var updateResponse = (BankResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.getId(), updateResponse.getId());
-        assertEquals(newValue.getName(), updateResponse.getName());
-        assertEquals(newValue.getWebSite(), updateResponse.getWebSite());
-        assertEquals(newValue.getEdrpou(), updateResponse.getEdrpou());
-        assertEquals(response.getMfo(), updateResponse.getMfo());
+        assertEquals(response.id(), updateResponse.id());
+        assertEquals(newValue.name(), updateResponse.name());
+        assertEquals(newValue.webSite(), updateResponse.webSite());
+        assertEquals(newValue.edrpou(), updateResponse.edrpou());
+        assertEquals(response.mfo(), updateResponse.mfo());
     }
 
     @ParameterizedTest
     @MethodSource("testPhoneMfos")
     @DisplayName("Check for exceptions when the request has an invalid MFO format.")
-    void testWedMfoThrowInvalidInputDataException(String mfo){
-        var request = (BankRequest) firstRequest;
+    void testMfoThrowInvalidInputDataException(String mfo){
+        var bankRequest = (BankRequest) firstRequest;
+        var request = BankRequest
+                .builder()
+                .name(bankRequest.name())
+                .webSite(bankRequest.webSite())
+                .edrpou(bankRequest.edrpou())
+                .mfo(mfo)
+                .build();
 
-        request.setMfo(mfo);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );

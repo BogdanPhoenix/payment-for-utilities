@@ -5,16 +5,15 @@ import lombok.Data;
 import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 
-@Data
 @Builder
-public class AddressResidenceRequest implements Request {
-    private Settlement settlement;
-    private String uaNameStreet;
-    private String enNameStreet;
-    private String numHouse;
-    private String numEntrance;
-    private String numApartment;
-
+public record AddressResidenceRequest(
+        Settlement settlement,
+        String uaNameStreet,
+        String enNameStreet,
+        String numHouse,
+        String numEntrance,
+        String numApartment
+) implements Request {
     @Override
     public boolean isEmpty() {
         return this.settlement == null || this.settlement.isEmpty() ||

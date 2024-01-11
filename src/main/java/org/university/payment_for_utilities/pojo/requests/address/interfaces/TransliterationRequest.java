@@ -10,11 +10,11 @@ public interface TransliterationRequest extends Request {
      * Gets the Ukrainian name of the attribute.
      * @return The Ukrainian name of the attribute.
      */
-    String getUaName();
+    String uaName();
 
     /**
      * Gets the English name of the attribute.
      * @return The English name of the attribute.
      */
-    String getEnName();
+    String enName();
 }

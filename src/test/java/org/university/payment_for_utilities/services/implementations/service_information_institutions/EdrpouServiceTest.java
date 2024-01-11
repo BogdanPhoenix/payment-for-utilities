@@ -68,17 +68,19 @@ class EdrpouServiceTest extends CrudServiceTest {
         var response = (EdrpouResponse) service.addValue(secondRequest);
         var updateResponse = (EdrpouResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.getId(), updateResponse.getId());
-        assertEquals(newValue.getEdrpou(), updateResponse.getEdrpou());
+        assertEquals(response.id(), updateResponse.id());
+        assertEquals(newValue.edrpou(), updateResponse.edrpou());
     }
 
     @ParameterizedTest
     @MethodSource("testPhoneEdrpous")
     @DisplayName("Check for exceptions when the request has an invalid EDRPOU format.")
     void testWedEdrpouThrowInvalidInputDataException(String edrpou){
-        var request = (EdrpouRequest) firstRequest;
+        var request = EdrpouRequest
+                .builder()
+                .edrpou(edrpou)
+                .build();
 
-        request.setEdrpou(edrpou);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );

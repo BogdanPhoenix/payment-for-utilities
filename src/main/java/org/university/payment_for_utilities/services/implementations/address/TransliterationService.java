@@ -22,8 +22,8 @@ public abstract class TransliterationService<T extends TableInfo, J extends Tabl
     protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var transliterationRequest = (TransliterationRequest) request;
 
-        validateName(transliterationRequest.getUaName());
-        validateName(transliterationRequest.getEnName());
+        validateName(transliterationRequest.uaName());
+        validateName(transliterationRequest.enName());
     }
 
     @Override
@@ -31,10 +31,10 @@ public abstract class TransliterationService<T extends TableInfo, J extends Tabl
         var oldValue = (TransliterationRequest) updateRequest.getOldValue();
         var newValue = (TransliterationRequest) updateRequest.getNewValue();
 
-        validateName(oldValue.getUaName());
-        validateName(oldValue.getEnName());
-        validateName(newValue.getUaName());
-        validateName(newValue.getEnName());
+        validateName(oldValue.uaName());
+        validateName(oldValue.enName());
+        validateName(newValue.uaName());
+        validateName(newValue.enName());
     }
 
     @Override
@@ -42,7 +42,7 @@ public abstract class TransliterationService<T extends TableInfo, J extends Tabl
         var transliterationRequest = (TransliterationRequest) request;
         return repository
                 .findByEnName(
-                        transliterationRequest.getEnName()
+                        transliterationRequest.enName()
                 );
     }
 }

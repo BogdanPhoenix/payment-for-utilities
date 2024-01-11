@@ -1,13 +1,13 @@
 package org.university.payment_for_utilities.pojo.responses.address;
 
 import lombok.Builder;
-import lombok.Data;
 import org.university.payment_for_utilities.pojo.responses.address.interfaces.TransliterationResponse;
 
-@Data
 @Builder
-public class DistrictResponse implements TransliterationResponse {
-    private Long id;
-    private String uaName;
-    private String enName;
+public record DistrictResponse(
+        Long id,
+        String uaName,
+        String enName
+) implements TransliterationResponse {
+
 }

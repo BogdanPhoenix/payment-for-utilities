@@ -9,5 +9,5 @@ public interface Response {
      *
      * @return an entity identifier of type Long
      */
-    Long getId();
+    Long id();
 }

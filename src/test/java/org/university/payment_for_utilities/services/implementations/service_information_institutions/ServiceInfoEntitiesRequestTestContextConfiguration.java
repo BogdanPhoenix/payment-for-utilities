@@ -49,6 +49,21 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "kyivWebsite")
+    public Website kyivWebsite(){
+        return createWebsite(kyivWebsiteRequest());
+    }
+
+    @Lazy
+    @Bean(name = "kyivWebsiteRequest")
+    public WebsiteRequest kyivWebsiteRequest(){
+        return WebsiteRequest
+                .builder()
+                .website("https://raiffeisen.ua/")
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "raiffeisenBankUpdateWebsite")
     public Website raiffeisenBankUpdateWebsite(){
         return createWebsite(raiffeisenBankUpdateWebsiteRequest());
@@ -90,6 +105,21 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
         return EdrpouRequest
                 .builder()
                 .edrpou("14305909")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "kyivEdrpou")
+    public Edrpou kyivEdrpou(){
+        return createEdrpou(kyivEdrpouRequest());
+    }
+
+    @Lazy
+    @Bean(name = "kyivEdrpouRequest")
+    public EdrpouRequest kyivEdrpouRequest(){
+        return EdrpouRequest
+                .builder()
+                .edrpou("14305919")
                 .build();
     }
 

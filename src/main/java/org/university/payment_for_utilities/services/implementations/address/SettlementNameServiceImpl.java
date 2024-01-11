@@ -24,8 +24,8 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
         var settlementNameRequest = (SettlementNameRequest) request;
         return SettlementName
                 .builder()
-                .uaName(settlementNameRequest.getUaName())
-                .enName(settlementNameRequest.getEnName())
+                .uaName(settlementNameRequest.uaName())
+                .enName(settlementNameRequest.enName())
                 .currentData(true)
                 .build();
     }
@@ -35,9 +35,9 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
         var settlementNameResponse = (SettlementNameResponse) response;
         return SettlementName
                 .builder()
-                .id(settlementNameResponse.getId())
-                .uaName(settlementNameResponse.getUaName())
-                .enName(settlementNameResponse.getEnName())
+                .id(settlementNameResponse.id())
+                .uaName(settlementNameResponse.uaName())
+                .enName(settlementNameResponse.enName())
                 .currentData(true)
                 .build();
     }
@@ -59,15 +59,15 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
 
         entity.setUaName(
                 updateAttribute(
-                        oldValue.getUaName(),
-                        newValue.getUaName()
+                        oldValue.uaName(),
+                        newValue.uaName()
                 )
         );
 
         entity.setEnName(
                 updateAttribute(
-                        oldValue.getEnName(),
-                        newValue.getEnName()
+                        oldValue.enName(),
+                        newValue.enName()
                 )
         );
     }

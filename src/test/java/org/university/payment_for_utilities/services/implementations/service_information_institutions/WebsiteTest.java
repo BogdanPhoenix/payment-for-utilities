@@ -62,16 +62,18 @@ class WebsiteTest extends CrudServiceTest {
         var response = (WebsiteResponse) service.addValue(secondRequest);
         var updateResponse = (WebsiteResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.getId(), updateResponse.getId());
-        assertEquals(newValue.getWebsite(), updateResponse.getWebsite());
+        assertEquals(response.id(), updateResponse.id());
+        assertEquals(newValue.website(), updateResponse.website());
     }
 
     @Test
     @DisplayName("Check exceptions when the request has an incorrect format of the bank's website.")
     void testWedSiteThrowInvalidInputDataException(){
-        var request = (WebsiteRequest) firstRequest;
+        var request = WebsiteRequest
+                .builder()
+                .website("privatbank.ua")
+                .build();
 
-        request.setWebsite("privatbank.ua");
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );

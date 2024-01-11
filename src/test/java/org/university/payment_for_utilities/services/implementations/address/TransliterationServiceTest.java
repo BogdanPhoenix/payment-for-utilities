@@ -31,14 +31,14 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter(@NonNull UpdateRequest updateRequest){
         var transliterationRequest = (TransliterationRequest) updateRequest.getNewValue();
         var otherName = transliterationRequest
-                .getEnName();
+                .enName();
 
         var response = (TransliterationResponse) service.addValue(firstRequest);
         var updateResponse = (TransliterationResponse) service.updateValue(updateRequest);
 
-        assertEquals(updateResponse.getId(), response.getId());
-        assertEquals(updateResponse.getUaName(), response.getUaName());
-        assertEquals(updateResponse.getEnName(), otherName);
+        assertEquals(updateResponse.id(), response.id());
+        assertEquals(updateResponse.uaName(), response.uaName());
+        assertEquals(updateResponse.enName(), otherName);
     }
 
     protected void testUpdateValueThrowInvalidInputData(Request incorrectRequest) {
@@ -71,9 +71,9 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
         var updateResponse = (TransliterationResponse) service.updateValue(correctUpdateRequest);
         var newValue = (TransliterationRequest) correctUpdateRequest.getNewValue();
 
-        assertEquals(updateResponse.getId(), response.getId());
-        assertEquals(updateResponse.getUaName(), newValue.getUaName());
-        assertEquals(updateResponse.getEnName(), newValue.getEnName());
+        assertEquals(updateResponse.id(), response.id());
+        assertEquals(updateResponse.uaName(), newValue.uaName());
+        assertEquals(updateResponse.enName(), newValue.enName());
     }
 
 }

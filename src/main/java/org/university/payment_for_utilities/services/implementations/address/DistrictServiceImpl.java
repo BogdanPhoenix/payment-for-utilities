@@ -24,8 +24,8 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
         var districtRequest = (DistrictRequest) request;
         return District
                 .builder()
-                .uaName(districtRequest.getUaName())
-                .enName(districtRequest.getEnName())
+                .uaName(districtRequest.uaName())
+                .enName(districtRequest.enName())
                 .currentData(true)
                 .build();
     }
@@ -35,9 +35,9 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
         var districtResponse = (DistrictResponse) response;
         return District
                 .builder()
-                .id(districtResponse.getId())
-                .uaName(districtResponse.getUaName())
-                .enName(districtResponse.getEnName())
+                .id(districtResponse.id())
+                .uaName(districtResponse.uaName())
+                .enName(districtResponse.enName())
                 .currentData(true)
                 .build();
     }
@@ -59,15 +59,15 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
 
         entity.setUaName(
                 updateAttribute(
-                        oldValue.getUaName(),
-                        newValue.getUaName()
+                        oldValue.uaName(),
+                        newValue.uaName()
                 )
         );
 
         entity.setEnName(
                 updateAttribute(
-                        oldValue.getEnName(),
-                        newValue.getEnName()
+                        oldValue.enName(),
+                        newValue.enName()
                 )
         );
     }

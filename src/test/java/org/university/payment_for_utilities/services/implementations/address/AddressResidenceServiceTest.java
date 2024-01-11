@@ -33,7 +33,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
     @Override
     protected void initRequest() {
         firstRequest = addressRequest;
-        settlement = addressRequest.getSettlement();
+        settlement = addressRequest.settlement();
 
         emptyRequest = AddressResidenceRequest
                 .builder()
@@ -77,8 +77,8 @@ class AddressResidenceServiceTest extends CrudServiceTest {
         var response = (AddressResidenceResponse) service.addValue(firstRequest);
         var updateResponse = (AddressResidenceResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.getId(), updateResponse.getId());
-        assertEquals(response.getSettlement(), updateResponse.getSettlement());
-        assertEquals(numHouse, updateResponse.getNumHouse());
+        assertEquals(response.id(), updateResponse.id());
+        assertEquals(response.settlement(), updateResponse.settlement());
+        assertEquals(numHouse, updateResponse.numHouse());
     }
 }

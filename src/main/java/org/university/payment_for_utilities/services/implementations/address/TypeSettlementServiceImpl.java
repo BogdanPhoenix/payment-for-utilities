@@ -24,8 +24,8 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
         var typeRequest = (TypeSettlementRequest) request;
         return TypeSettlement
                 .builder()
-                .uaName(typeRequest.getUaName())
-                .enName(typeRequest.getEnName())
+                .uaName(typeRequest.uaName())
+                .enName(typeRequest.enName())
                 .currentData(true)
                 .build();
     }
@@ -35,9 +35,9 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
         var typeResponse = (TypeSettlementResponse) response;
         return TypeSettlement
                 .builder()
-                .id(typeResponse.getId())
-                .uaName(typeResponse.getUaName())
-                .enName(typeResponse.getEnName())
+                .id(typeResponse.id())
+                .uaName(typeResponse.uaName())
+                .enName(typeResponse.enName())
                 .currentData(true)
                 .build();
     }
@@ -59,15 +59,15 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
 
         entity.setUaName(
                 updateAttribute(
-                        oldValue.getUaName(),
-                        newValue.getUaName()
+                        oldValue.uaName(),
+                        newValue.uaName()
                 )
         );
 
         entity.setEnName(
                 updateAttribute(
-                        oldValue.getEnName(),
-                        newValue.getEnName()
+                        oldValue.enName(),
+                        newValue.enName()
                 )
         );
     }

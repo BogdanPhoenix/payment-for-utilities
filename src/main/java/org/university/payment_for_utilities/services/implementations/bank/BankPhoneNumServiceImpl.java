@@ -31,8 +31,8 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
         return BankPhoneNum
                 .builder()
-                .bank(bankPhoneNumRequest.getBank())
-                .phoneNum(bankPhoneNumRequest.getPhoneNum())
+                .bank(bankPhoneNumRequest.bank())
+                .phoneNum(bankPhoneNumRequest.phoneNum())
                 .build();
     }
 
@@ -41,9 +41,9 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
         var bankPhoneNumResponse = (BankPhoneNumResponse) response;
         return BankPhoneNum
                 .builder()
-                .id(bankPhoneNumResponse.getId())
-                .bank(bankPhoneNumResponse.getBank())
-                .phoneNum(bankPhoneNumResponse.getPhoneNum())
+                .id(bankPhoneNumResponse.id())
+                .bank(bankPhoneNumResponse.bank())
+                .phoneNum(bankPhoneNumResponse.phoneNum())
                 .build();
     }
 
@@ -64,14 +64,14 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
 
         entity.setBank(
                 updateAttribute(
-                        oldValue.getBank(),
-                        newValue.getBank()
+                        oldValue.bank(),
+                        newValue.bank()
                 )
         );
         entity.setPhoneNum(
                 updateAttribute(
-                        oldValue.getPhoneNum(),
-                        newValue.getPhoneNum()
+                        oldValue.phoneNum(),
+                        newValue.phoneNum()
                 )
         );
     }
@@ -80,8 +80,8 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
     protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
 
-        validateBank(bankPhoneNumRequest.getBank());
-        validatePhoneNum(bankPhoneNumRequest.getPhoneNum());
+        validateBank(bankPhoneNumRequest.bank());
+        validatePhoneNum(bankPhoneNumRequest.phoneNum());
     }
 
     @Override
@@ -89,8 +89,8 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
         var oldValue = (BankPhoneNumRequest) updateRequest.getOldValue();
         var newValue = (BankPhoneNumRequest) updateRequest.getNewValue();
 
-        validatePhoneNum(oldValue.getPhoneNum());
-        validatePhoneNum(newValue.getPhoneNum());
+        validatePhoneNum(oldValue.phoneNum());
+        validatePhoneNum(newValue.phoneNum());
     }
 
     private void validateBank(Bank bank) throws InvalidInputDataException{
@@ -128,7 +128,7 @@ public class BankPhoneNumServiceImpl extends CrudServiceAbstract<BankPhoneNum, B
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
         return repository
                 .findByPhoneNum(
-                        bankPhoneNumRequest.getPhoneNum()
+                        bankPhoneNumRequest.phoneNum()
                 );
     }
 }

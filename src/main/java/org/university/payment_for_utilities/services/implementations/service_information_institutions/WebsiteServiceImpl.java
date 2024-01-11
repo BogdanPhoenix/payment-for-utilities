@@ -30,7 +30,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         var websiteRequest = (WebsiteRequest) request;
         return Website
                 .builder()
-                .website(websiteRequest.getWebsite())
+                .website(websiteRequest.website())
                 .currentData(true)
                 .build();
     }
@@ -40,8 +40,8 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         var websiteResponse = (WebsiteResponse) response;
         return Website
                 .builder()
-                .id(websiteResponse.getId())
-                .website(websiteResponse.getWebsite())
+                .id(websiteResponse.id())
+                .website(websiteResponse.website())
                 .currentData(true)
                 .build();
     }
@@ -62,8 +62,8 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
 
         entity.setWebsite(
                 updateAttribute(
-                        oldValue.getWebsite(),
-                        newValue.getWebsite()
+                        oldValue.website(),
+                        newValue.website()
                 )
         );
     }
@@ -71,7 +71,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     @Override
     protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var websiteRequest = (WebsiteRequest) request;
-        validateWebSite(websiteRequest.getWebsite());
+        validateWebSite(websiteRequest.website());
     }
 
     @Override
@@ -79,8 +79,8 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         var oldValue = (WebsiteRequest) updateRequest.getOldValue();
         var newValue = (WebsiteRequest) updateRequest.getNewValue();
 
-        validateWebSite(oldValue.getWebsite());
-        validateWebSite(newValue.getWebsite());
+        validateWebSite(oldValue.website());
+        validateWebSite(newValue.website());
     }
 
     private void validateWebSite(@NonNull String webSite) throws InvalidInputDataException {
@@ -104,7 +104,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         var websiteRequest = (WebsiteRequest) request;
         return repository
                 .findByWebsite(
-                        websiteRequest.getWebsite()
+                        websiteRequest.website()
                 );
     }
 }

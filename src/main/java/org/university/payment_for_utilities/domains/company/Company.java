@@ -38,7 +38,7 @@ public class Company implements TableInfo {
     @NonNull
     private Edrpou edrpou;
 
-    @OneToOne
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_website", nullable = false, unique = true)
     @NonNull
     private Website website;

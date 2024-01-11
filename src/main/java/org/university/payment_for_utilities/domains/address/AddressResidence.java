@@ -10,6 +10,9 @@ import org.university.payment_for_utilities.domains.user.RegisteredUser;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -56,7 +59,7 @@ public class AddressResidence implements TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "address", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
     private Company company;
 
     @ToString.Exclude

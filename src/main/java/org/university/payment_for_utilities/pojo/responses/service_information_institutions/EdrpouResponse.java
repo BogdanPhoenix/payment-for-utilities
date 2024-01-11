@@ -1,12 +1,12 @@
 package org.university.payment_for_utilities.pojo.responses.service_information_institutions;
 
 import lombok.Builder;
-import lombok.Data;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 
-@Data
 @Builder
-public class EdrpouResponse implements Response {
-    private Long id;
-    private String edrpou;
+public record EdrpouResponse(
+        Long id,
+        String edrpou
+) implements Response {
+
 }

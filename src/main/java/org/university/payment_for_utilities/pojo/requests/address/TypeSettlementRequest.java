@@ -1,15 +1,13 @@
 package org.university.payment_for_utilities.pojo.requests.address;
 
 import lombok.Builder;
-import lombok.Data;
 import org.university.payment_for_utilities.pojo.requests.address.interfaces.TransliterationRequest;
 
-@Data
 @Builder
-public class TypeSettlementRequest implements TransliterationRequest {
-    private String uaName;
-    private String enName;
-
+public record TypeSettlementRequest(
+        String uaName,
+        String enName
+) implements TransliterationRequest {
     @Override
     public boolean isEmpty() {
         return this.uaName.isEmpty() ||

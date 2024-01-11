@@ -41,7 +41,7 @@ class BankPhoneNumTest extends CrudServiceTest {
     @Override
     protected void initRequest() {
         firstRequest = bankPhoneNumRequest;
-        var bank = bankPhoneNumRequest.getBank();
+        var bank = bankPhoneNumRequest.bank();
 
         emptyRequest = BankPhoneNumRequest
                 .builder()
@@ -75,18 +75,22 @@ class BankPhoneNumTest extends CrudServiceTest {
         var response = (BankPhoneNumResponse) service.addValue(secondRequest);
         var updateResponse = (BankPhoneNumResponse) service.updateValue(updateRequest);
 
-        assertEquals(response.getId(), updateResponse.getId());
-        assertEquals(newValue.getBank(), updateResponse.getBank());
-        assertEquals(newValue.getPhoneNum(), updateResponse.getPhoneNum());
+        assertEquals(response.id(), updateResponse.id());
+        assertEquals(newValue.bank(), updateResponse.bank());
+        assertEquals(newValue.phoneNum(), updateResponse.phoneNum());
     }
 
     @ParameterizedTest
     @MethodSource("testPhoneNums")
     @DisplayName("Check the exceptions when an invalid mobile phone number format is passed in the request.")
     void testPhoneThrowInvalidInputDataException(String num){
-        var request = (BankPhoneNumRequest) firstRequest;
+        var bankPhoneNumRequest = (BankPhoneNumRequest) firstRequest;
+        var request = BankPhoneNumRequest
+                .builder()
+                .bank(bankPhoneNumRequest.bank())
+                .phoneNum(num)
+                .build();
 
-        request.setPhoneNum(num);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );

@@ -35,9 +35,9 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         var settlementRequest = (SettlementRequest) request;
         return Settlement
                 .builder()
-                .type(settlementRequest.getType())
-                .zipCode(settlementRequest.getZipCode())
-                .name(settlementRequest.getName())
+                .type(settlementRequest.type())
+                .zipCode(settlementRequest.zipCode())
+                .name(settlementRequest.name())
                 .currentData(true)
                 .build();
     }
@@ -47,10 +47,10 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         var settlementResponse = (SettlementResponse) response;
         return Settlement
                 .builder()
-                .id(settlementResponse.getId())
-                .type(settlementResponse.getType())
-                .zipCode(settlementResponse.getZipCode())
-                .name(settlementResponse.getName())
+                .id(settlementResponse.id())
+                .type(settlementResponse.type())
+                .zipCode(settlementResponse.zipCode())
+                .name(settlementResponse.name())
                 .currentData(true)
                 .build();
     }
@@ -73,20 +73,20 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
 
         entity.setType(
                 updateAttribute(
-                        oldValue.getType(),
-                        newValue.getType()
+                        oldValue.type(),
+                        newValue.type()
                 )
         );
         entity.setZipCode(
                 updateAttribute(
-                        oldValue.getZipCode(),
-                        newValue.getZipCode()
+                        oldValue.zipCode(),
+                        newValue.zipCode()
                 )
         );
         entity.setName(
                 updateAttribute(
-                        oldValue.getName(),
-                        newValue.getName()
+                        oldValue.name(),
+                        newValue.name()
                 )
         );
     }
@@ -94,7 +94,7 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     @Override
     protected void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         var settlementRequest = (SettlementRequest) request;
-        validateZipCode(settlementRequest.getZipCode());
+        validateZipCode(settlementRequest.zipCode());
     }
 
     @Override
@@ -102,8 +102,8 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         var oldValue = (SettlementRequest) updateRequest.getOldValue();
         var newValue = (SettlementRequest) updateRequest.getNewValue();
 
-        validateZipCode(oldValue.getZipCode());
-        validateZipCode(newValue.getZipCode());
+        validateZipCode(oldValue.zipCode());
+        validateZipCode(newValue.zipCode());
     }
 
     private void validateZipCode(@NonNull String zipCode) throws InvalidInputDataException{
@@ -126,7 +126,7 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         var settlementRequest = (SettlementRequest) request;
         return repository
                 .findByZipCode(
-                        settlementRequest.getZipCode()
+                        settlementRequest.zipCode()
                 );
     }
 }

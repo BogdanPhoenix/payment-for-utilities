@@ -47,7 +47,7 @@ class SettlementServiceTest extends CrudServiceTest {
     protected void initRequest() {
         var nameKyiv = createName(nameKyivRequest);
         firstRequest = settlementRequest;
-        type = settlementRequest.getType();
+        type = settlementRequest.type();
 
         emptyRequest = SettlementRequest
                 .builder()
@@ -103,19 +103,24 @@ class SettlementServiceTest extends CrudServiceTest {
         var response = (SettlementResponse) service.addValue(firstRequest);
         var updateResponse = (SettlementResponse) service.updateValue(updateRequest);
 
-        assertEquals(updateResponse.getId(), response.getId());
-        assertEquals(updateResponse.getType(), response.getType());
-        assertEquals(updateResponse.getZipCode(), newIndex);
-        assertEquals(updateResponse.getName(), response.getName());
+        assertEquals(updateResponse.id(), response.id());
+        assertEquals(updateResponse.type(), response.type());
+        assertEquals(updateResponse.zipCode(), newIndex);
+        assertEquals(updateResponse.name(), response.name());
     }
 
     @ParameterizedTest
     @MethodSource("testPhoneZipCodes")
     @DisplayName("Check for exceptions when an invalid zip code format was passed in the request.")
     void testIndexThrowInvalidInputData(String zipCode){
-        var request = (SettlementRequest) firstRequest;
+        var settlementRequest = (SettlementRequest) firstRequest;
+        var request = SettlementRequest
+                .builder()
+                .type(settlementRequest.type())
+                .zipCode(zipCode)
+                .name(settlementRequest.name())
+                .build();
 
-        request.setZipCode(zipCode);
         assertThrows(InvalidInputDataException.class,
                 () -> service.addValue(request)
         );

@@ -24,7 +24,6 @@ public abstract class CrudServiceTest {
 
     protected abstract void testUpdateValueCorrectWithOneChangedParameter();
 
-
     protected void initRequest(){
         correctUpdateRequest = UpdateRequest
                 .builder()
@@ -55,7 +54,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Check if you can retrieve an entity from a table by its identifier.")
     void testGetByIdCorrect(){
         var response = service.addValue(firstRequest);
-        var responseById = service.getById(response.getId());
+        var responseById = service.getById(response.id());
 
         assertThat(responseById)
                 .isEqualTo(response);
@@ -72,7 +71,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Check for adding data to the database.")
     void testAddValueCorrect(){
         var response = service.addValue(firstRequest);
-        assertThat(response.getId()).isNotNull();
+        assertThat(response.id()).isNotNull();
     }
 
     @Test
@@ -137,7 +136,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Checking the correct deletion of data from the table using the entity identifier.")
     public void testRemoveValueCorrect(){
         var responseAdd = service.addValue(firstRequest);
-        var responseRemove = service.removeValue(responseAdd.getId());
+        var responseRemove = service.removeValue(responseAdd.id());
 
         assertThat(responseAdd)
                 .isEqualTo(responseRemove);

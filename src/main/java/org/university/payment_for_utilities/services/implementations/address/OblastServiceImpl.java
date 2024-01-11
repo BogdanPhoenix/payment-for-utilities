@@ -24,8 +24,8 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
         var oblastRequest = (OblastRequest) request;
         return Oblast
                 .builder()
-                .uaName(oblastRequest.getUaName())
-                .enName(oblastRequest.getEnName())
+                .uaName(oblastRequest.uaName())
+                .enName(oblastRequest.enName())
                 .currentData(true)
                 .build();
     }
@@ -35,9 +35,9 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
         var oblastResponse = (OblastResponse) response;
         return Oblast
                 .builder()
-                .id(oblastResponse.getId())
-                .uaName(oblastResponse.getUaName())
-                .enName(oblastResponse.getEnName())
+                .id(oblastResponse.id())
+                .uaName(oblastResponse.uaName())
+                .enName(oblastResponse.enName())
                 .currentData(true)
                 .build();
     }
@@ -59,15 +59,15 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
 
         entity.setUaName(
                 updateAttribute(
-                        oldValue.getUaName(),
-                        newValue.getUaName()
+                        oldValue.uaName(),
+                        newValue.uaName()
                 )
         );
 
         entity.setEnName(
                 updateAttribute(
-                        oldValue.getEnName(),
-                        newValue.getEnName()
+                        oldValue.enName(),
+                        newValue.enName()
                 )
         );
     }

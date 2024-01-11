@@ -32,12 +32,12 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var address = (AddressResidenceRequest) request;
         return AddressResidence
                 .builder()
-                .settlement(address.getSettlement())
-                .uaNameStreet(address.getUaNameStreet())
-                .enNameStreet(address.getEnNameStreet())
-                .numHouse(address.getNumHouse())
-                .numEntrance(address.getNumEntrance())
-                .numApartment(address.getNumApartment())
+                .settlement(address.settlement())
+                .uaNameStreet(address.uaNameStreet())
+                .enNameStreet(address.enNameStreet())
+                .numHouse(address.numHouse())
+                .numEntrance(address.numEntrance())
+                .numApartment(address.numApartment())
                 .currentData(true)
                 .build();
     }
@@ -47,13 +47,13 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var addressResponse = (AddressResidenceResponse) response;
         return AddressResidence
                 .builder()
-                .id(addressResponse.getId())
-                .settlement(addressResponse.getSettlement())
-                .uaNameStreet(addressResponse.getUaNameStreet())
-                .enNameStreet(addressResponse.getEnNameStreet())
-                .numHouse(addressResponse.getNumHouse())
-                .numEntrance(addressResponse.getNumEntrance())
-                .numApartment(addressResponse.getNumApartment())
+                .id(addressResponse.id())
+                .settlement(addressResponse.settlement())
+                .uaNameStreet(addressResponse.uaNameStreet())
+                .enNameStreet(addressResponse.enNameStreet())
+                .numHouse(addressResponse.numHouse())
+                .numEntrance(addressResponse.numEntrance())
+                .numApartment(addressResponse.numApartment())
                 .currentData(true)
                 .build();
     }
@@ -79,38 +79,38 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
 
         entity.setSettlement(
                 updateAttribute(
-                        oldValue.getSettlement(),
-                        newValue.getSettlement()
+                        oldValue.settlement(),
+                        newValue.settlement()
                 )
         );
         entity.setUaNameStreet(
                 updateAttribute(
-                        oldValue.getUaNameStreet(),
-                        newValue.getUaNameStreet()
+                        oldValue.uaNameStreet(),
+                        newValue.uaNameStreet()
                 )
         );
         entity.setEnNameStreet(
                 updateAttribute(
-                        oldValue.getEnNameStreet(),
-                        newValue.getEnNameStreet()
+                        oldValue.enNameStreet(),
+                        newValue.enNameStreet()
                 )
         );
         entity.setNumHouse(
                 updateAttribute(
-                        oldValue.getNumHouse(),
-                        newValue.getNumHouse()
+                        oldValue.numHouse(),
+                        newValue.numHouse()
                 )
         );
         entity.setNumEntrance(
                 updateAttribute(
-                        oldValue.getNumEntrance(),
-                        newValue.getNumEntrance()
+                        oldValue.numEntrance(),
+                        newValue.numEntrance()
                 )
         );
         entity.setNumApartment(
                 updateAttribute(
-                        oldValue.getNumApartment(),
-                        newValue.getNumApartment()
+                        oldValue.numApartment(),
+                        newValue.numApartment()
                 )
         );
     }
@@ -119,8 +119,8 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var addressRequest = (AddressResidenceRequest) request;
 
-        validateStreet(addressRequest.getUaNameStreet());
-        validateStreet(addressRequest.getEnNameStreet());
+        validateStreet(addressRequest.uaNameStreet());
+        validateStreet(addressRequest.enNameStreet());
         validateNumHouse(addressRequest);
         validateNumEntrance(addressRequest);
         validateNumApartment(addressRequest);
@@ -131,11 +131,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var oldValue = (AddressResidenceRequest) updateRequest.getOldValue();
         var newValue = (AddressResidenceRequest) updateRequest.getNewValue();
 
-        validateStreet(oldValue.getUaNameStreet());
-        validateStreet(oldValue.getEnNameStreet());
+        validateStreet(oldValue.uaNameStreet());
+        validateStreet(oldValue.enNameStreet());
 
-        validateStreet(newValue.getUaNameStreet());
-        validateStreet(newValue.getEnNameStreet());
+        validateStreet(newValue.uaNameStreet());
+        validateStreet(newValue.enNameStreet());
 
         validateNumHouse(oldValue);
         validateNumHouse(newValue);
@@ -158,11 +158,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private void validateNumHouse(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
-        if(isValidNumHouse(request.getNumHouse())){
+        if(isValidNumHouse(request.numHouse())){
             return;
         }
 
-        var message = String.format("You entered the wrong house number format: %s. The house number can contain Cyrillic or Latin letters, numbers, hyphens, and spaces.", request.getNumHouse());
+        var message = String.format("You entered the wrong house number format: %s. The house number can contain Cyrillic or Latin letters, numbers, hyphens, and spaces.", request.numHouse());
         log.error(message);
         throw new InvalidInputDataException(message);
     }
@@ -174,11 +174,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private void validateNumEntrance(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
-        if(isValidNumEntrance(request.getNumEntrance())){
+        if(isValidNumEntrance(request.numEntrance())){
             return;
         }
 
-        var message = String.format("You entered the wrong format for the entrance number: %s. The entrance number can contain no more than three digits.", request.getNumEntrance());
+        var message = String.format("You entered the wrong format for the entrance number: %s. The entrance number can contain no more than three digits.", request.numEntrance());
         log.error(message);
         throw new InvalidInputDataException(message);
     }
@@ -188,11 +188,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private void validateNumApartment(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
-        if(isValidNumApartment(request.getNumApartment())){
+        if(isValidNumApartment(request.numApartment())){
             return;
         }
 
-        var message = String.format("You entered the wrong apartment number format: %s. The apartment number can contain no more than five digits.", request.getNumApartment());
+        var message = String.format("You entered the wrong apartment number format: %s. The apartment number can contain no more than five digits.", request.numApartment());
         log.error(message);
         throw new InvalidInputDataException(message);
     }
@@ -206,10 +206,10 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var address = (AddressResidenceRequest) request;
         return repository
                 .findBySettlementAndEnNameStreetAndNumHouseAndNumEntrance(
-                        address.getSettlement(),
-                        address.getEnNameStreet(),
-                        address.getNumHouse(),
-                        address.getNumEntrance()
+                        address.settlement(),
+                        address.enNameStreet(),
+                        address.numHouse(),
+                        address.numEntrance()
                 );
     }
 }
