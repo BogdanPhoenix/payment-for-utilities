@@ -31,9 +31,7 @@ class DistrictServiceTest extends TransliterationServiceTest {
         secondRequest = belotserkivskyiRequest;
 
         emptyRequest = DistrictRequest
-                .builder()
-                .uaName("")
-                .build();
+                .empty();
 
         super.initRequest();
     }

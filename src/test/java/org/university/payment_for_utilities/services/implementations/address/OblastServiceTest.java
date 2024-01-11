@@ -31,15 +31,9 @@ class OblastServiceTest extends TransliterationServiceTest {
         secondRequest = kyivRequest;
 
         emptyRequest = OblastRequest
-                .builder()
-                .uaName("")
-                .build();
+                .empty();
 
-        correctUpdateRequest = UpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
+        super.initRequest();
     }
 
     @Test

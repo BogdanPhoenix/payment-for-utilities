@@ -44,8 +44,7 @@ class BankPhoneNumTest extends CrudServiceTest {
         var bank = bankPhoneNumRequest.bank();
 
         emptyRequest = BankPhoneNumRequest
-                .builder()
-                .build();
+                .empty();
 
         secondRequest = BankPhoneNumRequest
                 .builder()

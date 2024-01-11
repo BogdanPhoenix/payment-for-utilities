@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.TableInfo;
 
 @Data
@@ -35,6 +36,15 @@ public class BankPhoneNum implements TableInfo {
     @Override
     public boolean isEmpty() {
         return bank.isEmpty() ||
-                phoneNum.isEmpty();
+                phoneNum.isBlank();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull BankPhoneNum empty(){
+        return BankPhoneNum
+                .builder()
+                .bank(Bank.empty())
+                .phoneNum("")
+                .build();
     }
 }

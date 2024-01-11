@@ -33,9 +33,7 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
         secondRequest = villageRequest;
 
         emptyRequest = TypeSettlementRequest
-                .builder()
-                .uaName("")
-                .build();
+                .empty();
 
         super.initRequest();
     }

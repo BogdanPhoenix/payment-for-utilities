@@ -33,8 +33,7 @@ class WebsiteTest extends CrudServiceTest {
         firstRequest = privateBankWebsiteRequest;
 
         emptyRequest = WebsiteRequest
-                .builder()
-                .build();
+                .empty();
 
         secondRequest = WebsiteRequest
                 .builder()

@@ -52,8 +52,7 @@ class CompanyServiceTest extends CrudServiceTest {
         firstRequest = companyRequest;
 
         emptyRequest = CompanyRequest
-                .builder()
-                .build();
+                .empty();
 
         secondRequest = CompanyRequest
                 .builder()
@@ -73,9 +72,9 @@ class CompanyServiceTest extends CrudServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter() {
         var newValue = CompanyRequest
                 .builder()
-                .address(null)
-                .edrpou(null)
-                .website(null)
+                .address(AddressResidence.empty())
+                .edrpou(Edrpou.empty())
+                .website(Website.empty())
                 .name("Київ-обленерго")
                 .currentAccount("72341000245521")
                 .build();

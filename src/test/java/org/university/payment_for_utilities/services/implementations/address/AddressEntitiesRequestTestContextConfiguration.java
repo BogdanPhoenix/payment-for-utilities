@@ -53,6 +53,7 @@ public class AddressEntitiesRequestTestContextConfiguration {
     public AddressResidence addressResidence(){
         return createAddress(addressResidenceRequest());
     }
+
     @Lazy
     @Bean(name = "addressResidenceRequest")
     public AddressResidenceRequest addressResidenceRequest(){

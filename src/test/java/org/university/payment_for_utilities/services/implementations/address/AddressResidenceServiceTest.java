@@ -33,11 +33,11 @@ class AddressResidenceServiceTest extends CrudServiceTest {
     @Override
     protected void initRequest() {
         firstRequest = addressRequest;
-        settlement = addressRequest.settlement();
+        settlement = addressRequest
+                .settlement();
 
         emptyRequest = AddressResidenceRequest
-                .builder()
-                .build();
+                .empty();
 
         secondRequest = AddressResidenceRequest
                 .builder()

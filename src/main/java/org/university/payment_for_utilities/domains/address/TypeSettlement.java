@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.TableInfo;
 
 import java.util.List;
@@ -40,7 +41,16 @@ public class TypeSettlement implements TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return uaName.isEmpty() ||
-                enName.isEmpty();
+        return uaName.isBlank() ||
+                enName.isBlank();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull TypeSettlement empty(){
+        return TypeSettlement
+                .builder()
+                .uaName("")
+                .enName("")
+                .build();
     }
 }

@@ -1,6 +1,8 @@
 package org.university.payment_for_utilities.pojo.requests.company;
 
 import lombok.Builder;
+import lombok.NonNull;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
@@ -17,9 +19,22 @@ public record CompanyRequest(
 ) implements Request {
     @Override
     public boolean isEmpty() {
-        return this.address == null || this.address.isEmpty() ||
-                this.edrpou == null || this.edrpou.isEmpty() ||
-                this.website == null || this.website.isEmpty() ||
-                this.name == null || this.name.isEmpty();
+        return this.address.isEmpty() ||
+                this.edrpou.isEmpty() ||
+                this.website.isEmpty() ||
+                this.name.isBlank() ||
+                this.currentAccount.isBlank();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull CompanyRequest empty(){
+        return CompanyRequest
+                .builder()
+                .address(AddressResidence.empty())
+                .name("")
+                .website(Website.empty())
+                .edrpou(Edrpou.empty())
+                .currentAccount("")
+                .build();
     }
 }

@@ -53,13 +53,12 @@ class BankServiceTest extends CrudServiceTest {
         firstRequest = privateBankRequest;
 
         emptyRequest = BankRequest
-                .builder()
-                .build();
+                .empty();
 
         secondRequest = BankRequest
                 .builder()
                 .name("Raiffeisen Bank")
-                .webSite(raiffeisenBankWebsite)
+                .website(raiffeisenBankWebsite)
                 .edrpou(raiffeisenBankEdrpou)
                 .mfo("380805")
                 .build();
@@ -74,7 +73,7 @@ class BankServiceTest extends CrudServiceTest {
         var newValue = BankRequest
                 .builder()
                 .name("Raiffeisen Bank Ua")
-                .webSite(raiffeisenBankUpdateWebsite)
+                .website(raiffeisenBankUpdateWebsite)
                 .edrpou(raiffeisenBankUpdateEdrpou)
                 .mfo("")
                 .build();
@@ -90,7 +89,7 @@ class BankServiceTest extends CrudServiceTest {
 
         assertEquals(response.id(), updateResponse.id());
         assertEquals(newValue.name(), updateResponse.name());
-        assertEquals(newValue.webSite(), updateResponse.webSite());
+        assertEquals(newValue.website(), updateResponse.webSite());
         assertEquals(newValue.edrpou(), updateResponse.edrpou());
         assertEquals(response.mfo(), updateResponse.mfo());
     }
@@ -103,7 +102,7 @@ class BankServiceTest extends CrudServiceTest {
         var request = BankRequest
                 .builder()
                 .name(bankRequest.name())
-                .webSite(bankRequest.webSite())
+                .website(bankRequest.website())
                 .edrpou(bankRequest.edrpou())
                 .mfo(mfo)
                 .build();

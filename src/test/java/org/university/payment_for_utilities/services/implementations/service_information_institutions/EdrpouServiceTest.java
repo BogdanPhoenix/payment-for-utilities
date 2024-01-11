@@ -39,8 +39,7 @@ class EdrpouServiceTest extends CrudServiceTest {
         firstRequest = privateBankEdrpouRequest;
 
         emptyRequest = EdrpouRequest
-                .builder()
-                .build();
+                .empty();
 
         secondRequest = EdrpouRequest
                 .builder()

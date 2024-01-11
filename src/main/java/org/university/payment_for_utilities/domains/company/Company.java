@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
@@ -67,8 +68,21 @@ public class Company implements TableInfo {
     @Override
     public boolean isEmpty() {
         return address.isEmpty() ||
-                name.isEmpty() ||
+                name.isBlank() ||
                 website.isEmpty() ||
-                edrpou.isEmpty();
+                edrpou.isEmpty() ||
+                currentAccount.isBlank();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull Company empty(){
+        return Company
+                .builder()
+                .address(AddressResidence.empty())
+                .name("")
+                .website(Website.empty())
+                .edrpou(Edrpou.empty())
+                .currentAccount("")
+                .build();
     }
 }

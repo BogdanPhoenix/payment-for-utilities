@@ -33,9 +33,7 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
         secondRequest = kyivRequest;
 
         emptyRequest = SettlementNameRequest
-                .builder()
-                .uaName("")
-                .build();
+                .empty();
 
         super.initRequest();
     }

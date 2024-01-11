@@ -50,9 +50,7 @@ class SettlementServiceTest extends CrudServiceTest {
         type = settlementRequest.type();
 
         emptyRequest = SettlementRequest
-                .builder()
-                .zipCode("")
-                .build();
+                .empty();
 
         secondRequest = SettlementRequest
                 .builder()
@@ -82,10 +80,7 @@ class SettlementServiceTest extends CrudServiceTest {
     protected void testUpdateValueCorrectWithOneChangedParameter() {
         var newIndex = "14523";
         var name = SettlementName
-                .builder()
-                .uaName("")
-                .enName("")
-                .build();
+                .empty();
 
         var newValue = SettlementRequest
                 .builder()
