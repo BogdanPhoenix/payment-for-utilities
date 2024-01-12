@@ -103,7 +103,7 @@ class CompanyServiceTest extends CrudServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("testPhoneCurrentAccounts")
+    @MethodSource("testCurrentAccounts")
     @DisplayName("Check the exceptions if the request has an incorrect current account format.")
     void testCurrentAccountThrowInvalidInputDataException(String numAccount){
         var companyRequest = (CompanyRequest) firstRequest;
@@ -121,7 +121,7 @@ class CompanyServiceTest extends CrudServiceTest {
         );
     }
 
-    private static @NonNull Stream<Arguments> testPhoneCurrentAccounts(){
+    private static @NonNull Stream<Arguments> testCurrentAccounts(){
         return Stream.of(
                 Arguments.of("4236895213g575"),
                 Arguments.of("752139$7512452"),

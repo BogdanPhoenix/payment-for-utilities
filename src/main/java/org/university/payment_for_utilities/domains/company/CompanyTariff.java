@@ -33,7 +33,7 @@ public class CompanyTariff {
     @ManyToOne
     @JoinColumn(name = "id_type", nullable = false)
     @NonNull
-    private TypeService type;
+    private TypeOffer type;
 
     @Column(name = "name", nullable = false)
     @NonNull

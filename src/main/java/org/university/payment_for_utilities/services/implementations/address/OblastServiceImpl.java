@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.Oblast;
 import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.OblastRepository;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
 
@@ -50,25 +50,5 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
                 .uaName(entity.getUaName())
                 .enName(entity.getEnName())
                 .build();
-    }
-
-    @Override
-    protected void updateEntity(@NonNull Oblast entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (OblastRequest) updateRequest.getOldValue();
-        var newValue = (OblastRequest) updateRequest.getNewValue();
-
-        entity.setUaName(
-                updateAttribute(
-                        oldValue.uaName(),
-                        newValue.uaName()
-                )
-        );
-
-        entity.setEnName(
-                updateAttribute(
-                        oldValue.enName(),
-                        newValue.enName()
-                )
-        );
     }
 }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.TableInfo;
+import org.university.payment_for_utilities.domains.TransliterationProperty;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @DynamicInsert
 @Entity
 @Table(name = "districts")
-public class District implements TableInfo {
+public class District implements TransliterationProperty {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")

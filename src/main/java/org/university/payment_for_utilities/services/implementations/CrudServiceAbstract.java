@@ -21,7 +21,7 @@ import java.util.Optional;
 @Slf4j
 public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepository<T, Long>> implements CrudService {
     protected static final String MESSAGE_SUCCESS_VALIDATION = "Input data has been successfully validated";
-    private static final String NAME_TEMPLATE = "^[A-ZА-ЯІЇҐ\\-\\s]*$";
+    private static final String NAME_TEMPLATE = "^[A-ZА-ЯІЇҐ\\-.\\s]*$";
 
     protected final String fatalMessageAddEntity;
     protected final String fatalMessageUpdateEntity;

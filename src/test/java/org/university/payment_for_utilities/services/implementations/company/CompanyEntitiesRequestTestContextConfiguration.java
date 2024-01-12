@@ -11,9 +11,11 @@ import org.university.payment_for_utilities.configurations.DataBaseConfiguration
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
+import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
 import org.university.payment_for_utilities.services.implementations.address.AddressEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
 
@@ -36,6 +38,34 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     @Autowired
     @Qualifier("privateBankWebsite")
     private Website website;
+    @Autowired
+    @Qualifier("unitKilowatt")
+    private UnitMeasurement unitKilowatt;
+    @Autowired
+    @Qualifier("unitCubicMeter")
+    private UnitMeasurement unitCubicMeter;
+
+    @Lazy
+    @Bean(name = "typeOfferGasRequest")
+    public TypeOfferRequest typeOfferGasRequest(){
+        return TypeOfferRequest
+                .builder()
+                .unitMeasurement(unitCubicMeter)
+                .uaName("Денний")
+                .enName("Daytime")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "typeOfferElectricRequest")
+    public TypeOfferRequest typeOfferElectricRequest(){
+        return TypeOfferRequest
+                .builder()
+                .unitMeasurement(unitKilowatt)
+                .uaName("Цілодобовий")
+                .enName("All day")
+                .build();
+    }
 
     @Lazy
     @Bean(name = "companyPhoneNumRequest")

@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.TypeSettlementRepository;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
 
 @Service
@@ -50,25 +50,5 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
                 .uaName(entity.getUaName())
                 .enName(entity.getEnName())
                 .build();
-    }
-
-    @Override
-    protected void updateEntity(@NonNull TypeSettlement entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (TypeSettlementRequest) updateRequest.getOldValue();
-        var newValue = (TypeSettlementRequest) updateRequest.getNewValue();
-
-        entity.setUaName(
-                updateAttribute(
-                        oldValue.uaName(),
-                        newValue.uaName()
-                )
-        );
-
-        entity.setEnName(
-                updateAttribute(
-                        oldValue.enName(),
-                        newValue.enName()
-                )
-        );
     }
 }

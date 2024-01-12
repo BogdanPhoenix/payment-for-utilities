@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
+import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 
 @SpringBootTest
@@ -58,20 +58,13 @@ class OblastServiceTest extends TransliterationServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter(){
-        var otherName = "other";
-
-        var updateRequest = UpdateRequest
+        var newValue = OblastRequest
                 .builder()
-                .oldValue(firstRequest)
-                .newValue(OblastRequest
-                        .builder()
-                        .uaName("")
-                        .enName(otherName)
-                        .build()
-                )
+                .uaName("")
+                .enName("other")
                 .build();
 
-        testUpdateValueCorrectWithOneChangedParameter(updateRequest);
+        testUpdateValueCorrectWithOneChangedParameter(newValue);
     }
 
     @Test

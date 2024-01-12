@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.repositories.address;
+package org.university.payment_for_utilities.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;

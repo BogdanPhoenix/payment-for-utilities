@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
+import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
 
 @SpringBootTest
@@ -61,20 +61,13 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
     protected void testUpdateValueCorrectWithOneChangedParameter(){
-        var otherName = "other";
-
-        var updateRequest = UpdateRequest
+        var newValue = SettlementNameRequest
                 .builder()
-                .oldValue(firstRequest)
-                .newValue(SettlementNameRequest
-                        .builder()
-                        .uaName("")
-                        .enName(otherName)
-                        .build()
-                )
+                .uaName("")
+                .enName("other")
                 .build();
 
-        testUpdateValueCorrectWithOneChangedParameter(updateRequest);
+        testUpdateValueCorrectWithOneChangedParameter(newValue);
     }
 
     @Test

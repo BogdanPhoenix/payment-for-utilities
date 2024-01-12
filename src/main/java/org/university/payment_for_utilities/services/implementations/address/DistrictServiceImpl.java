@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.District;
 import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.DistrictRepository;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
 @Service
@@ -50,25 +50,5 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
                 .uaName(oblast.getUaName())
                 .enName(oblast.getEnName())
                 .build();
-    }
-
-    @Override
-    protected void updateEntity(@NonNull District entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (DistrictRequest) updateRequest.getOldValue();
-        var newValue = (DistrictRequest) updateRequest.getNewValue();
-
-        entity.setUaName(
-                updateAttribute(
-                        oldValue.uaName(),
-                        newValue.uaName()
-                )
-        );
-
-        entity.setEnName(
-                updateAttribute(
-                        oldValue.enName(),
-                        newValue.enName()
-                )
-        );
     }
 }

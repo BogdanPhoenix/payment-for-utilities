@@ -1,12 +1,12 @@
-package org.university.payment_for_utilities.domains.address;
+package org.university.payment_for_utilities.domains.company;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.TableInfo;
 import org.university.payment_for_utilities.domains.TransliterationProperty;
+import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 
 import java.util.List;
 
@@ -17,12 +17,22 @@ import java.util.List;
 @DynamicUpdate
 @DynamicInsert
 @Entity
-@Table(name = "types_settlement")
-public class TypeSettlement implements TransliterationProperty {
+@Table(name = "types_offers",
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"id_unit", "en_name"})
+    }
+)
+public class TypeOffer implements TransliterationProperty {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
+    @EqualsAndHashCode.Exclude
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_unit", nullable = false)
+    @NonNull
+    private UnitMeasurement unitMeasurement;
 
     @Column(name = "ua_name", nullable = false, unique = true)
     @NonNull
@@ -38,20 +48,22 @@ public class TypeSettlement implements TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Settlement> settlements;
+    private List<CompanyTariff> tariffs;
 
     @Override
     public boolean isEmpty() {
         return uaName.isBlank() ||
-                enName.isBlank();
+                enName.isBlank() ||
+                unitMeasurement.isEmpty();
     }
 
     @Contract(" -> new")
-    public static @NonNull TypeSettlement empty(){
-        return TypeSettlement
+    public static @NonNull TypeOffer empty(){
+        return TypeOffer
                 .builder()
                 .uaName("")
                 .enName("")
+                .unitMeasurement(UnitMeasurement.empty())
                 .build();
     }
 }

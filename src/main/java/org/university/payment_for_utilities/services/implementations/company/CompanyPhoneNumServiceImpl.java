@@ -31,6 +31,7 @@ public class CompanyPhoneNumServiceImpl extends PhoneNumServiceAbstract<CompanyP
                 .builder()
                 .company(companyPhoneNumRequest.company())
                 .phoneNum(companyPhoneNumRequest.phoneNum())
+                .currentData(true)
                 .build();
     }
 

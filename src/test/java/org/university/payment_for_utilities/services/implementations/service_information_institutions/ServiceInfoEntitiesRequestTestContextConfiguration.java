@@ -5,8 +5,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
 import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
+import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
 
 @TestConfiguration
@@ -17,6 +19,40 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     private WebsiteServiceImpl websiteService;
     @Autowired
     private EdrpouServiceImpl edrpouService;
+    @Autowired
+    private UnitMeasurementServiceImpl unitMeasurementService;
+
+    @Lazy
+    @Bean(name = "unitKilowatt")
+    public UnitMeasurement unitKilowatt(){
+        return createUnitMeasurement(unitKilowattRequest());
+    }
+
+    @Lazy
+    @Bean(name = "unitCubicMeter")
+    public UnitMeasurement unitCubicMeter(){
+        return createUnitMeasurement(unitCubicMeterRequest());
+    }
+
+    @Lazy
+    @Bean(name = "unitKilowattRequest")
+    public UnitMeasurementRequest unitKilowattRequest(){
+        return UnitMeasurementRequest
+                .builder()
+                .uaName("кіловат")
+                .enName("kilowatt")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "unitCubicMeterRequest")
+    public UnitMeasurementRequest unitCubicMeterRequest(){
+        return UnitMeasurementRequest
+                .builder()
+                .uaName("куб. м.")
+                .enName("cubic meter")
+                .build();
+    }
 
     @Lazy
     @Bean(name = "privateBankWebsite")
@@ -136,6 +172,11 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
                 .builder()
                 .edrpou("14380701")
                 .build();
+    }
+
+    private UnitMeasurement createUnitMeasurement(UnitMeasurementRequest unitMeasurementRequest){
+        var unitMeasurementResponse = unitMeasurementService.addValue(unitMeasurementRequest);
+        return unitMeasurementService.createEntity(unitMeasurementResponse);
     }
 
     private Website createWebsite(WebsiteRequest websiteRequest){

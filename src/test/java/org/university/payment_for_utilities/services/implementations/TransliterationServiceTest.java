@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.services.implementations.address;
+package org.university.payment_for_utilities.services.implementations;
 
 import lombok.NonNull;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +9,6 @@ import org.university.payment_for_utilities.pojo.requests.address.interfaces.Tra
 import org.university.payment_for_utilities.pojo.responses.address.interfaces.TransliterationResponse;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,9 +27,14 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
         );
     }
 
-    protected void testUpdateValueCorrectWithOneChangedParameter(@NonNull UpdateRequest updateRequest){
-        var transliterationRequest = (TransliterationRequest) updateRequest.getNewValue();
-        var otherName = transliterationRequest
+    protected void testUpdateValueCorrectWithOneChangedParameter(@NonNull TransliterationRequest newValue){
+        var updateRequest = UpdateRequest
+                .builder()
+                .oldValue(firstRequest)
+                .newValue(newValue)
+                .build();
+
+        var otherName = newValue
                 .enName();
 
         var response = (TransliterationResponse) service.addValue(firstRequest);

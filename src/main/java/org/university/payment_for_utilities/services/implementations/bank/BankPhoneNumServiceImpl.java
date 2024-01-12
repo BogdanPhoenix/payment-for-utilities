@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.services.implementations.bank;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
@@ -31,6 +30,7 @@ public class BankPhoneNumServiceImpl extends PhoneNumServiceAbstract<BankPhoneNu
                 .builder()
                 .bank(bankPhoneNumRequest.bank())
                 .phoneNum(bankPhoneNumRequest.phoneNum())
+                .currentData(true)
                 .build();
     }
 
@@ -78,8 +78,6 @@ public class BankPhoneNumServiceImpl extends PhoneNumServiceAbstract<BankPhoneNu
     @Override
     protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
-
-        validateBank(bankPhoneNumRequest.bank());
         validatePhoneNum(bankPhoneNumRequest.phoneNum());
     }
 
@@ -90,20 +88,6 @@ public class BankPhoneNumServiceImpl extends PhoneNumServiceAbstract<BankPhoneNu
 
         validatePhoneNum(oldValue.phoneNum());
         validatePhoneNum(newValue.phoneNum());
-    }
-
-    private void validateBank(Bank bank) throws InvalidInputDataException {
-        if (isValidBank(bank)) {
-            return;
-        }
-
-        var message = String.format("The bank entity you provided has not been validated: \"%s\". The bank entity cannot be null or empty.", bank);
-        log.error(message);
-        throw new InvalidInputDataException(message);
-    }
-
-    private boolean isValidBank(@NonNull Bank bank) {
-        return !bank.isEmpty();
     }
 
     @Override
