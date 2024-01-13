@@ -5,7 +5,10 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.TableInfo;
+import org.university.payment_for_utilities.domains.interfaces.TableInfo;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
+
+import static jakarta.persistence.CascadeType.*;
 
 @Data
 @Builder
@@ -26,9 +29,10 @@ public class BankPhoneNum implements TableInfo {
     @NonNull
     private Bank bank;
 
-    @Column(name = "phone_num", length = 12, nullable = false, unique = true)
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
+    @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
     @NonNull
-    private String phoneNum;
+    private PhoneNum phoneNum;
 
     @Column(name = "current_data")
     private boolean currentData;
@@ -36,7 +40,7 @@ public class BankPhoneNum implements TableInfo {
     @Override
     public boolean isEmpty() {
         return bank.isEmpty() ||
-                phoneNum.isBlank();
+                phoneNum.isEmpty();
     }
 
     @Contract(" -> new")
@@ -44,7 +48,7 @@ public class BankPhoneNum implements TableInfo {
         return BankPhoneNum
                 .builder()
                 .bank(Bank.empty())
-                .phoneNum("")
+                .phoneNum(PhoneNum.empty())
                 .build();
     }
 }

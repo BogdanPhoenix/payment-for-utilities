@@ -6,7 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.TableInfo;
+import org.university.payment_for_utilities.domains.interfaces.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 

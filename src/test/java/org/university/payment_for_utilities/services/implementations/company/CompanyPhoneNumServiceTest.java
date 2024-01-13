@@ -1,35 +1,34 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
-import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.domains.company.Company;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 
-import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(CompanyEntitiesRequestTestContextConfiguration.class)
 class CompanyPhoneNumServiceTest extends CrudServiceTest {
     @Autowired
-    @Qualifier("companyPhoneNumRequest")
+    @Qualifier("companyRivneOblenergoPhoneNumRequest")
     private CompanyPhoneNumRequest companyPhoneNumRequest;
+    @Autowired
+    @Qualifier("companyKyivOblenergoPhoneNumRequest")
+    private CompanyPhoneNumRequest companyKyivOblenergoPhoneNumRequest;
+    @Autowired
+    @Qualifier("updateBankPhoneNum")
+    private PhoneNum updateBankPhoneNum;
 
     @Autowired
     public CompanyPhoneNumServiceTest(CompanyPhoneNumService service) { this.service = service; }
@@ -38,16 +37,9 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
     @Override
     protected void initRequest() {
         firstRequest = companyPhoneNumRequest;
-        var company = companyPhoneNumRequest.company();
-
+        secondRequest = companyKyivOblenergoPhoneNumRequest;
         emptyRequest = CompanyPhoneNumRequest
                 .empty();
-
-        secondRequest = CompanyPhoneNumRequest
-                .builder()
-                .company(company)
-                .phoneNum("380421003698")
-                .build();
 
         super.initRequest();
     }
@@ -61,7 +53,7 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
                 .builder()
                 .id(response.id())
                 .company(response.company())
-                .phoneNum("380444961365")
+                .phoneNum(updateBankPhoneNum)
                 .build();
 
         var newValue = CompanyPhoneNumRequest
@@ -80,31 +72,5 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
 
         assertThat(updateResponse)
                 .isEqualTo(expectedResponse);
-    }
-
-    @ParameterizedTest
-    @MethodSource("testPhoneNums")
-    @DisplayName("Check the exceptions when an invalid mobile phone number format is passed in the request.")
-    void testPhoneThrowInvalidInputDataException(String num){
-        var companyPhoneNumRequest = (CompanyPhoneNumRequest) firstRequest;
-        var request = CompanyPhoneNumRequest
-                .builder()
-                .company(companyPhoneNumRequest.company())
-                .phoneNum(num)
-                .build();
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
-    }
-
-    private static @NonNull Stream<Arguments> testPhoneNums(){
-        return Stream.of(
-                Arguments.of("380"),
-                Arguments.of("380999999999999999"),
-                Arguments.of("38044452f1365"),
-                Arguments.of("38044452@1365"),
-                Arguments.of("574445251365")
-        );
     }
 }

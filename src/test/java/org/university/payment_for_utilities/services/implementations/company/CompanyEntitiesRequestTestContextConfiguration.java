@@ -11,6 +11,7 @@ import org.university.payment_for_utilities.configurations.DataBaseConfiguration
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
@@ -33,17 +34,32 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     @Qualifier("addressResidence")
     private AddressResidence addressResidence;
     @Autowired
+    @Qualifier("addressKyivResidence")
+    private AddressResidence addressKyivResidence;
+    @Autowired
     @Qualifier("privateBankEdrpou")
     private Edrpou edrpou;
     @Autowired
+    @Qualifier("raiffeisenBankEdrpou")
+    private Edrpou raiffeisenBankEdrpou;
+    @Autowired
     @Qualifier("privateBankWebsite")
     private Website website;
+    @Autowired
+    @Qualifier("raiffeisenBankWebsite")
+    private Website raiffeisenBankWebsite;
     @Autowired
     @Qualifier("unitKilowatt")
     private UnitMeasurement unitKilowatt;
     @Autowired
     @Qualifier("unitCubicMeter")
     private UnitMeasurement unitCubicMeter;
+    @Autowired
+    @Qualifier("companyPhoneNum")
+    private PhoneNum companyPhoneNum;
+    @Autowired
+    @Qualifier("bankPhoneNum")
+    private PhoneNum bankPhoneNum;
 
     @Lazy
     @Bean(name = "typeOfferGasRequest")
@@ -68,20 +84,20 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "companyPhoneNumRequest")
-    public CompanyPhoneNumRequest companyPhoneNumRequest(){
-        var company = createCompany(companyRequest());
+    @Bean(name = "companyRivneOblenergoPhoneNumRequest")
+    public CompanyPhoneNumRequest companyRivneOblenergoPhoneNumRequest(){
+        var company = createCompany(companyRivneOblenergoRequest());
 
         return CompanyPhoneNumRequest
                 .builder()
                 .company(company)
-                .phoneNum("380496321573")
+                .phoneNum(companyPhoneNum)
                 .build();
     }
 
     @Lazy
-    @Bean(name = "companyRequest")
-    public CompanyRequest companyRequest(){
+    @Bean(name = "companyRivneOblenergoRequest")
+    public CompanyRequest companyRivneOblenergoRequest(){
         return CompanyRequest
                 .builder()
                 .address(addressResidence)
@@ -89,6 +105,31 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .website(website)
                 .name("Рівне ОблЕнерго")
                 .currentAccount("96410247789652")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "companyKyivOblenergoPhoneNumRequest")
+    public CompanyPhoneNumRequest companyKyivOblenergoPhoneNumRequest(){
+        var company = createCompany(companyKyivOblenergoRequest());
+
+        return CompanyPhoneNumRequest
+                .builder()
+                .company(company)
+                .phoneNum(bankPhoneNum)
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "companyKyivOblenergoRequest")
+    public CompanyRequest companyKyivOblenergoRequest(){
+        return CompanyRequest
+                .builder()
+                .address(addressKyivResidence)
+                .edrpou(raiffeisenBankEdrpou)
+                .website(raiffeisenBankWebsite)
+                .name("Київ ОблЕнерго")
+                .currentAccount("41203654129521")
                 .build();
     }
 

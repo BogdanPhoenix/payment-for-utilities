@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.service_information_institutions;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -16,7 +15,6 @@ import org.university.payment_for_utilities.services.interfaces.service_informat
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouRepository> implements EdrpouService {
     private static final String EDRPOU_TEMPLATE = "^\\d{8}$";
@@ -89,8 +87,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
         }
 
         var message = String.format("The EDRPOU: \"%s\" of the bank has not been validated. It should contain only eight digits.", edrpou);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isEdrpou(@NonNull String edrpou){

@@ -4,17 +4,18 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.bank.Bank;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 
 @Builder
 public record BankPhoneNumRequest(
         Bank bank,
-        String phoneNum
+        PhoneNum phoneNum
 ) implements Request {
     @Override
     public boolean isEmpty() {
         return this.bank.isEmpty() ||
-                this.phoneNum.isBlank();
+                this.phoneNum.isEmpty();
     }
 
     @Contract(" -> new")
@@ -22,7 +23,7 @@ public record BankPhoneNumRequest(
         return BankPhoneNumRequest
                 .builder()
                 .bank(Bank.empty())
-                .phoneNum("")
+                .phoneNum(PhoneNum.empty())
                 .build();
     }
 }

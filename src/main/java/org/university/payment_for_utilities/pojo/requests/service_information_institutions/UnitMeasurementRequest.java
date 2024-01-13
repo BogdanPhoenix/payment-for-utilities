@@ -3,7 +3,7 @@ package org.university.payment_for_utilities.pojo.requests.service_information_i
 import lombok.Builder;
 import lombok.NonNull;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.TransliterationRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.TransliterationRequest;
 
 @Builder
 public record UnitMeasurementRequest(

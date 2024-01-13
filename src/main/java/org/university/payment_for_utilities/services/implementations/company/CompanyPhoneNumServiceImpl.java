@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
@@ -12,14 +11,13 @@ import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneN
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.company.CompanyPhoneNumRepository;
-import org.university.payment_for_utilities.services.implementations.PhoneNumServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 
 import java.util.Optional;
 
-@Slf4j
 @Service
-public class CompanyPhoneNumServiceImpl extends PhoneNumServiceAbstract<CompanyPhoneNum, CompanyPhoneNumRepository> implements CompanyPhoneNumService {
+public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<CompanyPhoneNum, CompanyPhoneNumRepository> implements CompanyPhoneNumService {
     protected CompanyPhoneNumServiceImpl(CompanyPhoneNumRepository repository) {
         super(repository, "Company phone nums");
     }
@@ -81,26 +79,16 @@ public class CompanyPhoneNumServiceImpl extends PhoneNumServiceAbstract<CompanyP
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
 
         validateCompany(companyPhoneNumRequest.company());
-        validatePhoneNum(companyPhoneNumRequest.phoneNum());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (CompanyPhoneNumRequest) updateRequest.getOldValue();
-        var newValue = (CompanyPhoneNumRequest) updateRequest.getNewValue();
-
-        validatePhoneNum(oldValue.phoneNum());
-        validatePhoneNum(newValue.phoneNum());
+        validatePhone(companyPhoneNumRequest.phoneNum());
     }
 
     private void validateCompany(Company company) throws InvalidInputDataException {
-        if(isValidCompany(company)){
+        if (isValidCompany(company)) {
             return;
         }
 
         var message = String.format("The company entity you provided has not been validated: \"%s\". The company entity cannot be null or empty.", company);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isValidCompany(@NonNull Company company) {
@@ -111,7 +99,8 @@ public class CompanyPhoneNumServiceImpl extends PhoneNumServiceAbstract<CompanyP
     protected Optional<CompanyPhoneNum> findOldEntity(@NonNull Request request) {
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
         return repository
-                .findByPhoneNum(
+                .findByCompanyAndPhoneNum(
+                        companyPhoneNumRequest.company(),
                         companyPhoneNumRequest.phoneNum()
                 );
     }

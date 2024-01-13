@@ -1,8 +1,8 @@
 package org.university.payment_for_utilities.services.implementations.bank;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
@@ -11,14 +11,13 @@ import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResp
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.bank.BankPhoneNumRepository;
-import org.university.payment_for_utilities.services.implementations.PhoneNumServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 
 import java.util.Optional;
 
-@Slf4j
 @Service
-public class BankPhoneNumServiceImpl extends PhoneNumServiceAbstract<BankPhoneNum, BankPhoneNumRepository> implements BankPhoneNumService {
+public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPhoneNum, BankPhoneNumRepository> implements BankPhoneNumService {
     public BankPhoneNumServiceImpl(BankPhoneNumRepository repository) {
         super(repository, "Bank phone nums");
     }
@@ -78,23 +77,30 @@ public class BankPhoneNumServiceImpl extends PhoneNumServiceAbstract<BankPhoneNu
     @Override
     protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
-        validatePhoneNum(bankPhoneNumRequest.phoneNum());
+
+        validateBank(bankPhoneNumRequest.bank());
+        validatePhone(bankPhoneNumRequest.phoneNum());
     }
 
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (BankPhoneNumRequest) updateRequest.getOldValue();
-        var newValue = (BankPhoneNumRequest) updateRequest.getNewValue();
+    private void validateBank(Bank bank) throws InvalidInputDataException {
+        if (isValidBank(bank)) {
+            return;
+        }
 
-        validatePhoneNum(oldValue.phoneNum());
-        validatePhoneNum(newValue.phoneNum());
+        var message = String.format("The bank entity you provided has not been validated: \"%s\". The bank entity cannot be null or empty.", bank);
+        throwRuntimeException(message, InvalidInputDataException::new);
+    }
+
+    private boolean isValidBank(@NonNull Bank bank) {
+        return !bank.isEmpty();
     }
 
     @Override
     protected Optional<BankPhoneNum> findOldEntity(@NonNull Request request) {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
         return repository
-                .findByPhoneNum(
+                .findByBankAndPhoneNum(
+                        bankPhoneNumRequest.bank(),
                         bankPhoneNumRequest.phoneNum()
                 );
     }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.university.payment_for_utilities.domains.TableInfo;
+import org.university.payment_for_utilities.domains.interfaces.TableInfo;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -17,6 +17,7 @@ import org.university.payment_for_utilities.services.interfaces.CrudService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepository<T, Long>> implements CrudService {
@@ -83,7 +84,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         validateUpdate(updateRequest);
 
         var entity = findOldEntity(updateRequest.getOldValue())
-                .orElseThrow(() -> new NotFindEntityInDataBaseException(fatalMessageFindOldEntity));
+                .orElseThrow(() -> throwNotFindEntityInDataBaseException(fatalMessageFindOldEntity));
 
         updateEntity(entity, updateRequest);
         var result = repository.save(entity);
@@ -105,10 +106,10 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     @Override
     public Response removeValue(@NonNull Request request) throws NotFindEntityInDataBaseException {
         var entity = findOldEntity(request)
-                .orElseThrow(() ->
-                        new NotFindEntityInDataBaseException(
-                                String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request)
-                        )
+                .orElseThrow(() -> {
+                        var message = String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request);
+                        return throwNotFindEntityInDataBaseException(message);
+                    }
                 );
 
         repository.deleteById(entity.getId());
@@ -129,10 +130,10 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
 
         var oblast = repository
                 .findById(id)
-                .orElseThrow(() ->
-                        new NotFindEntityInDataBaseException(
-                                String.format("Unable to find an entity in the \"%s\" table using the specified identifier: %d.", tableName, id)
-                        )
+                .orElseThrow(() -> {
+                            var message = String.format("Unable to find an entity in the \"%s\" table using the specified identifier: %d.", tableName, id);
+                            return throwNotFindEntityInDataBaseException(message);
+                        }
                 );
 
         log.info(MESSAGE_SUCCESS_VALIDATION);
@@ -153,8 +154,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
             return;
         }
 
-        log.error(message);
-        throw new EmptyRequestException(message);
+        throwRuntimeException(message, EmptyRequestException::new);
     }
 
     private boolean isRequestEmpty(Request request){
@@ -167,8 +167,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         }
 
         var message = String.format("The \"%s\" entity is already present in the \"%s\" table.", request, tableName);
-        log.error(message);
-        throw new DuplicateException(message);
+        throwRuntimeException(message, DuplicateException::new);
     }
 
     protected boolean isDuplicate(@NonNull Request request){
@@ -182,8 +181,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         }
 
         var message = String.format("The data in the %s query should contain only Cyrillic and Latin letters, hyphens, and spaces.", name);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     @Contract(pure = true)
@@ -203,6 +201,16 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return newValue == null || newValue.isEmpty()
                 ? oldValue
                 : newValue;
+    }
+
+    protected NotFindEntityInDataBaseException throwNotFindEntityInDataBaseException(@NonNull String message){
+        log.error(message);
+        return new NotFindEntityInDataBaseException(message);
+    }
+
+    protected void throwRuntimeException(@NonNull String message, @NonNull Function<String, ? extends RuntimeException> exception){
+        log.error(message);
+        throw exception.apply(message);
     }
 
     protected abstract T createEntity(Request request);

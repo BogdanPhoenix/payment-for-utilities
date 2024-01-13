@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -16,7 +15,6 @@ import org.university.payment_for_utilities.services.interfaces.company.CompanyS
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepository> implements CompanyService {
     private static final String CURRENT_ACCOUNT_TEMPLATE = "^\\d{14}$";
@@ -129,8 +127,7 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
         }
 
         var message = String.format("The current account you provided: \"%s\" company has not been validated. It must contain exactly fourteen digits.", currentAccount);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isCurrentAccount(@NonNull String currentAccount) {

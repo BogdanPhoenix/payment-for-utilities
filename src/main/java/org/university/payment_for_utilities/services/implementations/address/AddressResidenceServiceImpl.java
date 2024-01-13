@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -16,7 +15,6 @@ import org.university.payment_for_utilities.services.interfaces.address.AddressR
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResidence, AddressResidenceRepository> implements AddressResidenceService {
     private static final String NUM_HOUSE_TEMPLATE = "^[\\dA-ZА-ЯІЇҐ\\-\\s]+$";
@@ -153,8 +151,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         }
 
         var message = String.format("You entered the wrong street name format: %s. The name should contain only Cyrillic and Latin letters, hyphens, and spaces.", name);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private void validateNumHouse(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
@@ -163,8 +160,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         }
 
         var message = String.format("You entered the wrong house number format: %s. The house number can contain Cyrillic or Latin letters, numbers, hyphens, and spaces.", request.numHouse());
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isValidNumHouse(@NonNull String numHouse){
@@ -179,8 +175,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         }
 
         var message = String.format("You entered the wrong format for the entrance number: %s. The entrance number can contain no more than three digits.", request.numEntrance());
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isValidNumEntrance(@NonNull String numEntrance){
@@ -193,8 +188,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         }
 
         var message = String.format("You entered the wrong apartment number format: %s. The apartment number can contain no more than five digits.", request.numApartment());
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isValidNumApartment(@NonNull String numApartment){

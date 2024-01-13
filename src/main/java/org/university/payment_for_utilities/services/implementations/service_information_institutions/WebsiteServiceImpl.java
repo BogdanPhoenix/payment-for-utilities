@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.service_information_institutions;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -16,7 +15,6 @@ import org.university.payment_for_utilities.services.interfaces.service_informat
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepository> implements WebsiteService {
     private static final String WEBSITE_TEMPLATE = "^(http|https)://.+";
@@ -89,8 +87,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         }
 
         var message = String.format("The link you provided: \"%s\" to the bank's website was not validated. It must match the following template: \"%s\".", webSite, WEBSITE_TEMPLATE);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isWebSite(@NonNull String webSite){

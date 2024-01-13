@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.domains;
+package org.university.payment_for_utilities.domains.interfaces;
 
 public interface TransliterationProperty extends TableInfo{
     void setUaName(String uaName);

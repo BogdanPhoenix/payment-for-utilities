@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.TransliterationRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.TransliterationRequest;
 import org.university.payment_for_utilities.pojo.responses.address.interfaces.TransliterationResponse;
 import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;

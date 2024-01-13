@@ -5,9 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
+import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.domains.interfaces.TableInfo;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.company.Company;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.CascadeType.DETACH;
@@ -19,40 +19,41 @@ import static jakarta.persistence.CascadeType.DETACH;
 @DynamicUpdate
 @DynamicInsert
 @Entity
-@Table(name = "edrpou_codes")
-public class Edrpou implements TableInfo {
+@Table(name = "phone_numbers")
+public class PhoneNum implements TableInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
+    @EqualsAndHashCode.Exclude
     private Long id;
 
-    @Column(name = "edrpou", length = 8, nullable = false, unique = true)
+    @Column(name = "number", length = 12, nullable = false, unique = true)
     @NonNull
-    private String edrpou;
+    private String number;
 
     @Column(name = "current_data")
     private boolean currentData;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "edrpou", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
-    private Company company;
+    @OneToOne(mappedBy = "phoneNum", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
+    private CompanyPhoneNum companyPhone;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "edrpou", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
-    private Bank bank;
+    @OneToOne(mappedBy = "phoneNum", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
+    private BankPhoneNum bankPhoneNum;
 
     @Override
     public boolean isEmpty() {
-        return edrpou.isBlank();
+        return number.isBlank();
     }
 
     @Contract(" -> new")
-    public static @NonNull Edrpou empty(){
-        return Edrpou
+    public static @NonNull PhoneNum empty() {
+        return PhoneNum
                 .builder()
-                .edrpou("")
+                .number("")
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.Settlement;
@@ -19,7 +18,6 @@ import org.university.payment_for_utilities.services.interfaces.address.Settleme
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, SettlementRepository> implements SettlementService {
     private static final String INDEX_TEMPLATE = "^\\d{5}$";
@@ -112,8 +110,7 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         }
 
         var message = String.format("You entered an incorrect zip code: \"%s\". The area code must consist of only numbers and be five characters long.", zipCode);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isValidIndex(@NonNull String zipCode) {

@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.TransliterationProperty;
+import org.university.payment_for_utilities.domains.interfaces.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 
 import java.util.List;

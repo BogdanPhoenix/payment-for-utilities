@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.TableInfo;
+import org.university.payment_for_utilities.domains.interfaces.TableInfo;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.company.Company;
 

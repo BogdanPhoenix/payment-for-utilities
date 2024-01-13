@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import(CompanyEntitiesRequestTestContextConfiguration.class)
 class CompanyServiceTest extends CrudServiceTest {
     @Autowired
-    @Qualifier("companyRequest")
+    @Qualifier("companyRivneOblenergoRequest")
     private CompanyRequest companyRequest;
 
     @Autowired

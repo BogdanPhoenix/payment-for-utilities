@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.bank;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -16,7 +15,6 @@ import org.university.payment_for_utilities.services.interfaces.bank.BankService
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> implements BankService {
     private static final String MFO_TEMPLATE = "^\\d{6}$";
@@ -121,8 +119,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         }
 
         var message = String.format("The MFO you provided: \"%s\" of the bank has not been validated. It should contain only six digits.", mfo);
-        log.error(message);
-        throw new InvalidInputDataException(message);
+        throwRuntimeException(message, InvalidInputDataException::new);
     }
 
     private boolean isMfo(@NonNull String mfo){

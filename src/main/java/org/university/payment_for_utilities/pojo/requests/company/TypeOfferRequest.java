@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
-import org.university.payment_for_utilities.pojo.requests.address.interfaces.TransliterationRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.TransliterationRequest;
 
 @Builder
 public record TypeOfferRequest(

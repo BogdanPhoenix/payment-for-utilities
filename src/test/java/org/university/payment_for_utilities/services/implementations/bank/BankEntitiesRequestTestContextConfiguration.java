@@ -7,6 +7,7 @@ import org.springframework.context.annotation.*;
 import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
@@ -14,7 +15,10 @@ import org.university.payment_for_utilities.services.implementations.service_inf
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.bank")
-@Import({DataBaseConfiguration.class, ServiceInfoEntitiesRequestTestContextConfiguration.class})
+@Import({
+        DataBaseConfiguration.class,
+        ServiceInfoEntitiesRequestTestContextConfiguration.class
+})
 public class BankEntitiesRequestTestContextConfiguration {
     @Autowired
     private BankServiceImpl bankService;
@@ -30,16 +34,22 @@ public class BankEntitiesRequestTestContextConfiguration {
     @Autowired
     @Qualifier("raiffeisenBankUpdateEdrpou")
     private Edrpou raiffeisenBankEdrpou;
+    @Autowired
+    @Qualifier("bankPhoneNum")
+    private PhoneNum privateBankPhoneNum;
+    @Autowired
+    @Qualifier("companyPhoneNum")
+    private PhoneNum raiffeisenBankPhoneNum;
 
     @Lazy
-    @Bean(name = "bankPhoneNumRequest")
-    public BankPhoneNumRequest bankPhoneNumRequest(){
+    @Bean(name = "privateBankPhoneNumRequest")
+    public BankPhoneNumRequest privateBankPhoneNumRequest(){
         var bank = createBank(privateBankRequest());
 
         return BankPhoneNumRequest
                 .builder()
                 .bank(bank)
-                .phoneNum("380496321563")
+                .phoneNum(privateBankPhoneNum)
                 .build();
     }
 
@@ -56,9 +66,15 @@ public class BankEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "raiffeisenBankUpdate")
-    public Bank raiffeisenBankUpdate(){
-        return createBank(raiffeisenBankUpdateRequest());
+    @Bean(name = "raiffeisenBankPhoneNumRequest")
+    public BankPhoneNumRequest raiffeisenBankPhoneNumRequest(){
+        var bank = createBank(raiffeisenBankUpdateRequest());
+
+        return BankPhoneNumRequest
+                .builder()
+                .bank(bank)
+                .phoneNum(raiffeisenBankPhoneNum)
+                .build();
     }
 
     @Lazy
