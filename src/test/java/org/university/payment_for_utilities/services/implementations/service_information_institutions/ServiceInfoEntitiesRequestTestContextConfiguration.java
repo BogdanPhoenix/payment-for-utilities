@@ -169,6 +169,21 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "kyivEdrpou")
+    public Edrpou kyivEdrpou(){
+        return createEdrpou(kyivEdrpouRequest());
+    }
+
+    @Lazy
+    @Bean(name = "kyivEdrpouRequest")
+    public EdrpouRequest kyivEdrpouRequest(){
+        return EdrpouRequest
+                .builder()
+                .edrpou("14305919")
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "raiffeisenBankUpdateEdrpou")
     public Edrpou raiffeisenBankUpdateEdrpou(){
         return createEdrpou(raiffeisenBankUpdateEdrpouRequest());

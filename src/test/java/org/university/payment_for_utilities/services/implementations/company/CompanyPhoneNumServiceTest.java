@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
@@ -17,6 +18,7 @@ import org.university.payment_for_utilities.services.interfaces.company.CompanyP
 
 @SpringBootTest
 @Import(CompanyEntitiesRequestTestContextConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CompanyPhoneNumServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("companyRivneOblenergoPhoneNumRequest")

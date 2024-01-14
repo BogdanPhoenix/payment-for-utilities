@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
@@ -27,10 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(CompanyEntitiesRequestTestContextConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CompanyServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("companyRivneOblenergoRequest")
-    private CompanyRequest companyRequest;
+    private CompanyRequest companyRivneOblenergoRequest;
     @Autowired
     @Qualifier("companyKyivOblenergoRequest")
     private CompanyRequest companyKyivOblenergoRequest;
@@ -41,7 +43,7 @@ class CompanyServiceTest extends CrudServiceTest {
     @BeforeEach
     @Override
     protected void initRequest(){
-        firstRequest = companyRequest;
+        firstRequest = companyRivneOblenergoRequest;
         secondRequest = companyKyivOblenergoRequest;
         emptyRequest = CompanyRequest
                 .empty();
