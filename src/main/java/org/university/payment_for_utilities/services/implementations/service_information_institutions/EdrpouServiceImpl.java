@@ -8,7 +8,6 @@ import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
@@ -54,31 +53,18 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     }
 
     @Override
-    protected void updateEntity(@NonNull Edrpou entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (EdrpouRequest) updateRequest.getOldValue();
-        var newValue = (EdrpouRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull Edrpou entity, @NonNull Request request) {
+        var newValue = (EdrpouRequest) request;
 
-        entity.setEdrpou(
-                updateAttribute(
-                        oldValue.edrpou(),
-                        newValue.edrpou()
-                )
-        );
+        if(!newValue.edrpou().isBlank()){
+            entity.setEdrpou(newValue.edrpou());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var edrpouRequest = (EdrpouRequest) request;
         validateEdrpou(edrpouRequest.edrpou());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (EdrpouRequest) updateRequest.getOldValue();
-        var newValue = (EdrpouRequest) updateRequest.getNewValue();
-
-        validateEdrpou(oldValue.edrpou());
-        validateEdrpou(newValue.edrpou());
     }
 
     private void validateEdrpou(@NonNull String edrpou) throws InvalidInputDataException {
@@ -91,7 +77,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     }
 
     private boolean isEdrpou(@NonNull String edrpou){
-        return edrpou
+        return edrpou.isBlank() || edrpou
                 .matches(EDRPOU_TEMPLATE);
     }
 

@@ -1,8 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.bank;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,12 +9,11 @@ import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Import(BankEntitiesRequestTestContextConfiguration.class)
@@ -38,40 +36,27 @@ class BankPhoneNumTest extends CrudServiceTest {
     protected void initRequest() {
         firstRequest = privateBankPhoneNumRequest;
         secondRequest = raiffeisenBankPhoneNumRequest;
-
         emptyRequest = BankPhoneNumRequest
                 .empty();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var response = (BankPhoneNumResponse) service.addValue(secondRequest);
-        var expectedResponse = BankPhoneNumResponse
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return BankPhoneNumResponse
                 .builder()
                 .id(response.id())
-                .bank(response.bank())
+                .bank(raiffeisenBankPhoneNumRequest.bank())
                 .phoneNum(updateBankPhoneNum)
                 .build();
+    }
 
-        var newValue = BankPhoneNumRequest
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (BankPhoneNumResponse) expectedResponse;
+        return BankPhoneNumRequest
                 .builder()
                 .bank(Bank.empty())
-                .phoneNum(expectedResponse.phoneNum())
+                .phoneNum(response.phoneNum())
                 .build();
-
-        var updateRequest = UpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(newValue)
-                .build();
-
-        var updateResponse = (BankPhoneNumResponse) service.updateValue(updateRequest);
-
-        assertThat(updateResponse)
-                .isEqualTo(expectedResponse);
     }
 }

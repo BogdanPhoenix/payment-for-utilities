@@ -1,5 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.service_information_institutions;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,13 +9,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -23,6 +24,9 @@ class WebsiteTest extends CrudServiceTest {
     @Autowired
     @Qualifier("privateBankWebsiteRequest")
     private WebsiteRequest privateBankWebsiteRequest;
+    @Autowired
+    @Qualifier("raiffeisenBankWebsiteRequest")
+    private WebsiteRequest raiffeisenBankWebsiteRequest;
 
     @Autowired
     public WebsiteTest(WebsiteService service) { this.service = service; }
@@ -31,38 +35,27 @@ class WebsiteTest extends CrudServiceTest {
     @Override
     protected void initRequest(){
         firstRequest = privateBankWebsiteRequest;
-
+        secondRequest = raiffeisenBankWebsiteRequest;
         emptyRequest = WebsiteRequest
                 .empty();
-
-        secondRequest = WebsiteRequest
-                .builder()
-                .website("https://raiffeisen.ua/")
-                .build();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var newValue = WebsiteRequest
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return WebsiteResponse
                 .builder()
+                .id(response.id())
                 .website("https://raiffeisen_new.ua/")
                 .build();
+    }
 
-        var updateRequest = UpdateRequest
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (WebsiteResponse) expectedResponse;
+        return WebsiteRequest
                 .builder()
-                .oldValue(secondRequest)
-                .newValue(newValue)
+                .website(response.website())
                 .build();
-
-        var response = (WebsiteResponse) service.addValue(secondRequest);
-        var updateResponse = (WebsiteResponse) service.updateValue(updateRequest);
-
-        assertEquals(response.id(), updateResponse.id());
-        assertEquals(newValue.website(), updateResponse.website());
     }
 
     @Test

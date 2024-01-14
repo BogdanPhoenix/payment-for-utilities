@@ -85,6 +85,8 @@ public class AddressResidence implements TableInfo {
                 .uaNameStreet("")
                 .enNameStreet("")
                 .numHouse("")
+                .numEntrance("")
+                .numApartment("")
                 .build();
     }
 }

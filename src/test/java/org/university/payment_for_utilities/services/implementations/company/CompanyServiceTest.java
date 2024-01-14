@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.services.implementations.company;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -16,14 +15,14 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -32,16 +31,9 @@ class CompanyServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("companyRivneOblenergoRequest")
     private CompanyRequest companyRequest;
-
     @Autowired
-    @Qualifier("addressKyivResidence")
-    private AddressResidence addressResidence;
-    @Autowired
-    @Qualifier("kyivEdrpou")
-    private Edrpou edrpou;
-    @Autowired
-    @Qualifier("kyivWebsite")
-    private Website website;
+    @Qualifier("companyKyivOblenergoRequest")
+    private CompanyRequest companyKyivOblenergoRequest;
 
     @Autowired
     public CompanyServiceTest(CompanyService service) { this.service = service; }
@@ -50,56 +42,35 @@ class CompanyServiceTest extends CrudServiceTest {
     @Override
     protected void initRequest(){
         firstRequest = companyRequest;
-
+        secondRequest = companyKyivOblenergoRequest;
         emptyRequest = CompanyRequest
                 .empty();
-
-        secondRequest = CompanyRequest
-                .builder()
-                .address(addressResidence)
-                .edrpou(edrpou)
-                .website(website)
-                .name("Київ ОблЕнерго")
-                .currentAccount("14236589632145")
-                .build();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var response = (CompanyResponse) service.addValue(secondRequest);
-        var expectedResponse = CompanyResponse
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return CompanyResponse
                 .builder()
                 .id(response.id())
-                .address(addressResidence)
-                .edrpou(edrpou)
-                .website(website)
+                .address(companyKyivOblenergoRequest.address())
+                .edrpou(companyKyivOblenergoRequest.edrpou())
+                .website(companyKyivOblenergoRequest.website())
                 .name("Київ-обленерго")
                 .currentAccount("72341000245521")
                 .build();
+    }
 
-        var newValue = CompanyRequest
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (CompanyResponse) expectedResponse;
+        return CompanyRequest
                 .builder()
                 .address(AddressResidence.empty())
                 .edrpou(Edrpou.empty())
                 .website(Website.empty())
-                .name(expectedResponse.name())
-                .currentAccount(expectedResponse.currentAccount())
+                .name(response.name())
+                .currentAccount(response.currentAccount())
                 .build();
-
-        var updateRequest = UpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(newValue)
-                .build();
-
-        var updateResponse = (CompanyResponse) service.updateValue(updateRequest);
-
-        assertThat(updateResponse)
-                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest

@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.services.implementations.bank;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,14 +14,14 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -32,11 +31,8 @@ class BankServiceTest extends CrudServiceTest {
     @Qualifier("privateBankRequest")
     private BankRequest privateBankRequest;
     @Autowired
-    @Qualifier("raiffeisenBankWebsite")
-    private Website raiffeisenBankWebsite;
-    @Autowired
-    @Qualifier("raiffeisenBankEdrpou")
-    private Edrpou raiffeisenBankEdrpou;
+    @Qualifier("raiffeisenBankRequest")
+    private BankRequest raiffeisenBankRequest;
 
     @Autowired
     public BankServiceTest(BankService service){ this.service = service; }
@@ -45,53 +41,33 @@ class BankServiceTest extends CrudServiceTest {
     @Override
     protected void initRequest() {
         firstRequest = privateBankRequest;
-
+        secondRequest = raiffeisenBankRequest;
         emptyRequest = BankRequest
                 .empty();
-
-        secondRequest = BankRequest
-                .builder()
-                .name("Raiffeisen Bank")
-                .website(raiffeisenBankWebsite)
-                .edrpou(raiffeisenBankEdrpou)
-                .mfo("380805")
-                .build();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var response = (BankResponse) service.addValue(secondRequest);
-        var expectedResponse = BankResponse
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return BankResponse
                 .builder()
                 .id(response.id())
                 .name("Raiffeisen Bank Ua")
-                .website(raiffeisenBankWebsite)
-                .edrpou(raiffeisenBankEdrpou)
+                .website(raiffeisenBankRequest.website())
+                .edrpou(raiffeisenBankRequest.edrpou())
                 .mfo("423147")
                 .build();
+    }
 
-        var newValue = BankRequest
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (BankResponse) expectedResponse;
+        return BankRequest
                 .builder()
-                .name(expectedResponse.name())
+                .name(response.name())
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())
-                .mfo(expectedResponse.mfo())
+                .mfo(response.mfo())
                 .build();
-
-        var updateRequest = UpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(newValue)
-                .build();
-
-        var updateResponse = (BankResponse) service.updateValue(updateRequest);
-
-        assertThat(updateResponse)
-                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest

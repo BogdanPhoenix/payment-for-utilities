@@ -8,7 +8,6 @@ import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
@@ -54,31 +53,18 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     }
 
     @Override
-    protected void updateEntity(@NonNull Website entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (WebsiteRequest) updateRequest.getOldValue();
-        var newValue = (WebsiteRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull Website entity, @NonNull Request request) {
+        var newValue = (WebsiteRequest) request;
 
-        entity.setWebsite(
-                updateAttribute(
-                        oldValue.website(),
-                        newValue.website()
-                )
-        );
+        if(!newValue.website().isBlank()){
+            entity.setWebsite(newValue.website());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var websiteRequest = (WebsiteRequest) request;
         validateWebSite(websiteRequest.website());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (WebsiteRequest) updateRequest.getOldValue();
-        var newValue = (WebsiteRequest) updateRequest.getNewValue();
-
-        validateWebSite(oldValue.website());
-        validateWebSite(newValue.website());
     }
 
     private void validateWebSite(@NonNull String webSite) throws InvalidInputDataException {

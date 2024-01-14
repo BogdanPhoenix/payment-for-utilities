@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.services.implementations.service_in
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,15 +11,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -29,6 +28,9 @@ class EdrpouServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("privateBankEdrpouRequest")
     private EdrpouRequest privateBankEdrpouRequest;
+    @Autowired
+    @Qualifier("raiffeisenBankEdrpouRequest")
+    private EdrpouRequest raiffeisenBankEdrpouRequest;
 
     @Autowired
     public EdrpouServiceTest(EdrpouService service) { this.service = service;}
@@ -37,39 +39,29 @@ class EdrpouServiceTest extends CrudServiceTest {
     @Override
     protected void initRequest(){
         firstRequest = privateBankEdrpouRequest;
-
+        secondRequest = raiffeisenBankEdrpouRequest;
         emptyRequest = EdrpouRequest
                 .empty();
-
-        secondRequest = EdrpouRequest
-                .builder()
-                .edrpou("14305909")
-                .build();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var newValue = EdrpouRequest
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return EdrpouResponse
                 .builder()
+                .id(response.id())
                 .edrpou("75231456")
                 .build();
-
-        var updateRequest = UpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(newValue)
-                .build();
-
-        var response = (EdrpouResponse) service.addValue(secondRequest);
-        var updateResponse = (EdrpouResponse) service.updateValue(updateRequest);
-
-        assertEquals(response.id(), updateResponse.id());
-        assertEquals(newValue.edrpou(), updateResponse.edrpou());
     }
+
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (EdrpouResponse) expectedResponse;
+        return EdrpouRequest
+                .builder()
+                .edrpou(response.edrpou())
+                .build();
+    }
+
 
     @ParameterizedTest
     @MethodSource("testPhoneEdrpous")

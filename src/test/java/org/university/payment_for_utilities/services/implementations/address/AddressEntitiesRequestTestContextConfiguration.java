@@ -57,7 +57,7 @@ public class AddressEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "addressResidenceRequest")
     public AddressResidenceRequest addressResidenceRequest(){
-        var settlement = createSettlement(settlementRequest());
+        var settlement = createSettlement(settlementRivneRequest());
 
         return AddressResidenceRequest
                 .builder()
@@ -67,6 +67,22 @@ public class AddressEntitiesRequestTestContextConfiguration {
                 .numHouse("5a")
                 .numEntrance("1")
                 .numApartment("305")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "addressKyivRequest")
+    public AddressResidenceRequest addressKyivRequest(){
+        var settlement = createSettlement(settlementRequestKyiv());
+
+        return AddressResidenceRequest
+                .builder()
+                .settlement(settlement)
+                .uaNameStreet("вулиця нова")
+                .enNameStreet("new street")
+                .numHouse("4")
+                .numEntrance("")
+                .numApartment("")
                 .build();
     }
 
@@ -85,8 +101,8 @@ public class AddressEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "settlementRequest")
-    public SettlementRequest settlementRequest(){
+    @Bean(name = "settlementRivneRequest")
+    public SettlementRequest settlementRivneRequest(){
         var type = createTypeSettlement(typeSettlementCityRequest());
         var name = createSettlementName(settlementNameRivneRequest());
 
@@ -94,6 +110,20 @@ public class AddressEntitiesRequestTestContextConfiguration {
                 .builder()
                 .type(type)
                 .zipCode("12345")
+                .name(name)
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "settlementUpdateRequest")
+    public SettlementRequest settlementUpdateRequest(){
+        var type = createTypeSettlement(typeSettlementCityRequest());
+        var name = createSettlementName(nameIvankivRequest());
+
+        return SettlementRequest
+                .builder()
+                .type(type)
+                .zipCode("42136")
                 .name(name)
                 .build();
     }
@@ -115,6 +145,16 @@ public class AddressEntitiesRequestTestContextConfiguration {
                 .builder()
                 .uaName("Київ")
                 .enName("Kyiv")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "nameIvankivRequest")
+    public SettlementNameRequest nameIvankivRequest(){
+        return SettlementNameRequest
+                .builder()
+                .uaName("Іванків")
+                .enName("Ivankiv")
                 .build();
     }
 

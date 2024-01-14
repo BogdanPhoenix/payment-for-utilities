@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.services.implementations.company;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,14 +13,14 @@ import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -45,41 +44,28 @@ class TypeOfferServiceTest extends CrudServiceTest {
 
         emptyRequest = TypeOfferRequest
                 .empty();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var response = service.addValue(secondRequest);
-        var expectedResponse = TypeOfferResponse
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return TypeOfferResponse
                 .builder()
                 .id(response.id())
                 .unitMeasurement(typeOfferGasRequest.unitMeasurement())
                 .uaName("Нічний")
                 .enName("Night")
                 .build();
+    }
 
-        var newValue = TypeOfferRequest
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (TypeOfferResponse) expectedResponse;
+        return TypeOfferRequest
                 .builder()
                 .unitMeasurement(UnitMeasurement.empty())
-                .uaName(expectedResponse.uaName())
-                .enName(expectedResponse.enName())
+                .uaName(response.uaName())
+                .enName(response.enName())
                 .build();
-
-        var updateRequest = UpdateRequest
-                .builder()
-                .oldValue(secondRequest)
-                .newValue(newValue)
-                .build();
-
-        var updateResponse = service.updateValue(updateRequest);
-
-        assertThat(updateResponse)
-                .isNotEqualTo(response)
-                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest

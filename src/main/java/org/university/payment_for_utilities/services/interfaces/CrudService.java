@@ -2,7 +2,6 @@ package org.university.payment_for_utilities.services.interfaces;
 
 import lombok.NonNull;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
@@ -40,14 +39,15 @@ public interface CrudService {
     /**
      * Updates the value of an entity in a database table.
      *
-     * @param updateRequest must not be {@literal null}.
+     * @param id identifier of the current entity {@literal null}
+     * @param request must not be {@literal null}.
      * @return response for the updated entity; never {@literal null}.
      * @throws EmptyRequestException if the variables of the given entity are {@literal null} or {@literal empty}.
      * @throws InvalidInputDataException if the variables of this entity have an incorrect data format.
      * @throws DuplicateException if the table contains an entity value by which you want to update the value of the current entity.
      * @throws NotFindEntityInDataBaseException if the table does not contain the entity you want to update.
      */
-    Response updateValue(@NonNull UpdateRequest updateRequest) throws EmptyRequestException, InvalidInputDataException, DuplicateException, NotFindEntityInDataBaseException;
+    Response updateValue(@NonNull Long id, @NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException, NotFindEntityInDataBaseException;
 
     /**
      * Removes an entity from the table by the specified identifier.

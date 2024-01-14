@@ -1,11 +1,15 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 
@@ -29,11 +33,28 @@ class OblastServiceTest extends TransliterationServiceTest {
     protected void initRequest(){
         firstRequest = rivneRequest;
         secondRequest = kyivRequest;
-
         emptyRequest = OblastRequest
                 .empty();
+    }
 
-        super.initRequest();
+    @Override
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return OblastResponse
+                .builder()
+                .id(response.id())
+                .uaName("Київська")
+                .enName("other")
+                .build();
+    }
+
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (OblastResponse) expectedResponse;
+        return OblastRequest
+                .builder()
+                .uaName("")
+                .enName(response.enName())
+                .build();
     }
 
     @Test
@@ -52,19 +73,6 @@ class OblastServiceTest extends TransliterationServiceTest {
                 .build();
 
         testAddValueThrowInvalidInputData(withNum, withSpecialCharacter);
-    }
-
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter(){
-        var newValue = OblastRequest
-                .builder()
-                .uaName("")
-                .enName("other")
-                .build();
-
-        testUpdateValueCorrectWithOneChangedParameter(newValue);
     }
 
     @Test

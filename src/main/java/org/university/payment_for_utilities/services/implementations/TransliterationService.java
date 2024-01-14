@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.university.payment_for_utilities.domains.interfaces.TransliterationProperty;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.interfaces.TransliterationRequest;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.repositories.TableSearcherRepository;
 
@@ -18,22 +17,11 @@ public abstract class TransliterationService<T extends TransliterationProperty, 
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var transliterationRequest = (TransliterationRequest) request;
 
         validateName(transliterationRequest.uaName());
         validateName(transliterationRequest.enName());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (TransliterationRequest) updateRequest.getOldValue();
-        var newValue = (TransliterationRequest) updateRequest.getNewValue();
-
-        validateName(oldValue.uaName());
-        validateName(oldValue.enName());
-        validateName(newValue.uaName());
-        validateName(newValue.enName());
     }
 
     @Override
@@ -46,22 +34,14 @@ public abstract class TransliterationService<T extends TransliterationProperty, 
     }
 
     @Override
-    protected void updateEntity(@NonNull T entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (TransliterationRequest) updateRequest.getOldValue();
-        var newValue = (TransliterationRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull T entity, @NonNull Request request) {
+        var newValue = (TransliterationRequest) request;
 
-        entity.setUaName(
-                updateAttribute(
-                        oldValue.uaName(),
-                        newValue.uaName()
-                )
-        );
-
-        entity.setEnName(
-                updateAttribute(
-                        oldValue.enName(),
-                        newValue.enName()
-                )
-        );
+        if(!newValue.uaName().isBlank()){
+            entity.setUaName(newValue.uaName());
+        }
+        if(!newValue.enName().isBlank()){
+            entity.setEnName(newValue.enName());
+        }
     }
 }

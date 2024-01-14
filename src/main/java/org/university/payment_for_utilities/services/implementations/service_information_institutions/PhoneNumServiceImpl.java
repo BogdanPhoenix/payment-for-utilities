@@ -9,7 +9,6 @@ import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
@@ -55,31 +54,18 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
     }
 
     @Override
-    protected void updateEntity(@NonNull PhoneNum entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (PhoneNumRequest) updateRequest.getOldValue();
-        var newValue = (PhoneNumRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull PhoneNum entity, @NonNull Request request) {
+        var newValue = (PhoneNumRequest) request;
 
-        entity.setNumber(
-                updateAttribute(
-                        oldValue.number(),
-                        newValue.number()
-                )
-        );
+        if(!newValue.number().isBlank()){
+            entity.setNumber(newValue.number());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var companyPhoneNumRequest = (PhoneNumRequest) request;
         validatePhoneNum(companyPhoneNumRequest.number());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (PhoneNumRequest) updateRequest.getOldValue();
-        var newValue = (PhoneNumRequest) updateRequest.getNewValue();
-
-        validatePhoneNum(oldValue.number());
-        validatePhoneNum(newValue.number());
     }
 
     private void validatePhoneNum(String phoneNum) throws InvalidInputDataException {
@@ -93,7 +79,7 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
 
     @Contract(pure = true)
     private boolean isValidPhoneNum(@NonNull String phoneNum) {
-        return phoneNum
+        return phoneNum.isBlank() || phoneNum
                 .matches(PHONE_NUM_TEMPLATE);
     }
 

@@ -7,7 +7,6 @@ import org.university.payment_for_utilities.pojo.requests.company.TypeOfferReque
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.company.TypeOfferRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
@@ -54,21 +53,6 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
                 .uaName(entity.getUaName())
                 .enName(entity.getEnName())
                 .build();
-    }
-
-    @Override
-    protected void updateEntity(@NonNull TypeOffer entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (TypeOfferRequest) updateRequest.getOldValue();
-        var newValue = (TypeOfferRequest) updateRequest.getNewValue();
-
-        entity.setUnitMeasurement(
-                updateAttribute(
-                        oldValue.unitMeasurement(),
-                        newValue.unitMeasurement()
-                )
-        );
-
-        super.updateEntity(entity, updateRequest);
     }
 
     @Override

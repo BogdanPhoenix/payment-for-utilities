@@ -31,6 +31,8 @@ public record AddressResidenceRequest(
                 .uaNameStreet("")
                 .enNameStreet("")
                 .numHouse("")
+                .numEntrance("")
+                .numApartment("")
                 .build();
     }
 }

@@ -8,7 +8,6 @@ import org.university.payment_for_utilities.pojo.requests.address.AddressResiden
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 @Service
 public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResidence, AddressResidenceRepository> implements AddressResidenceService {
-    private static final String NUM_HOUSE_TEMPLATE = "^[\\dA-ZА-ЯІЇҐ\\-\\s]+$";
+    private static final String NUM_HOUSE_TEMPLATE = "^[\\dA-ZА-ЯІЇҐ\\-\\s]*$";
     private static final String NUM_ENTRANCE_TEMPLATE = "^\\d{0,3}$";
     private static final String NUM_APARTMENT_TEMPLATE = "^\\d{0,5}$";
 
@@ -71,50 +70,31 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     @Override
-    protected void updateEntity(@NonNull AddressResidence entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (AddressResidenceRequest) updateRequest.getOldValue();
-        var newValue = (AddressResidenceRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull AddressResidence entity, @NonNull Request request) {
+        var newValue = (AddressResidenceRequest) request;
 
-        entity.setSettlement(
-                updateAttribute(
-                        oldValue.settlement(),
-                        newValue.settlement()
-                )
-        );
-        entity.setUaNameStreet(
-                updateAttribute(
-                        oldValue.uaNameStreet(),
-                        newValue.uaNameStreet()
-                )
-        );
-        entity.setEnNameStreet(
-                updateAttribute(
-                        oldValue.enNameStreet(),
-                        newValue.enNameStreet()
-                )
-        );
-        entity.setNumHouse(
-                updateAttribute(
-                        oldValue.numHouse(),
-                        newValue.numHouse()
-                )
-        );
-        entity.setNumEntrance(
-                updateAttribute(
-                        oldValue.numEntrance(),
-                        newValue.numEntrance()
-                )
-        );
-        entity.setNumApartment(
-                updateAttribute(
-                        oldValue.numApartment(),
-                        newValue.numApartment()
-                )
-        );
+        if(!newValue.settlement().isEmpty()){
+            entity.setSettlement(newValue.settlement());
+        }
+        if(!newValue.uaNameStreet().isBlank()){
+            entity.setUaNameStreet(newValue.uaNameStreet());
+        }
+        if(!newValue.enNameStreet().isBlank()){
+            entity.setEnNameStreet(newValue.enNameStreet());
+        }
+        if(!newValue.numHouse().isBlank()){
+            entity.setNumHouse(newValue.numHouse());
+        }
+        if(!newValue.numEntrance().isBlank()){
+            entity.setNumEntrance(newValue.numEntrance());
+        }
+        if(!newValue.numApartment().isBlank()){
+            entity.setNumApartment(newValue.numApartment());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var addressRequest = (AddressResidenceRequest) request;
 
         validateStreet(addressRequest.uaNameStreet());
@@ -122,27 +102,6 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         validateNumHouse(addressRequest);
         validateNumEntrance(addressRequest);
         validateNumApartment(addressRequest);
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (AddressResidenceRequest) updateRequest.getOldValue();
-        var newValue = (AddressResidenceRequest) updateRequest.getNewValue();
-
-        validateStreet(oldValue.uaNameStreet());
-        validateStreet(oldValue.enNameStreet());
-
-        validateStreet(newValue.uaNameStreet());
-        validateStreet(newValue.enNameStreet());
-
-        validateNumHouse(oldValue);
-        validateNumHouse(newValue);
-
-        validateNumEntrance(oldValue);
-        validateNumEntrance(newValue);
-
-        validateNumApartment(oldValue);
-        validateNumApartment(newValue);
     }
 
     private void validateStreet(@NonNull String name) throws InvalidInputDataException {

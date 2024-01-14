@@ -7,7 +7,6 @@ import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
@@ -65,43 +64,24 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     }
 
     @Override
-    protected void updateEntity(@NonNull Settlement entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (SettlementRequest) updateRequest.getOldValue();
-        var newValue = (SettlementRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull Settlement entity, @NonNull Request request) {
+        var newValue = (SettlementRequest) request;
 
-        entity.setType(
-                updateAttribute(
-                        oldValue.type(),
-                        newValue.type()
-                )
-        );
-        entity.setZipCode(
-                updateAttribute(
-                        oldValue.zipCode(),
-                        newValue.zipCode()
-                )
-        );
-        entity.setName(
-                updateAttribute(
-                        oldValue.name(),
-                        newValue.name()
-                )
-        );
+        if(!newValue.type().isEmpty()){
+            entity.setType(newValue.type());
+        }
+        if(!newValue.zipCode().isBlank()){
+            entity.setZipCode(newValue.zipCode());
+        }
+        if(!newValue.name().isEmpty()){
+            entity.setName(newValue.name());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+    protected void validationProcedureRequest(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         var settlementRequest = (SettlementRequest) request;
         validateZipCode(settlementRequest.zipCode());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (SettlementRequest) updateRequest.getOldValue();
-        var newValue = (SettlementRequest) updateRequest.getNewValue();
-
-        validateZipCode(oldValue.zipCode());
-        validateZipCode(newValue.zipCode());
     }
 
     private void validateZipCode(@NonNull String zipCode) throws InvalidInputDataException{
@@ -114,7 +94,7 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     }
 
     private boolean isValidIndex(@NonNull String zipCode) {
-        return zipCode
+        return zipCode.isBlank() || zipCode
                 .matches(INDEX_TEMPLATE);
     }
 

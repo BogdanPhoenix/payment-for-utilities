@@ -1,11 +1,15 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
@@ -29,11 +33,28 @@ class DistrictServiceTest extends TransliterationServiceTest {
     protected void initRequest(){
         firstRequest = rivneRequest;
         secondRequest = belotserkivskyiRequest;
-
         emptyRequest = DistrictRequest
                 .empty();
+    }
 
-        super.initRequest();
+    @Override
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return DistrictResponse
+                .builder()
+                .id(response.id())
+                .uaName("Білоцерківський")
+                .enName("other")
+                .build();
+    }
+
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (DistrictResponse) expectedResponse;
+        return DistrictRequest
+                .builder()
+                .uaName("")
+                .enName(response.enName())
+                .build();
     }
 
     @Test
@@ -52,19 +73,6 @@ class DistrictServiceTest extends TransliterationServiceTest {
                 .build();
 
         testAddValueThrowInvalidInputData(withNum, withSpecialCharacter);
-    }
-
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var newValue = DistrictRequest
-                .builder()
-                .uaName("")
-                .enName("other")
-                .build();
-
-        testUpdateValueCorrectWithOneChangedParameter(newValue);
     }
 
     @Test

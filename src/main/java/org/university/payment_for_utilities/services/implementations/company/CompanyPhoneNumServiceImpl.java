@@ -2,14 +2,11 @@ package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
-import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.company.CompanyPhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
@@ -56,43 +53,15 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     }
 
     @Override
-    protected void updateEntity(@NonNull CompanyPhoneNum entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (CompanyPhoneNumRequest) updateRequest.getOldValue();
-        var newValue = (CompanyPhoneNumRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull CompanyPhoneNum entity, @NonNull Request request) {
+        var newValue = (CompanyPhoneNumRequest) request;
 
-        entity.setCompany(
-                updateAttribute(
-                        oldValue.company(),
-                        newValue.company()
-                )
-        );
-        entity.setPhoneNum(
-                updateAttribute(
-                        oldValue.phoneNum(),
-                        newValue.phoneNum()
-                )
-        );
-    }
-
-    @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
-        var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
-
-        validateCompany(companyPhoneNumRequest.company());
-        validatePhone(companyPhoneNumRequest.phoneNum());
-    }
-
-    private void validateCompany(Company company) throws InvalidInputDataException {
-        if (isValidCompany(company)) {
-            return;
+        if(!newValue.company().isEmpty()){
+            entity.setCompany(newValue.company());
         }
-
-        var message = String.format("The company entity you provided has not been validated: \"%s\". The company entity cannot be null or empty.", company);
-        throwRuntimeException(message, InvalidInputDataException::new);
-    }
-
-    private boolean isValidCompany(@NonNull Company company) {
-        return !company.isEmpty();
+        if (!newValue.phoneNum().isEmpty()){
+            entity.setPhoneNum(newValue.phoneNum());
+        }
     }
 
     @Override

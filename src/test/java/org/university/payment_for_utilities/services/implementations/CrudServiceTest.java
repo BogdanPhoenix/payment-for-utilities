@@ -1,11 +1,12 @@
 package org.university.payment_for_utilities.services.implementations;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
@@ -16,21 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public abstract class CrudServiceTest {
+    private final static long ID = Integer.MAX_VALUE;
     protected Request firstRequest;
     protected Request secondRequest;
     protected Request emptyRequest;
-    protected UpdateRequest correctUpdateRequest;
     protected CrudService service;
-
-    protected abstract void testUpdateValueCorrectWithOneChangedParameter();
-
-    protected void initRequest(){
-        correctUpdateRequest = UpdateRequest
-                .builder()
-                .oldValue(firstRequest)
-                .newValue(secondRequest)
-                .build();
-    }
 
     @AfterEach
     public void clearTable(){
@@ -92,35 +83,13 @@ public abstract class CrudServiceTest {
     }
 
     @Test
-    @DisplayName("Check for exceptions when the update request is empty inside or one of its fields is empty.")
-    void testUpdateValueThrowRequestEmpty(){
-        var emptyUpdateRequest = UpdateRequest
-                .builder()
-                .build();
-
-        var requestOldValueEmpty = UpdateRequest
-                .builder()
-                .oldValue(emptyRequest)
-                .newValue(firstRequest)
-                .build();
-
-        assertThrows(EmptyRequestException.class,
-                () -> service.updateValue(emptyUpdateRequest)
-        );
-
-        assertThrows(EmptyRequestException.class,
-                () -> service.updateValue(requestOldValueEmpty)
-        );
-    }
-
-    @Test
     @DisplayName("Checks for exceptions when the update request passes a new area name that already exists in the database table.")
     void testUpdateValueThrowDuplicate(){
         service.addValue(firstRequest);
         service.addValue(secondRequest);
 
         assertThrows(DuplicateException.class,
-                () -> service.updateValue(correctUpdateRequest)
+                () -> service.updateValue(ID, firstRequest)
         );
     }
 
@@ -128,7 +97,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Checks for exceptions when a user wants to update data that is not in a database table in an update request.")
     void testUpdateValueThrowNotFindEntityInDataBase(){
         assertThrows(NotFindEntityInDataBaseException.class,
-                () -> service.updateValue(correctUpdateRequest)
+                () -> service.updateValue(ID, emptyRequest)
         );
     }
 
@@ -175,4 +144,21 @@ public abstract class CrudServiceTest {
         assertFalse(firstRequest.isEmpty());
         assertFalse(secondRequest.isEmpty());
     }
+
+    @Test
+    @DisplayName("Check if an existing entity is successfully updated in the database table.")
+    protected void updateValueCorrectWithOneChangedParameter(){
+        var response = service.addValue(secondRequest);
+        var expectedResponse = updateExpectedResponse(response);
+        var newValue = updateNewValue(expectedResponse);
+        var updateResponse = service.updateValue(response.id(), newValue);
+
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse)
+                .isNotEqualTo(response);
+    }
+
+    protected abstract void initRequest();
+    protected abstract Response updateExpectedResponse(@NonNull Response response);
+    protected abstract Request updateNewValue(@NonNull Response expectedResponse);
 }

@@ -66,6 +66,18 @@ public class BankEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "raiffeisenBankRequest")
+    public BankRequest raiffeisenBankRequest(){
+        return BankRequest
+                .builder()
+                .name("Raiffeisen Bank")
+                .website(raiffeisenBankWebsite)
+                .edrpou(raiffeisenBankEdrpou)
+                .mfo("380805")
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "raiffeisenBankPhoneNumRequest")
     public BankPhoneNumRequest raiffeisenBankPhoneNumRequest(){
         var bank = createBank(raiffeisenBankUpdateRequest());

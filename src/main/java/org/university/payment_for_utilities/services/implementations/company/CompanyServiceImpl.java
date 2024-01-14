@@ -8,7 +8,6 @@ import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
@@ -65,60 +64,32 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
     }
 
     @Override
-    protected void updateEntity(@NonNull Company entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (CompanyRequest) updateRequest.getOldValue();
-        var newValue = (CompanyRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull Company entity, @NonNull Request request) {
+        var newValue = (CompanyRequest) request;
 
-        entity.setAddress(
-                updateAttribute(
-                        oldValue.address(),
-                        newValue.address()
-                )
-        );
-        entity.setEdrpou(
-                updateAttribute(
-                        oldValue.edrpou(),
-                        newValue.edrpou()
-                )
-        );
-        entity.setWebsite(
-                updateAttribute(
-                        oldValue.website(),
-                        newValue.website()
-                )
-        );
-        entity.setName(
-                updateAttribute(
-                        oldValue.name(),
-                        newValue.name()
-                )
-        );
-        entity.setCurrentAccount(
-                updateAttribute(
-                        oldValue.currentAccount(),
-                        newValue.currentAccount()
-                )
-        );
+        if(!newValue.address().isEmpty()){
+            entity.setAddress(newValue.address());
+        }
+        if(!newValue.edrpou().isEmpty()){
+            entity.setEdrpou(newValue.edrpou());
+        }
+        if(!newValue.website().isEmpty()){
+            entity.setWebsite(newValue.website());
+        }
+        if(!newValue.name().isBlank()){
+            entity.setName(newValue.name());
+        }
+        if(!newValue.currentAccount().isBlank()){
+            entity.setCurrentAccount(newValue.currentAccount());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var companyRequest = (CompanyRequest) request;
 
         validateName(companyRequest.name());
         validateCurrentAccount(companyRequest.currentAccount());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (CompanyRequest) updateRequest.getOldValue();
-        var newValue = (CompanyRequest) updateRequest.getNewValue();
-
-        validateName(oldValue.name());
-        validateName(newValue.name());
-
-        validateCurrentAccount(oldValue.currentAccount());
-        validateCurrentAccount(newValue.currentAccount());
     }
 
     private void validateCurrentAccount(@NonNull String currentAccount) throws InvalidInputDataException {
@@ -131,7 +102,8 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
     }
 
     private boolean isCurrentAccount(@NonNull String currentAccount) {
-        return currentAccount
+        return currentAccount.isBlank() ||
+                currentAccount
                 .matches(CURRENT_ACCOUNT_TEMPLATE);
     }
 

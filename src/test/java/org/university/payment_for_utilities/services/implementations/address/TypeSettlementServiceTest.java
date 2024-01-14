@@ -1,5 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
 
@@ -31,11 +35,28 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
     protected void initRequest() {
         firstRequest = cityRequest;
         secondRequest = villageRequest;
-
         emptyRequest = TypeSettlementRequest
                 .empty();
+    }
 
-        super.initRequest();
+    @Override
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return TypeSettlementResponse
+                .builder()
+                .id(response.id())
+                .uaName("село")
+                .enName("other")
+                .build();
+    }
+
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (TypeSettlementResponse) expectedResponse;
+        return TypeSettlementRequest
+                .builder()
+                .uaName("")
+                .enName(response.enName())
+                .build();
     }
 
     @Test
@@ -54,19 +75,6 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
                 .build();
 
         testAddValueThrowInvalidInputData(withNum, withSpecialCharacter);
-    }
-
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter(){
-        var newValue = TypeSettlementRequest
-                .builder()
-                .uaName("")
-                .enName("other")
-                .build();
-
-        testUpdateValueCorrectWithOneChangedParameter(newValue);
     }
 
     @Test

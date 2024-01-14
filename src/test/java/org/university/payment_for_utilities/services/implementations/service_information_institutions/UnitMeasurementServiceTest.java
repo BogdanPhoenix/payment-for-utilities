@@ -1,5 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.service_information_institutions;
 
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
+import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.UnitMeasurementService;
 
@@ -31,21 +35,26 @@ public class UnitMeasurementServiceTest extends TransliterationServiceTest {
         secondRequest = unitCubicMeterRequest;
         emptyRequest = UnitMeasurementRequest
                 .empty();
-
-        super.initRequest();
     }
 
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
     @Override
-    protected void testUpdateValueCorrectWithOneChangedParameter() {
-        var newValue = UnitMeasurementRequest
+    protected Response updateExpectedResponse(@NonNull Response response) {
+        return UnitMeasurementResponse
                 .builder()
-                .uaName("")
+                .id(response.id())
+                .uaName("куб. м.")
                 .enName("new data")
                 .build();
+    }
 
-        testUpdateValueCorrectWithOneChangedParameter(newValue);
+    @Override
+    protected Request updateNewValue(@NonNull Response expectedResponse) {
+        var response = (UnitMeasurementResponse) expectedResponse;
+        return UnitMeasurementRequest
+                .builder()
+                .uaName("")
+                .enName(response.enName())
+                .build();
     }
 
     @Test

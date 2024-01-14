@@ -2,14 +2,11 @@ package org.university.payment_for_utilities.services.implementations.bank;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
-import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.bank.BankPhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
@@ -56,43 +53,15 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     }
 
     @Override
-    protected void updateEntity(@NonNull BankPhoneNum entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (BankPhoneNumRequest) updateRequest.getOldValue();
-        var newValue = (BankPhoneNumRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull BankPhoneNum entity, @NonNull Request request) {
+        var newValue = (BankPhoneNumRequest) request;
 
-        entity.setBank(
-                updateAttribute(
-                        oldValue.bank(),
-                        newValue.bank()
-                )
-        );
-        entity.setPhoneNum(
-                updateAttribute(
-                        oldValue.phoneNum(),
-                        newValue.phoneNum()
-                )
-        );
-    }
-
-    @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
-        var bankPhoneNumRequest = (BankPhoneNumRequest) request;
-
-        validateBank(bankPhoneNumRequest.bank());
-        validatePhone(bankPhoneNumRequest.phoneNum());
-    }
-
-    private void validateBank(Bank bank) throws InvalidInputDataException {
-        if (isValidBank(bank)) {
-            return;
+        if(!newValue.bank().isEmpty()){
+            entity.setBank(newValue.bank());
         }
-
-        var message = String.format("The bank entity you provided has not been validated: \"%s\". The bank entity cannot be null or empty.", bank);
-        throwRuntimeException(message, InvalidInputDataException::new);
-    }
-
-    private boolean isValidBank(@NonNull Bank bank) {
-        return !bank.isEmpty();
+        if(!newValue.phoneNum().isEmpty()){
+            entity.setPhoneNum(newValue.phoneNum());
+        }
     }
 
     @Override

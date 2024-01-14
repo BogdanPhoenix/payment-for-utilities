@@ -8,7 +8,6 @@ import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.pojo.update_request.UpdateRequest;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
@@ -63,54 +62,29 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     }
 
     @Override
-    protected void updateEntity(@NonNull Bank entity, @NonNull UpdateRequest updateRequest) {
-        var oldValue = (BankRequest) updateRequest.getOldValue();
-        var newValue = (BankRequest) updateRequest.getNewValue();
+    protected void updateEntity(@NonNull Bank entity, @NonNull Request request) {
+        var newValue = (BankRequest) request;
 
-        entity.setName(
-                updateAttribute(
-                        oldValue.name(),
-                        newValue.name()
-                )
-        );
-        entity.setWebsite(
-                updateAttribute(
-                        oldValue.website(),
-                        newValue.website()
-                )
-        );
-        entity.setEdrpou(
-                updateAttribute(
-                        oldValue.edrpou(),
-                        newValue.edrpou()
-                )
-        );
-        entity.setMfo(
-                updateAttribute(
-                        oldValue.mfo(),
-                        newValue.mfo()
-                )
-        );
+        if(!newValue.name().isBlank()){
+            entity.setName(newValue.name());
+        }
+        if(!newValue.website().isEmpty()){
+            entity.setWebsite(newValue.website());
+        }
+        if(!newValue.edrpou().isEmpty()){
+            entity.setEdrpou(newValue.edrpou());
+        }
+        if(!newValue.mfo().isBlank()){
+            entity.setMfo(newValue.mfo());
+        }
     }
 
     @Override
-    protected void validationProcedureAddValue(@NonNull Request request) throws InvalidInputDataException {
+    protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var bankRequest = (BankRequest) request;
 
         validateName(bankRequest.name());
         validateMfo(bankRequest.mfo());
-    }
-
-    @Override
-    protected void validationProcedureValidateUpdate(@NonNull UpdateRequest updateRequest) throws InvalidInputDataException {
-        var oldValue = (BankRequest) updateRequest.getOldValue();
-        var newValue = (BankRequest) updateRequest.getNewValue();
-
-        validateName(oldValue.name());
-        validateName(newValue.name());
-
-        validateMfo(oldValue.mfo());
-        validateMfo(newValue.mfo());
     }
 
     private void validateMfo(@NonNull String mfo) throws InvalidInputDataException {
