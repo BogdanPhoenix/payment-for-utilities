@@ -60,12 +60,12 @@ public class AddressResidence implements TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "address", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
+    @OneToOne(mappedBy = "address", cascade = {MERGE, REFRESH, DETACH}, orphanRemoval = true)
     private Company company;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "addresses", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "addresses", cascade = {MERGE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private List<RegisteredUser> users;
 
     @Override
