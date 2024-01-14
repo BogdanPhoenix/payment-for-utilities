@@ -30,7 +30,7 @@ class SettlementServiceTest extends CrudServiceTest {
     @Qualifier("settlementRivneRequest")
     private SettlementRequest settlementRivneRequest;
     @Autowired
-    @Qualifier("settlementRequestKyiv")
+    @Qualifier("settlementKyivRequest")
     private SettlementRequest settlementRequestKyiv;
 
     @Autowired

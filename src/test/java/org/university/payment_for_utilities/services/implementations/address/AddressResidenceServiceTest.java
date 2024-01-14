@@ -18,7 +18,7 @@ import org.university.payment_for_utilities.services.interfaces.address.AddressR
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
 class AddressResidenceServiceTest extends CrudServiceTest {
     @Autowired
-    @Qualifier("addressResidenceRequest")
+    @Qualifier("addressRivneRequest")
     private AddressResidenceRequest addressRequest;
     @Autowired
     @Qualifier("addressKyivRequest")

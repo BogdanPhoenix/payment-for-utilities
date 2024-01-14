@@ -20,6 +20,8 @@ import org.university.payment_for_utilities.pojo.requests.company.TypeOfferReque
 import org.university.payment_for_utilities.services.implementations.address.AddressEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
 
+import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
+
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.company")
 @Import({
@@ -134,7 +136,6 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     }
 
     private Company createCompany(CompanyRequest request) {
-        var companyResponse = companyService.addValue(request);
-        return companyService.createEntity(companyResponse);
+        return (Company) createEntity(companyService, request);
     }
 }

@@ -1,6 +1,5 @@
 package org.university.payment_for_utilities.services.implementations.service_information_institutions;
 
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
@@ -9,15 +8,12 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 
-import java.lang.reflect.InvocationTargetException;
+import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.service_information_institutions")
@@ -143,36 +139,6 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "kyivWebsite")
-    public Website kyivWebsite(){
-        return createWebsite(kyivWebsiteRequest());
-    }
-
-    @Lazy
-    @Bean(name = "kyivWebsiteRequest")
-    public WebsiteRequest kyivWebsiteRequest(){
-        return WebsiteRequest
-                .builder()
-                .website("https://raiffeisen.ua/")
-                .build();
-    }
-
-    @Lazy
-    @Bean(name = "raiffeisenBankUpdateWebsite")
-    public Website raiffeisenBankUpdateWebsite(){
-        return createWebsite(raiffeisenBankUpdateWebsiteRequest());
-    }
-
-    @Lazy
-    @Bean(name = "raiffeisenBankUpdateWebsiteRequest")
-    public WebsiteRequest raiffeisenBankUpdateWebsiteRequest(){
-        return WebsiteRequest
-                .builder()
-                .website("https://raiffeisen_update.ua/")
-                .build();
-    }
-
-    @Lazy
     @Bean(name = "privateBankEdrpou")
     public Edrpou privateBankEdrpou(){
         return createEdrpou(privateBankEdrpouRequest());
@@ -203,21 +169,6 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "kyivEdrpou")
-    public Edrpou kyivEdrpou(){
-        return createEdrpou(kyivEdrpouRequest());
-    }
-
-    @Lazy
-    @Bean(name = "kyivEdrpouRequest")
-    public EdrpouRequest kyivEdrpouRequest(){
-        return EdrpouRequest
-                .builder()
-                .edrpou("14305919")
-                .build();
-    }
-
-    @Lazy
     @Bean(name = "raiffeisenBankUpdateEdrpou")
     public Edrpou raiffeisenBankUpdateEdrpou(){
         return createEdrpou(raiffeisenBankUpdateEdrpouRequest());
@@ -232,35 +183,19 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    private PhoneNum createPhoneNum(Request request){
+    private PhoneNum createPhoneNum(PhoneNumRequest request){
         return (PhoneNum) createEntity(phoneNumService, request);
     }
 
-    private UnitMeasurement createUnitMeasurement(UnitMeasurementRequest unitMeasurementRequest){
-        var unitMeasurementResponse = unitMeasurementService.addValue(unitMeasurementRequest);
-        return unitMeasurementService.createEntity(unitMeasurementResponse);
+    private UnitMeasurement createUnitMeasurement(UnitMeasurementRequest request){
+        return (UnitMeasurement) createEntity(unitMeasurementService, request);
     }
 
-    private Website createWebsite(WebsiteRequest websiteRequest){
-        var websiteResponse = websiteService.addValue(websiteRequest);
-        return websiteService.createEntity(websiteResponse);
+    private Website createWebsite(WebsiteRequest request){
+        return (Website) createEntity(websiteService, request);
     }
 
-    private Edrpou createEdrpou(EdrpouRequest edrpouRequest){
-        var edrpouResponse = edrpouService.addValue(edrpouRequest);
-        return edrpouService.createEntity(edrpouResponse);
-    }
-
-    private Object createEntity(@NonNull CrudServiceAbstract<?, ?> service, Request request){
-        var response = service.addValue(request);
-
-        var serviceAbstract = CrudServiceAbstract.class;
-        try {
-            var method = serviceAbstract.getDeclaredMethod("createEntity", Response.class);
-            method.setAccessible(true);
-            return method.invoke(service, response);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    private Edrpou createEdrpou(EdrpouRequest request){
+        return (Edrpou) createEntity(edrpouService, request);
     }
 }

@@ -13,6 +13,8 @@ import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.*;
 
+import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
+
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.address")
 @Import(DataBaseConfiguration.class)
@@ -29,34 +31,18 @@ public class AddressEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "addressKyivResidence")
     public AddressResidence addressKyivResidence(){
-        return createAddress(addressKyivResidenceRequest());
-    }
-
-    @Lazy
-    @Bean(name = "addressKyivResidenceRequest")
-    public AddressResidenceRequest addressKyivResidenceRequest(){
-        var settlement = createSettlement(settlementRequestKyiv());
-
-        return AddressResidenceRequest
-                .builder()
-                .settlement(settlement)
-                .uaNameStreet("Хрещатик")
-                .enNameStreet("Khreshchatyk")
-                .numHouse("5a")
-                .numEntrance("3")
-                .numApartment("35")
-                .build();
+        return createAddress(addressKyivRequest());
     }
 
     @Lazy
     @Bean(name = "addressResidence")
     public AddressResidence addressResidence(){
-        return createAddress(addressResidenceRequest());
+        return createAddress(addressRivneRequest());
     }
 
     @Lazy
-    @Bean(name = "addressResidenceRequest")
-    public AddressResidenceRequest addressResidenceRequest(){
+    @Bean(name = "addressRivneRequest")
+    public AddressResidenceRequest addressRivneRequest(){
         var settlement = createSettlement(settlementRivneRequest());
 
         return AddressResidenceRequest
@@ -73,7 +59,7 @@ public class AddressEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "addressKyivRequest")
     public AddressResidenceRequest addressKyivRequest(){
-        var settlement = createSettlement(settlementRequestKyiv());
+        var settlement = createSettlement(settlementKyivRequest());
 
         return AddressResidenceRequest
                 .builder()
@@ -87,8 +73,8 @@ public class AddressEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "settlementRequestKyiv")
-    public SettlementRequest settlementRequestKyiv(){
+    @Bean(name = "settlementKyivRequest")
+    public SettlementRequest settlementKyivRequest(){
         var type = createTypeSettlement(typeSettlementVillageRequest());
         var name = createSettlementName(settlementNameKyivRequest());
 
@@ -115,20 +101,6 @@ public class AddressEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
-    @Bean(name = "settlementUpdateRequest")
-    public SettlementRequest settlementUpdateRequest(){
-        var type = createTypeSettlement(typeSettlementCityRequest());
-        var name = createSettlementName(nameIvankivRequest());
-
-        return SettlementRequest
-                .builder()
-                .type(type)
-                .zipCode("42136")
-                .name(name)
-                .build();
-    }
-
-    @Lazy
     @Bean(name = "nameRivneRequest")
     public SettlementNameRequest settlementNameRivneRequest(){
         return SettlementNameRequest
@@ -145,16 +117,6 @@ public class AddressEntitiesRequestTestContextConfiguration {
                 .builder()
                 .uaName("Київ")
                 .enName("Kyiv")
-                .build();
-    }
-
-    @Lazy
-    @Bean(name = "nameIvankivRequest")
-    public SettlementNameRequest nameIvankivRequest(){
-        return SettlementNameRequest
-                .builder()
-                .uaName("Іванків")
-                .enName("Ivankiv")
                 .build();
     }
 
@@ -219,22 +181,18 @@ public class AddressEntitiesRequestTestContextConfiguration {
     }
 
     private AddressResidence createAddress(AddressResidenceRequest request){
-        var addressResponse = addressResidenceService.addValue(request);
-        return addressResidenceService.createEntity(addressResponse);
+        return (AddressResidence) createEntity(addressResidenceService, request);
     }
 
     private SettlementName createSettlementName(SettlementNameRequest request){
-        var nameResponse = nameService.addValue(request);
-        return nameService.createEntity(nameResponse);
+        return (SettlementName) createEntity(nameService, request);
     }
 
     private TypeSettlement createTypeSettlement(TypeSettlementRequest request){
-        var typeResponse = typeService.addValue(request);
-        return typeService.createEntity(typeResponse);
+        return (TypeSettlement) createEntity(typeService, request);
     }
 
     private Settlement createSettlement(SettlementRequest request){
-        var settlementResponse = settlementService.addValue(request);
-        return settlementService.createEntity(settlementResponse);
+        return (Settlement) createEntity(settlementService, request);
     }
 }

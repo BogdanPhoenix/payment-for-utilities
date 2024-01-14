@@ -13,6 +13,8 @@ import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumReque
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
 
+import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
+
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.bank")
 @Import({
@@ -66,6 +68,18 @@ public class BankEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "raiffeisenBankPhoneNumRequest")
+    public BankPhoneNumRequest raiffeisenBankPhoneNumRequest(){
+        var bank = createBank(raiffeisenBankRequest());
+
+        return BankPhoneNumRequest
+                .builder()
+                .bank(bank)
+                .phoneNum(raiffeisenBankPhoneNum)
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "raiffeisenBankRequest")
     public BankRequest raiffeisenBankRequest(){
         return BankRequest
@@ -77,32 +91,7 @@ public class BankEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    @Lazy
-    @Bean(name = "raiffeisenBankPhoneNumRequest")
-    public BankPhoneNumRequest raiffeisenBankPhoneNumRequest(){
-        var bank = createBank(raiffeisenBankUpdateRequest());
-
-        return BankPhoneNumRequest
-                .builder()
-                .bank(bank)
-                .phoneNum(raiffeisenBankPhoneNum)
-                .build();
-    }
-
-    @Lazy
-    @Bean(name = "raiffeisenBankUpdateRequest")
-    public BankRequest raiffeisenBankUpdateRequest(){
-        return BankRequest
-                .builder()
-                .name("Raiffeisen Bank Ukraine")
-                .website(raiffeisenBankWebsite)
-                .edrpou(raiffeisenBankEdrpou)
-                .mfo("305269")
-                .build();
-    }
-
-    private Bank createBank(BankRequest bankRequest){
-        var bankResponse = bankService.addValue(bankRequest);
-        return bankService.createEntity(bankResponse);
+    private Bank createBank(BankRequest request){
+        return (Bank) createEntity(bankService, request);
     }
 }
