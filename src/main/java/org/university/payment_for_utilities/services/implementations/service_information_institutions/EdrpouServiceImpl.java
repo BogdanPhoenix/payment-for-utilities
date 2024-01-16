@@ -82,7 +82,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     }
 
     @Override
-    protected Optional<Edrpou> findOldEntity(@NonNull Request request) {
+    protected Optional<Edrpou> findEntity(@NonNull Request request) {
         var edrpouRequest = (EdrpouRequest) request;
         return repository
                 .findByEdrpou(

@@ -155,7 +155,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     @Override
-    protected Optional<AddressResidence> findOldEntity(@NonNull Request request) {
+    protected Optional<AddressResidence> findEntity(@NonNull Request request) {
         var address = (AddressResidenceRequest) request;
         return repository
                 .findBySettlementAndEnNameStreetAndNumHouseAndNumEntrance(

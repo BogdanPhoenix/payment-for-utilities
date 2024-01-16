@@ -102,7 +102,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     }
 
     @Override
-    protected Optional<Bank> findOldEntity(@NonNull Request request) {
+    protected Optional<Bank> findEntity(@NonNull Request request) {
         var bankRequest = (BankRequest) request;
         return repository
                 .findByMfo(

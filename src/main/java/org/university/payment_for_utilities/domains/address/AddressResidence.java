@@ -2,10 +2,11 @@ package org.university.payment_for_utilities.domains.address;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.interfaces.TableInfo;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 
@@ -14,24 +15,21 @@ import java.util.List;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.CascadeType.DETACH;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "addresses_residence",
     uniqueConstraints = {
             @UniqueConstraint(columnNames = {"id_settlement", "en_name_street", "num_house", "num_entrance"}),
             @UniqueConstraint(columnNames = {"id_settlement", "en_name_street", "num_house", "num_entrance", "num_apartment"})
     })
-public class AddressResidence implements TableInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class AddressResidence extends TableInfo {
     @ManyToOne
     @JoinColumn(name = "id_settlement", nullable = false)
     @NonNull
@@ -55,9 +53,6 @@ public class AddressResidence implements TableInfo {
     @Column(name = "num_apartment", length = 5)
     private String numApartment;
 
-    @Column(name = "current_data")
-    private boolean currentData;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "address", cascade = {MERGE, REFRESH, DETACH}, orphanRemoval = true)
@@ -66,7 +61,7 @@ public class AddressResidence implements TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "addresses", cascade = {MERGE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<RegisteredUser> users;
+    private transient List<RegisteredUser> users;
 
     @Override
     public boolean isEmpty() {

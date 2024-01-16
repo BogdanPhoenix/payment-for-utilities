@@ -55,14 +55,15 @@ public abstract class CrudServiceTest {
     @DisplayName("Checks whether an exception can be thrown if you try to retrieve an entity from a table by an invalid identifier.")
     void testGetByIdThrow(){
         assertThrows(NotFindEntityInDataBaseException.class,
-                () -> service.getById(1L));
+                () -> service.getById(ID));
     }
 
     @Test
     @DisplayName("Check for adding data to the database.")
     void testAddValueCorrect(){
         var response = service.addValue(firstRequest);
-        assertThat(response.id()).isNotNull();
+        assertThat(response.id())
+                .isNotNull();
     }
 
     @Test
@@ -86,10 +87,10 @@ public abstract class CrudServiceTest {
     @DisplayName("Checks for exceptions when the update request passes a new area name that already exists in the database table.")
     void testUpdateValueThrowDuplicate(){
         service.addValue(firstRequest);
-        service.addValue(secondRequest);
+        var response = service.addValue(secondRequest);
 
         assertThrows(DuplicateException.class,
-                () -> service.updateValue(ID, firstRequest)
+                () -> service.updateValue(response.id(), firstRequest)
         );
     }
 
@@ -103,7 +104,7 @@ public abstract class CrudServiceTest {
 
     @Test
     @DisplayName("Checking the correct deletion of data from the table using the entity identifier.")
-    public void testRemoveValueCorrect(){
+    public void testRemoveValueByIdCorrect(){
         var responseAdd = service.addValue(firstRequest);
         var responseRemove = service.removeValue(responseAdd.id());
 
@@ -112,11 +113,28 @@ public abstract class CrudServiceTest {
     }
 
     @Test
-    @DisplayName("Checking an exception when the user wants to delete an entity that is not in the table.")
-    void testRemoveValueThrowNotFindEntityInDataBaseException(){
-        var id = 5L;
+    @DisplayName("Checking the correctness of deleting data from a table using a request.")
+    public void testRemoveValueByRequestCorrect(){
+        var responseAdd = service.addValue(firstRequest);
+        var responseRemove = service.removeValue(firstRequest);
+
+        assertThat(responseAdd)
+                .isEqualTo(responseRemove);
+    }
+
+    @Test
+    @DisplayName("Checking for an exception when the user wants to delete an entity (using an entity identifier) that is not in the table.")
+    void testRemoveValueByIdThrowNotFindEntityInDataBaseException(){
         assertThrows(NotFindEntityInDataBaseException.class,
-                () -> service.removeValue(id)
+                () -> service.removeValue(ID)
+        );
+    }
+
+    @Test
+    @DisplayName("Checking for an exception when the user wants to delete an entity (using a request) that is not in the table.")
+    void testRemoveValueByRequestThrowNotFindEntityInDataBaseException(){
+        assertThrows(NotFindEntityInDataBaseException.class,
+                () -> service.removeValue(firstRequest)
         );
     }
 

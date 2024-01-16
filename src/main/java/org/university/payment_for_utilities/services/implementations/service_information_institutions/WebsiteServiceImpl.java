@@ -83,7 +83,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     }
 
     @Override
-    protected Optional<Website> findOldEntity(@NonNull Request request) {
+    protected Optional<Website> findEntity(@NonNull Request request) {
         var websiteRequest = (WebsiteRequest) request;
         return repository
                 .findByWebsite(

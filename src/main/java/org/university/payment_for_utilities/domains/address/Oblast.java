@@ -2,38 +2,25 @@ package org.university.payment_for_utilities.domains.address;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.interfaces.TransliterationProperty;
+import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "oblasts")
-public class Oblast implements TransliterationProperty {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "ua_name", nullable = false, unique = true)
-    @NonNull
-    private String uaName;
-
-    @Column(name = "en_name", nullable = false, unique = true)
-    @NonNull
-    private String enName;
-
-    @Column(name = "current_data")
-    private boolean currentData;
-
+public class Oblast extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -43,13 +30,7 @@ public class Oblast implements TransliterationProperty {
             inverseJoinColumns = @JoinColumn(name = "id_district", nullable = false),
             uniqueConstraints = @UniqueConstraint(columnNames = {"id_oblast", "id_district"})
     )
-    private List<District> districts;
-
-    @Override
-    public boolean isEmpty() {
-        return uaName.isBlank() ||
-                enName.isBlank();
-    }
+    private transient List<District> districts;
 
     @Contract(" -> new")
     public static @NonNull Oblast empty(){

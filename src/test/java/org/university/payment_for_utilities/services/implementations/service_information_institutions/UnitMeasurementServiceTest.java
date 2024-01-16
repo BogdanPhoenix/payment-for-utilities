@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
 import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
@@ -17,6 +18,7 @@ import org.university.payment_for_utilities.services.interfaces.service_informat
 
 @SpringBootTest
 @Import(ServiceInfoEntitiesRequestTestContextConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UnitMeasurementServiceTest extends TransliterationServiceTest {
     @Autowired
     @Qualifier("unitKilowattRequest")

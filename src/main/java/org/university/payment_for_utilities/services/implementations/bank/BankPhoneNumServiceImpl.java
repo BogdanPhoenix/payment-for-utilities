@@ -65,7 +65,7 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     }
 
     @Override
-    protected Optional<BankPhoneNum> findOldEntity(@NonNull Request request) {
+    protected Optional<BankPhoneNum> findEntity(@NonNull Request request) {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
         return repository
                 .findByBankAndPhoneNum(

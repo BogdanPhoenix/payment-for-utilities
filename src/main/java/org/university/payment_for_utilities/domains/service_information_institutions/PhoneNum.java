@@ -2,37 +2,31 @@ package org.university.payment_for_utilities.domains.service_information_institu
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
-import org.university.payment_for_utilities.domains.interfaces.TableInfo;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.CascadeType.DETACH;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "phone_numbers")
-public class PhoneNum implements TableInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    @EqualsAndHashCode.Exclude
-    private Long id;
-
+public class PhoneNum extends TableInfo {
     @Column(name = "number", length = 12, nullable = false, unique = true)
     @NonNull
     private String number;
-
-    @Column(name = "current_data")
-    private boolean currentData;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

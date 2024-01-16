@@ -108,7 +108,7 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
     }
 
     @Override
-    protected Optional<Company> findOldEntity(@NonNull Request request) {
+    protected Optional<Company> findEntity(@NonNull Request request) {
         var companyRequest = (CompanyRequest) request;
         return repository
                 .findByCurrentAccount(

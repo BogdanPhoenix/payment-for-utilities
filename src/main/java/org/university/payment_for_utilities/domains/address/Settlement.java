@@ -2,29 +2,27 @@ package org.university.payment_for_utilities.domains.address;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.interfaces.TableInfo;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "settlements",
     uniqueConstraints = @UniqueConstraint(columnNames = {"id_type", "zip_code", "id_name"})
 )
-public class Settlement implements TableInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class Settlement extends TableInfo {
     @ManyToOne
     @JoinColumn(name = "id_type", nullable = false)
     @NonNull
@@ -39,18 +37,15 @@ public class Settlement implements TableInfo {
     @NonNull
     private SettlementName name;
 
-    @Column(name = "current_data")
-    private boolean currentData;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "settlements")
-    private List<District> districts;
+    private transient List<District> districts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "settlement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<AddressResidence> addresses;
+    private transient List<AddressResidence> addresses;
 
     @Override
     public boolean isEmpty() {

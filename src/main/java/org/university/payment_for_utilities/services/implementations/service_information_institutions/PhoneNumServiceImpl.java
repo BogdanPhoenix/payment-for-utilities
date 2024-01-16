@@ -84,7 +84,7 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
     }
 
     @Override
-    protected Optional<PhoneNum> findOldEntity(@NonNull Request request) {
+    protected Optional<PhoneNum> findEntity(@NonNull Request request) {
         var companyPhoneNumRequest = (PhoneNumRequest) request;
         return repository
                 .findByNumber(

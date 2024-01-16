@@ -99,7 +99,7 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     }
 
     @Override
-    protected Optional<Settlement> findOldEntity(@NonNull Request request) {
+    protected Optional<Settlement> findEntity(@NonNull Request request) {
         var settlementRequest = (SettlementRequest) request;
         return repository
                 .findByZipCode(

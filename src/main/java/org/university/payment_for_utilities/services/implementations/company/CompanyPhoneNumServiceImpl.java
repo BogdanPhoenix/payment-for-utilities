@@ -65,7 +65,7 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     }
 
     @Override
-    protected Optional<CompanyPhoneNum> findOldEntity(@NonNull Request request) {
+    protected Optional<CompanyPhoneNum> findEntity(@NonNull Request request) {
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
         return repository
                 .findByCompanyAndPhoneNum(

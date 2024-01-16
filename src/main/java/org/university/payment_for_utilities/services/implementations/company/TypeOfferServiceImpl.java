@@ -56,13 +56,8 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
     }
 
     @Override
-    protected Optional<TypeOffer> findOldEntity(@NonNull Request request) {
+    protected Optional<TypeOffer> findEntity(@NonNull Request request) {
         var typeOfferRequest = (TypeOfferRequest) request;
-
-        if(typeOfferRequest.unitMeasurement().isEmpty()){
-            return Optional.empty();
-        }
-
         return repository
                 .findByUnitMeasurementAndEnName(
                         typeOfferRequest.unitMeasurement(),

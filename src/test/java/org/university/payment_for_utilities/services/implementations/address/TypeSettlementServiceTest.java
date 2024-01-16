@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
@@ -17,6 +18,7 @@ import org.university.payment_for_utilities.services.interfaces.address.TypeSett
 
 @SpringBootTest
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class TypeSettlementServiceTest extends TransliterationServiceTest {
     @Autowired
     @Qualifier("typeSettlementCityRequest")

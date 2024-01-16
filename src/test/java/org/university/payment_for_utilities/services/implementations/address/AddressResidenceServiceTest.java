@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
@@ -16,6 +17,7 @@ import org.university.payment_for_utilities.services.interfaces.address.AddressR
 
 @SpringBootTest
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AddressResidenceServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("addressRivneRequest")

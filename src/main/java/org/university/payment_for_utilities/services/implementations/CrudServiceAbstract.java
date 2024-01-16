@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.university.payment_for_utilities.domains.interfaces.TableInfo;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -45,6 +45,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return repository
                 .findAll()
                 .stream()
+                .filter(TableInfo::isCurrentData)
                 .map(this::createResponse)
                 .toList();
     }
@@ -83,7 +84,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         validateUpdate(request);
 
         var entity = findById(id);
-
         updateEntity(entity, request);
         var result = repository.save(entity);
 
@@ -102,6 +102,8 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     @Transactional
     @Override
     public Response removeValue(@NonNull Request request) throws NotFindEntityInDataBaseException {
+        log.info("Input to the removeValue() method");
+
         var entity = findOldEntity(request)
                 .orElseThrow(() -> {
                         var message = String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request);
@@ -109,7 +111,10 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                     }
                 );
 
-        repository.deleteById(entity.getId());
+        entity.setCurrentData(false);
+        repository.save(entity);
+
+        log.info(MESSAGE_SUCCESS_VALIDATION);
         return createResponse(entity);
     }
 
@@ -117,9 +122,11 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     @Override
     public Response removeValue(Long id) throws NotFindEntityInDataBaseException {
         log.info("Input to the removeValue() method");
-        var entity = findById(id);
 
-        repository.deleteById(id);
+        var entity = findById(id);
+        entity.setCurrentData(false);
+        repository.save(entity);
+
         log.info(MESSAGE_SUCCESS_VALIDATION);
         return createResponse(entity);
     }
@@ -127,20 +134,33 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     @Transactional
     @Override
     public Long removeAll() {
+        log.info("Input to the removeAll() method");
+
         var numDeleteItems = repository.count();
-        repository.deleteAll();
+        repository
+                .findAll()
+                .stream()
+                .filter(TableInfo::isCurrentData)
+                .forEach(ent -> {
+                    ent.setCurrentData(false);
+                    repository.save(ent);
+                });
+
+        log.info(MESSAGE_SUCCESS_VALIDATION);
         return numDeleteItems;
     }
 
     protected T findById(@NonNull Long id) throws NotFindEntityInDataBaseException {
         return repository
                 .findById(id)
+                .filter(TableInfo::isCurrentData)
                 .orElseThrow(() -> {
                             var message = String.format("Unable to find an entity in the \"%s\" table using the specified identifier: %d.", tableName, id);
                             return throwNotFindEntityInDataBaseException(message);
                         }
                 );
     }
+
     protected void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
         if(!isRequestEmpty(request)){
             return;
@@ -165,6 +185,11 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     protected boolean isDuplicate(@NonNull Request request){
         return !request.isEmpty() && findOldEntity(request)
                 .isPresent();
+    }
+
+    private Optional<T> findOldEntity(@NonNull Request request){
+        return findEntity(request)
+                .filter(TableInfo::isCurrentData);
     }
 
     protected void validateName(@NonNull String name) throws InvalidInputDataException{
@@ -198,5 +223,5 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     protected abstract Response createResponse(T entity);
     protected abstract void updateEntity(@NonNull T entity, @NonNull Request request);
     protected abstract void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException;
-    protected abstract Optional<T> findOldEntity(@NonNull Request request);
+    protected abstract Optional<T> findEntity(@NonNull Request request);
 }

@@ -2,7 +2,7 @@ package org.university.payment_for_utilities.services.implementations;
 
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.university.payment_for_utilities.domains.interfaces.TableInfo;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
 
