@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.company.Company;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -27,12 +29,12 @@ public class Website extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "website", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "website", cascade ={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true, fetch = FetchType.EAGER)
     private Company company;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "website", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "website", cascade ={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true, fetch = FetchType.EAGER)
     private Bank bank;
 
     @Override
@@ -42,8 +44,10 @@ public class Website extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Website empty(){
-        return Website
-                .builder()
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
                 .website("")
                 .build();
     }

@@ -8,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.address.DistrictRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.DistrictService;
 
@@ -43,7 +43,7 @@ class DistrictServiceTest extends TransliterationServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return DistrictResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .uaName("Білоцерківський")
                 .enName("other")
                 .build();
@@ -55,7 +55,7 @@ class DistrictServiceTest extends TransliterationServiceTest {
         return DistrictRequest
                 .builder()
                 .uaName("")
-                .enName(response.enName())
+                .enName(response.getEnName())
                 .build();
     }
 

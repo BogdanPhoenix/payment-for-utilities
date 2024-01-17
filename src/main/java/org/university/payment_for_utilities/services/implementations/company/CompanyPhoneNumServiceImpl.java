@@ -4,9 +4,9 @@ import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyPhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
@@ -24,29 +24,29 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
         return CompanyPhoneNum
                 .builder()
-                .company(companyPhoneNumRequest.company())
-                .phoneNum(companyPhoneNumRequest.phoneNum())
-                .currentData(true)
+                .company(companyPhoneNumRequest.getCompany())
+                .phoneNum(companyPhoneNumRequest.getPhoneNum())
                 .build();
     }
 
     @Override
     protected CompanyPhoneNum createEntity(Response response) {
         var companyPhoneNumResponse = (CompanyPhoneNumResponse) response;
-        return CompanyPhoneNum
-                .builder()
-                .id(companyPhoneNumResponse.id())
-                .company(companyPhoneNumResponse.company())
-                .phoneNum(companyPhoneNumResponse.phoneNum())
-                .currentData(true)
+        var builder = CompanyPhoneNum.builder();
+        initEntityBuilder(builder, response);
+
+        return builder
+                .company(companyPhoneNumResponse.getCompany())
+                .phoneNum(companyPhoneNumResponse.getPhoneNum())
                 .build();
     }
 
     @Override
     protected Response createResponse(@NonNull CompanyPhoneNum entity) {
-        return CompanyPhoneNumResponse
-                .builder()
-                .id(entity.getId())
+        var builder = CompanyPhoneNumResponse.builder();
+        initResponseBuilder(builder, entity);
+
+        return builder
                 .company(entity.getCompany())
                 .phoneNum(entity.getPhoneNum())
                 .build();
@@ -56,11 +56,11 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     protected void updateEntity(@NonNull CompanyPhoneNum entity, @NonNull Request request) {
         var newValue = (CompanyPhoneNumRequest) request;
 
-        if(!newValue.company().isEmpty()){
-            entity.setCompany(newValue.company());
+        if(!newValue.getCompany().isEmpty()){
+            entity.setCompany(newValue.getCompany());
         }
-        if (!newValue.phoneNum().isEmpty()){
-            entity.setPhoneNum(newValue.phoneNum());
+        if (!newValue.getPhoneNum().isEmpty()){
+            entity.setPhoneNum(newValue.getPhoneNum());
         }
     }
 
@@ -69,8 +69,8 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
         return repository
                 .findByCompanyAndPhoneNum(
-                        companyPhoneNumRequest.company(),
-                        companyPhoneNumRequest.phoneNum()
+                        companyPhoneNumRequest.getCompany(),
+                        companyPhoneNumRequest.getPhoneNum()
                 );
     }
 }

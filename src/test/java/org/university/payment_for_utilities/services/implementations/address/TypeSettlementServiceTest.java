@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
 
@@ -45,7 +45,7 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return TypeSettlementResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .uaName("село")
                 .enName("other")
                 .build();
@@ -57,7 +57,7 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
         return TypeSettlementRequest
                 .builder()
                 .uaName("")
-                .enName(response.enName())
+                .enName(response.getEnName())
                 .build();
     }
 

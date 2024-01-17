@@ -44,10 +44,10 @@ public class TypeOffer extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull TypeOffer empty(){
-        return TypeOffer
-                .builder()
-                .uaName("")
-                .enName("")
+        var builder = builder();
+        TransliterationProperty.initEmpty(builder);
+
+        return builder
                 .unitMeasurement(UnitMeasurement.empty())
                 .build();
     }

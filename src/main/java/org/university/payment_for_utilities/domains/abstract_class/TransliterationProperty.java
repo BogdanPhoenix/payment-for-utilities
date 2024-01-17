@@ -31,4 +31,12 @@ public abstract class TransliterationProperty extends TableInfo {
         return uaName.isBlank() ||
                 enName.isBlank();
     }
+
+    protected static TransliterationProperty initEmpty(@NonNull TransliterationPropertyBuilder<?, ?> builder){
+        TableInfo.initEmpty(builder);
+        return builder
+                .uaName("")
+                .enName("")
+                .build();
+    }
 }

@@ -3,9 +3,8 @@ package org.university.payment_for_utilities.services.implementations.service_in
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.UnitMeasurementRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
@@ -19,34 +18,16 @@ public class UnitMeasurementServiceImpl extends TransliterationService<UnitMeasu
 
     @Override
     protected UnitMeasurement createEntity(Request request) {
-        var unitRequest = (UnitMeasurementRequest) request;
-        return UnitMeasurement
-                .builder()
-                .uaName(unitRequest.uaName())
-                .enName(unitRequest.enName())
-                .currentData(true)
-                .build();
+        return (UnitMeasurement) initTransliterationPropertyBuilder(UnitMeasurement.builder(), request);
     }
 
     @Override
     protected UnitMeasurement createEntity(Response response) {
-        var unitResponse = (UnitMeasurementResponse) response;
-        return UnitMeasurement
-                .builder()
-                .id(unitResponse.id())
-                .uaName(unitResponse.uaName())
-                .enName(unitResponse.enName())
-                .currentData(true)
-                .build();
+        return (UnitMeasurement) initTransliterationPropertyBuilder(UnitMeasurement.builder(), response);
     }
 
     @Override
     protected Response createResponse(@NonNull UnitMeasurement entity) {
-        return UnitMeasurementResponse
-                .builder()
-                .id(entity.getId())
-                .uaName(entity.getUaName())
-                .enName(entity.getEnName())
-                .build();
+        return initResponseBuilder(UnitMeasurementResponse.builder(), entity);
     }
 }

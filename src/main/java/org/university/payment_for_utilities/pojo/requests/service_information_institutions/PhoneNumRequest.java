@@ -1,14 +1,20 @@
 package org.university.payment_for_utilities.pojo.requests.service_information_institutions;
 
-import lombok.Builder;
-import lombok.NonNull;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 
-@Builder
-public record PhoneNumRequest(
-        String number
-) implements Request {
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class PhoneNumRequest extends Request {
+    private String number;
+
     @Override
     public boolean isEmpty() {
         return this.number.isBlank();

@@ -10,9 +10,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 
@@ -46,8 +46,8 @@ class BankPhoneNumTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return BankPhoneNumResponse
                 .builder()
-                .id(response.id())
-                .bank(raiffeisenBankPhoneNumRequest.bank())
+                .id(response.getId())
+                .bank(raiffeisenBankPhoneNumRequest.getBank())
                 .phoneNum(updateBankPhoneNum)
                 .build();
     }
@@ -58,7 +58,7 @@ class BankPhoneNumTest extends CrudServiceTest {
         return BankPhoneNumRequest
                 .builder()
                 .bank(Bank.empty())
-                .phoneNum(response.phoneNum())
+                .phoneNum(response.getPhoneNum())
                 .build();
     }
 }

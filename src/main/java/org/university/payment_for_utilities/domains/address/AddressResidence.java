@@ -13,7 +13,6 @@ import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Entity
 @Getter
@@ -69,13 +68,14 @@ public class AddressResidence extends TableInfo {
                 uaNameStreet.isBlank() ||
                 enNameStreet.isBlank() ||
                 numHouse.isBlank();
-
     }
 
     @Contract(" -> new")
     public static @NonNull AddressResidence empty(){
-        return AddressResidence
-                .builder()
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
                 .settlement(Settlement.empty())
                 .uaNameStreet("")
                 .enNameStreet("")

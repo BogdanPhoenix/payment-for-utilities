@@ -28,10 +28,6 @@ public class SettlementName extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull SettlementName empty(){
-        return SettlementName
-                .builder()
-                .uaName("")
-                .enName("")
-                .build();
+        return (SettlementName) TransliterationProperty.initEmpty(builder());
     }
 }

@@ -4,9 +4,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.Oblast;
-import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.OblastRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
@@ -21,34 +20,16 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
 
     @Override
     protected Oblast createEntity(@NonNull Request request){
-        var oblastRequest = (OblastRequest) request;
-        return Oblast
-                .builder()
-                .uaName(oblastRequest.uaName())
-                .enName(oblastRequest.enName())
-                .currentData(true)
-                .build();
+        return (Oblast) initTransliterationPropertyBuilder(Oblast.builder(), request);
     }
 
     @Override
     protected Oblast createEntity(Response response) {
-        var oblastResponse = (OblastResponse) response;
-        return Oblast
-                .builder()
-                .id(oblastResponse.id())
-                .uaName(oblastResponse.uaName())
-                .enName(oblastResponse.enName())
-                .currentData(true)
-                .build();
+        return (Oblast) initTransliterationPropertyBuilder(Oblast.builder(), response);
     }
 
     @Override
     protected Response createResponse(@NonNull Oblast entity){
-        return OblastResponse
-                .builder()
-                .id(entity.getId())
-                .uaName(entity.getUaName())
-                .enName(entity.getEnName())
-                .build();
+        return initResponseBuilder(OblastResponse.builder(), entity);
     }
 }

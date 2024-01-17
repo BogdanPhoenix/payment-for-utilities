@@ -1,11 +1,16 @@
 package org.university.payment_for_utilities.pojo.responses.service_information_institutions;
 
-import lombok.Builder;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
-@Builder
-public record PhoneNumResponse(
-        Long id,
-        String number
-) implements Response {
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class PhoneNumResponse extends Response {
+    private String number;
 }

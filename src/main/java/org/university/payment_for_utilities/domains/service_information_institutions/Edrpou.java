@@ -44,8 +44,10 @@ public class Edrpou extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Edrpou empty(){
-        return Edrpou
-                .builder()
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
                 .edrpou("")
                 .build();
     }

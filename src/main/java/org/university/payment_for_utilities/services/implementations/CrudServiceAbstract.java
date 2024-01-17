@@ -10,10 +10,13 @@ import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.interfaces.CrudService;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo.TableInfoBuilder;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response.ResponseBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,6 +40,18 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         fatalMessageAddEntity = String.format("You sent an empty request when trying to add a new record to the \"%s\" table.", tableName);
         fatalMessageUpdateEntity = String.format("You sent an empty query in the \"oldValue\" field when trying to update a record in the \"%s\" table.", tableName);
         fatalMessageFindOldEntity = String.format("Failed to find an entity in the \"%s\" table by the old value when updating the table entity.", tableName);
+    }
+
+    protected void initEntityBuilder(@NonNull TableInfoBuilder<?,?> builder, @NonNull Response response) {
+        builder.id(response.getId())
+                .createDate(response.getCreateDate())
+                .updateDate(response.getUpdateDate());
+    }
+
+    protected void initResponseBuilder(@NonNull ResponseBuilder<?, ?> builder, @NonNull T entity) {
+        builder.id(entity.getId())
+                .createDate(entity.getCreateDate())
+                .updateDate(entity.getUpdateDate());
     }
 
     @Transactional(readOnly = true)
@@ -85,6 +100,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
 
         var entity = findById(id);
         updateEntity(entity, request);
+        entity.setUpdateDate(LocalDateTime.now());
         var result = repository.save(entity);
 
         return createResponse(result);

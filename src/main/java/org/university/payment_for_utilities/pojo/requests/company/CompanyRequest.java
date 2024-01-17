@@ -1,22 +1,27 @@
 package org.university.payment_for_utilities.pojo.requests.company;
 
-import lombok.Builder;
-import lombok.NonNull;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 
-@Builder
-public record CompanyRequest(
-        AddressResidence address,
-        Edrpou edrpou,
-        Website website,
-        String name,
-        String currentAccount
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class CompanyRequest extends Request {
+    private AddressResidence address;
+    private Edrpou edrpou;
+    private Website website;
+    private String name;
+    private String currentAccount;
 
-) implements Request {
     @Override
     public boolean isEmpty() {
         return this.address.isEmpty() ||

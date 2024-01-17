@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
@@ -50,7 +50,7 @@ class PhoneNumServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return PhoneNumResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .number("380632023541")
                 .build();
     }
@@ -60,7 +60,7 @@ class PhoneNumServiceTest extends CrudServiceTest {
         var response = (PhoneNumResponse) expectedResponse;
         return PhoneNumRequest
                 .builder()
-                .number(response.number())
+                .number(response.getNumber())
                 .build();
     }
 

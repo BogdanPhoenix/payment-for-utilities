@@ -28,10 +28,6 @@ public class TypeSettlement extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull TypeSettlement empty(){
-        return TypeSettlement
-                .builder()
-                .uaName("")
-                .enName("")
-                .build();
+        return (TypeSettlement) TransliterationProperty.initEmpty(builder());
     }
 }

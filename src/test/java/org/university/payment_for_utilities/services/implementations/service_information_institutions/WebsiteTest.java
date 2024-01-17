@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
@@ -46,7 +46,7 @@ class WebsiteTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return WebsiteResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .website("https://raiffeisen_new.ua/")
                 .build();
     }
@@ -56,7 +56,7 @@ class WebsiteTest extends CrudServiceTest {
         var response = (WebsiteResponse) expectedResponse;
         return WebsiteRequest
                 .builder()
-                .website(response.website())
+                .website(response.getWebsite())
                 .build();
     }
 

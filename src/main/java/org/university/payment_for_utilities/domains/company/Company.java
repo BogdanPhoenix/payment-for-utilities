@@ -14,7 +14,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Entity
 @Getter
@@ -71,8 +70,10 @@ public class Company extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Company empty(){
-        return Company
-                .builder()
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
                 .address(AddressResidence.empty())
                 .name("")
                 .website(Website.empty())

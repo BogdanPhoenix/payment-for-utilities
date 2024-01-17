@@ -14,9 +14,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
 
@@ -52,8 +52,8 @@ class TypeOfferServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return TypeOfferResponse
                 .builder()
-                .id(response.id())
-                .unitMeasurement(typeOfferGasRequest.unitMeasurement())
+                .id(response.getId())
+                .unitMeasurement(typeOfferGasRequest.getUnitMeasurement())
                 .uaName("Нічний")
                 .enName("Night")
                 .build();
@@ -65,8 +65,8 @@ class TypeOfferServiceTest extends CrudServiceTest {
         return TypeOfferRequest
                 .builder()
                 .unitMeasurement(UnitMeasurement.empty())
-                .uaName(response.uaName())
-                .enName(response.enName())
+                .uaName(response.getUaName())
+                .enName(response.getEnName())
                 .build();
     }
 
@@ -77,7 +77,7 @@ class TypeOfferServiceTest extends CrudServiceTest {
         var typeOfferRequest = (TypeOfferRequest) firstRequest;
         var request = TypeOfferRequest
                 .builder()
-                .unitMeasurement(typeOfferRequest.unitMeasurement())
+                .unitMeasurement(typeOfferRequest.getUnitMeasurement())
                 .uaName(uaName)
                 .enName(enName)
                 .build();

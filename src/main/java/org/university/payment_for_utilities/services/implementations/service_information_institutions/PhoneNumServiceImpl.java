@@ -5,9 +5,9 @@ import org.jetbrains.annotations.Contract;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
@@ -28,27 +28,27 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
         var phoneNumRequest = (PhoneNumRequest) request;
         return PhoneNum
                 .builder()
-                .number(phoneNumRequest.number())
-                .currentData(true)
+                .number(phoneNumRequest.getNumber())
                 .build();
     }
 
     @Override
     protected PhoneNum createEntity(Response response) {
         var phoneNumResponse = (PhoneNumResponse) response;
-        return PhoneNum
-                .builder()
-                .id(phoneNumResponse.id())
-                .number(phoneNumResponse.number())
-                .currentData(true)
+        var builder = PhoneNum.builder();
+        initEntityBuilder(builder, phoneNumResponse);
+
+        return builder
+                .number(phoneNumResponse.getNumber())
                 .build();
     }
 
     @Override
     protected Response createResponse(@NonNull PhoneNum entity) {
-        return PhoneNumResponse
-                .builder()
-                .id(entity.getId())
+        var builder = PhoneNumResponse.builder();
+        initResponseBuilder(builder, entity);
+
+        return builder
                 .number(entity.getNumber())
                 .build();
     }
@@ -57,15 +57,15 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
     protected void updateEntity(@NonNull PhoneNum entity, @NonNull Request request) {
         var newValue = (PhoneNumRequest) request;
 
-        if(!newValue.number().isBlank()){
-            entity.setNumber(newValue.number());
+        if(!newValue.getNumber().isBlank()){
+            entity.setNumber(newValue.getNumber());
         }
     }
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var companyPhoneNumRequest = (PhoneNumRequest) request;
-        validatePhoneNum(companyPhoneNumRequest.number());
+        validatePhoneNum(companyPhoneNumRequest.getNumber());
     }
 
     private void validatePhoneNum(String phoneNum) throws InvalidInputDataException {
@@ -88,7 +88,7 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
         var companyPhoneNumRequest = (PhoneNumRequest) request;
         return repository
                 .findByNumber(
-                        companyPhoneNumRequest.number()
+                        companyPhoneNumRequest.getNumber()
                 );
     }
 }

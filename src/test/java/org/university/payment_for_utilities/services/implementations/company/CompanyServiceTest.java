@@ -16,9 +16,9 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
@@ -53,10 +53,10 @@ class CompanyServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return CompanyResponse
                 .builder()
-                .id(response.id())
-                .address(companyKyivOblenergoRequest.address())
-                .edrpou(companyKyivOblenergoRequest.edrpou())
-                .website(companyKyivOblenergoRequest.website())
+                .id(response.getId())
+                .address(companyKyivOblenergoRequest.getAddress())
+                .edrpou(companyKyivOblenergoRequest.getEdrpou())
+                .website(companyKyivOblenergoRequest.getWebsite())
                 .name("Київ-обленерго")
                 .currentAccount("72341000245521")
                 .build();
@@ -70,8 +70,8 @@ class CompanyServiceTest extends CrudServiceTest {
                 .address(AddressResidence.empty())
                 .edrpou(Edrpou.empty())
                 .website(Website.empty())
-                .name(response.name())
-                .currentAccount(response.currentAccount())
+                .name(response.getName())
+                .currentAccount(response.getCurrentAccount())
                 .build();
     }
 
@@ -82,10 +82,10 @@ class CompanyServiceTest extends CrudServiceTest {
         var companyRequest = (CompanyRequest) firstRequest;
         var request = CompanyRequest
                 .builder()
-                .address(companyRequest.address())
-                .edrpou(companyRequest.edrpou())
-                .website(companyRequest.website())
-                .name(companyRequest.name())
+                .address(companyRequest.getAddress())
+                .edrpou(companyRequest.getEdrpou())
+                .website(companyRequest.getWebsite())
+                .name(companyRequest.getName())
                 .currentAccount(numAccount)
                 .build();
 

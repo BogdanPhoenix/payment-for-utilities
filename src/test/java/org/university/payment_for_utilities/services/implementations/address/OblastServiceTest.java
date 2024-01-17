@@ -8,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.address.OblastRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
 
@@ -43,7 +43,7 @@ class OblastServiceTest extends TransliterationServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return OblastResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .uaName("Київська")
                 .enName("other")
                 .build();
@@ -55,7 +55,7 @@ class OblastServiceTest extends TransliterationServiceTest {
         return OblastRequest
                 .builder()
                 .uaName("")
-                .enName(response.enName())
+                .enName(response.getEnName())
                 .build();
     }
 

@@ -1,14 +1,17 @@
 package org.university.payment_for_utilities.pojo.responses.company;
 
-import lombok.Builder;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.TransliterationResponse;
 
-@Builder
-public record TypeOfferResponse(
-        Long id,
-        UnitMeasurement unitMeasurement,
-        String uaName,
-        String enName
-) implements Response {
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class TypeOfferResponse extends TransliterationResponse {
+    private UnitMeasurement unitMeasurement;
 }

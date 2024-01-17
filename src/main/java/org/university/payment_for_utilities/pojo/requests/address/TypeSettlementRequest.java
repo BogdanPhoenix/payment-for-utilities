@@ -1,27 +1,20 @@
 package org.university.payment_for_utilities.pojo.requests.address;
 
-import lombok.Builder;
-import lombok.NonNull;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.pojo.requests.interfaces.TransliterationRequest;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
 
-@Builder
-public record TypeSettlementRequest(
-        String uaName,
-        String enName
-) implements TransliterationRequest {
-    @Override
-    public boolean isEmpty() {
-        return this.uaName.isBlank() ||
-                this.enName.isBlank();
-    }
-
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class TypeSettlementRequest extends TransliterationRequest {
     @Contract(" -> new")
     public static @NonNull TypeSettlementRequest empty(){
-        return TypeSettlementRequest
-                .builder()
-                .uaName("")
-                .enName("")
-                .build();
+        return (TypeSettlementRequest) initEmpty(TypeSettlementRequest.builder());
     }
 }

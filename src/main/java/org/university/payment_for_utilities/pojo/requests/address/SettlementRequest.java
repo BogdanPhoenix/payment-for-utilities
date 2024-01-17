@@ -1,18 +1,24 @@
 package org.university.payment_for_utilities.pojo.requests.address;
 
-import lombok.Builder;
-import lombok.NonNull;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 
-@Builder
-public record SettlementRequest(
-        TypeSettlement type,
-        String zipCode,
-        SettlementName name
-) implements Request {
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class SettlementRequest extends Request {
+    private TypeSettlement type;
+    private String zipCode;
+    private SettlementName name;
+
     @Override
     public boolean isEmpty() {
         return this.type.isEmpty() ||

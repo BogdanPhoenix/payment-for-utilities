@@ -5,12 +5,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseException;
 import org.university.payment_for_utilities.services.interfaces.CrudService;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +24,10 @@ public abstract class CrudServiceTest {
     protected Request secondRequest;
     protected Request emptyRequest;
     protected CrudService service;
+
+    protected abstract void initRequest();
+    protected abstract Response updateExpectedResponse(@NonNull Response response);
+    protected abstract Request updateNewValue(@NonNull Response expectedResponse);
 
     @AfterEach
     public void clearTable(){
@@ -45,7 +51,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Check if you can retrieve an entity from a table by its identifier.")
     void testGetByIdCorrect(){
         var response = service.addValue(firstRequest);
-        var responseById = service.getById(response.id());
+        var responseById = service.getById(response.getId());
 
         assertThat(responseById)
                 .isEqualTo(response);
@@ -62,7 +68,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Check for adding data to the database.")
     void testAddValueCorrect(){
         var response = service.addValue(firstRequest);
-        assertThat(response.id())
+        assertThat(response.getId())
                 .isNotNull();
     }
 
@@ -90,7 +96,7 @@ public abstract class CrudServiceTest {
         var response = service.addValue(secondRequest);
 
         assertThrows(DuplicateException.class,
-                () -> service.updateValue(response.id(), firstRequest)
+                () -> service.updateValue(response.getId(), firstRequest)
         );
     }
 
@@ -106,7 +112,7 @@ public abstract class CrudServiceTest {
     @DisplayName("Checking the correct deletion of data from the table using the entity identifier.")
     public void testRemoveValueByIdCorrect(){
         var responseAdd = service.addValue(firstRequest);
-        var responseRemove = service.removeValue(responseAdd.id());
+        var responseRemove = service.removeValue(responseAdd.getId());
 
         assertThat(responseAdd)
                 .isEqualTo(responseRemove);
@@ -169,14 +175,37 @@ public abstract class CrudServiceTest {
         var response = service.addValue(secondRequest);
         var expectedResponse = updateExpectedResponse(response);
         var newValue = updateNewValue(expectedResponse);
-        var updateResponse = service.updateValue(response.id(), newValue);
+        var updateResponse = service.updateValue(response.getId(), newValue);
 
         assertThat(updateResponse)
                 .isEqualTo(expectedResponse)
                 .isNotEqualTo(response);
     }
 
-    protected abstract void initRequest();
-    protected abstract Response updateExpectedResponse(@NonNull Response response);
-    protected abstract Request updateNewValue(@NonNull Response expectedResponse);
+    @Test
+    @DisplayName("Check whether the values were successfully assigned to the createDate and updateDate attributes when the entity was created.")
+    protected void testCreateDate(){
+        var date = LocalDateTime.now();
+        var response = service.addValue(firstRequest);
+
+        assertThat(response.getCreateDate())
+                .isNotNull()
+                .isEqualToIgnoringNanos(response.getUpdateDate())
+                .isEqualToIgnoringNanos(date);
+        assertNotNull(response.getUpdateDate());
+    }
+
+    @Test
+    @DisplayName("Check if the value in the updateDate attribute was successfully updated when the entity content was updated.")
+    protected void testUpdateDate() throws InterruptedException {
+        var response = service.addValue(firstRequest);
+        Thread.sleep(1500L);
+        var updateResponse = service.updateValue(response.getId(), secondRequest);
+
+        assertThat(updateResponse.getCreateDate())
+                .isEqualToIgnoringNanos(response.getCreateDate());
+
+        assertNotEquals(updateResponse.getUpdateDate().getSecond(),
+                response.getUpdateDate().getSecond());
+    }
 }

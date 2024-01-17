@@ -70,8 +70,10 @@ public class Bank extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Bank empty(){
-        return Bank
-                .builder()
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
                 .name("")
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())

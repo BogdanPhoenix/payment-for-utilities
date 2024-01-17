@@ -4,10 +4,9 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.SettlementName;
-import org.university.payment_for_utilities.pojo.requests.address.SettlementNameRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
 import org.university.payment_for_utilities.repositories.address.SettlementNameRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
@@ -21,34 +20,16 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
 
     @Override
     protected SettlementName createEntity(@NonNull Request request) {
-        var settlementNameRequest = (SettlementNameRequest) request;
-        return SettlementName
-                .builder()
-                .uaName(settlementNameRequest.uaName())
-                .enName(settlementNameRequest.enName())
-                .currentData(true)
-                .build();
+        return (SettlementName) initTransliterationPropertyBuilder(SettlementName.builder(), request);
     }
 
     @Override
     protected SettlementName createEntity(Response response) {
-        var settlementNameResponse = (SettlementNameResponse) response;
-        return SettlementName
-                .builder()
-                .id(settlementNameResponse.id())
-                .uaName(settlementNameResponse.uaName())
-                .enName(settlementNameResponse.enName())
-                .currentData(true)
-                .build();
+        return (SettlementName) initTransliterationPropertyBuilder(SettlementName.builder(), response);
     }
 
     @Override
     protected Response createResponse(@NonNull SettlementName entity) {
-        return SettlementNameResponse
-                .builder()
-                .id(entity.getId())
-                .uaName(entity.getUaName())
-                .enName(entity.getEnName())
-                .build();
+        return initResponseBuilder(SettlementNameResponse.builder(), entity);
     }
 }

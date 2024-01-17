@@ -1,12 +1,16 @@
 package org.university.payment_for_utilities.pojo.responses.address;
 
-import lombok.Builder;
-import org.university.payment_for_utilities.pojo.responses.address.interfaces.TransliterationResponse;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.TransliterationResponse;
 
-@Builder
-public record OblastResponse(
-        Long id,
-        String uaName,
-        String enName
-) implements TransliterationResponse {
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class OblastResponse extends TransliterationResponse {
+
 }

@@ -1,7 +1,7 @@
 package org.university.payment_for_utilities.services.implementations;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,7 +24,7 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
         var response = service.addValue(firstRequest);
 
         assertThrows(InvalidInputDataException.class,
-                () -> service.updateValue(response.id(), incorrectRequest)
+                () -> service.updateValue(response.getId(), incorrectRequest)
         );
     }
 }

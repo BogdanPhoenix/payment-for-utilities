@@ -15,9 +15,9 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 
@@ -52,10 +52,10 @@ class BankServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return BankResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .name("Raiffeisen Bank Ua")
-                .website(raiffeisenBankRequest.website())
-                .edrpou(raiffeisenBankRequest.edrpou())
+                .website(raiffeisenBankRequest.getWebsite())
+                .edrpou(raiffeisenBankRequest.getEdrpou())
                 .mfo("423147")
                 .build();
     }
@@ -65,10 +65,10 @@ class BankServiceTest extends CrudServiceTest {
         var response = (BankResponse) expectedResponse;
         return BankRequest
                 .builder()
-                .name(response.name())
+                .name(response.getName())
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())
-                .mfo(response.mfo())
+                .mfo(response.getMfo())
                 .build();
     }
 
@@ -79,9 +79,9 @@ class BankServiceTest extends CrudServiceTest {
         var bankRequest = (BankRequest) firstRequest;
         var request = BankRequest
                 .builder()
-                .name(bankRequest.name())
-                .website(bankRequest.website())
-                .edrpou(bankRequest.edrpou())
+                .name(bankRequest.getName())
+                .website(bankRequest.getWebsite())
+                .edrpou(bankRequest.getEdrpou())
                 .mfo(mfo)
                 .build();
 

@@ -11,7 +11,6 @@ import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Entity
 @Getter
@@ -45,8 +44,10 @@ public class PhoneNum extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull PhoneNum empty() {
-        return PhoneNum
-                .builder()
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
                 .number("")
                 .build();
     }

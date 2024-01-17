@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
@@ -26,35 +26,35 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
         var companyRequest = (CompanyRequest) request;
         return Company
                 .builder()
-                .address(companyRequest.address())
-                .edrpou(companyRequest.edrpou())
-                .website(companyRequest.website())
-                .name(companyRequest.name())
-                .currentAccount(companyRequest.currentAccount())
-                .currentData(true)
+                .address(companyRequest.getAddress())
+                .edrpou(companyRequest.getEdrpou())
+                .website(companyRequest.getWebsite())
+                .name(companyRequest.getName())
+                .currentAccount(companyRequest.getCurrentAccount())
                 .build();
     }
 
     @Override
     protected Company createEntity(Response response) {
         var companyResponse = (CompanyResponse) response;
-        return Company
-                .builder()
-                .id(companyResponse.id())
-                .address(companyResponse.address())
-                .edrpou(companyResponse.edrpou())
-                .website(companyResponse.website())
-                .name(companyResponse.name())
-                .currentAccount(companyResponse.currentAccount())
-                .currentData(true)
+        var builder = Company.builder();
+        initEntityBuilder(builder, response);
+
+        return builder
+                .address(companyResponse.getAddress())
+                .edrpou(companyResponse.getEdrpou())
+                .website(companyResponse.getWebsite())
+                .name(companyResponse.getName())
+                .currentAccount(companyResponse.getCurrentAccount())
                 .build();
     }
 
     @Override
     protected Response createResponse(@NonNull Company entity) {
-        return CompanyResponse
-                .builder()
-                .id(entity.getId())
+        var builder = CompanyResponse.builder();
+        initResponseBuilder(builder, entity);
+
+        return builder
                 .address(entity.getAddress())
                 .edrpou(entity.getEdrpou())
                 .website(entity.getWebsite())
@@ -67,20 +67,20 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
     protected void updateEntity(@NonNull Company entity, @NonNull Request request) {
         var newValue = (CompanyRequest) request;
 
-        if(!newValue.address().isEmpty()){
-            entity.setAddress(newValue.address());
+        if(!newValue.getAddress().isEmpty()){
+            entity.setAddress(newValue.getAddress());
         }
-        if(!newValue.edrpou().isEmpty()){
-            entity.setEdrpou(newValue.edrpou());
+        if(!newValue.getEdrpou().isEmpty()){
+            entity.setEdrpou(newValue.getEdrpou());
         }
-        if(!newValue.website().isEmpty()){
-            entity.setWebsite(newValue.website());
+        if(!newValue.getWebsite().isEmpty()){
+            entity.setWebsite(newValue.getWebsite());
         }
-        if(!newValue.name().isBlank()){
-            entity.setName(newValue.name());
+        if(!newValue.getName().isBlank()){
+            entity.setName(newValue.getName());
         }
-        if(!newValue.currentAccount().isBlank()){
-            entity.setCurrentAccount(newValue.currentAccount());
+        if(!newValue.getCurrentAccount().isBlank()){
+            entity.setCurrentAccount(newValue.getCurrentAccount());
         }
     }
 
@@ -88,8 +88,8 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var companyRequest = (CompanyRequest) request;
 
-        validateName(companyRequest.name());
-        validateCurrentAccount(companyRequest.currentAccount());
+        validateName(companyRequest.getName());
+        validateCurrentAccount(companyRequest.getCurrentAccount());
     }
 
     private void validateCurrentAccount(@NonNull String currentAccount) throws InvalidInputDataException {
@@ -112,7 +112,7 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
         var companyRequest = (CompanyRequest) request;
         return repository
                 .findByCurrentAccount(
-                        companyRequest.currentAccount()
+                        companyRequest.getCurrentAccount()
                 );
     }
 }

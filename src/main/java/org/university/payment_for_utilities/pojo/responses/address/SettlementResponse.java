@@ -1,16 +1,20 @@
 package org.university.payment_for_utilities.pojo.responses.address;
 
-import lombok.Builder;
+import jakarta.persistence.MappedSuperclass;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
-@Builder
-public record SettlementResponse(
-        Long id,
-        TypeSettlement type,
-        String zipCode,
-        SettlementName name
-) implements Response {
-
+@Getter
+@Setter
+@SuperBuilder
+@MappedSuperclass
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class SettlementResponse extends Response {
+    private TypeSettlement type;
+    private String zipCode;
+    private SettlementName name;
 }

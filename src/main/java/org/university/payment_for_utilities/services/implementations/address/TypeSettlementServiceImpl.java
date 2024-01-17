@@ -4,10 +4,9 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
-import org.university.payment_for_utilities.pojo.requests.address.TypeSettlementRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.TypeSettlementRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
@@ -21,34 +20,16 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
 
     @Override
     protected TypeSettlement createEntity(@NonNull Request request) {
-        var typeRequest = (TypeSettlementRequest) request;
-        return TypeSettlement
-                .builder()
-                .uaName(typeRequest.uaName())
-                .enName(typeRequest.enName())
-                .currentData(true)
-                .build();
+        return (TypeSettlement) initTransliterationPropertyBuilder(TypeSettlement.builder(), request);
     }
 
     @Override
     protected TypeSettlement createEntity(Response response) {
-        var typeResponse = (TypeSettlementResponse) response;
-        return TypeSettlement
-                .builder()
-                .id(typeResponse.id())
-                .uaName(typeResponse.uaName())
-                .enName(typeResponse.enName())
-                .currentData(true)
-                .build();
+        return (TypeSettlement) initTransliterationPropertyBuilder(TypeSettlement.builder(), response);
     }
 
     @Override
     protected Response createResponse(@NonNull TypeSettlement entity) {
-        return TypeSettlementResponse
-                .builder()
-                .id(entity.getId())
-                .uaName(entity.getUaName())
-                .enName(entity.getEnName())
-                .build();
+        return initResponseBuilder(TypeSettlementResponse.builder(), entity);
     }
 }

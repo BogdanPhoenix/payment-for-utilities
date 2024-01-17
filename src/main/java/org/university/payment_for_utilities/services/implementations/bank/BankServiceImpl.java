@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
@@ -27,33 +27,33 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         var bankRequest = (BankRequest) request;
         return Bank
                 .builder()
-                .name(bankRequest.name())
-                .website(bankRequest.website())
-                .edrpou(bankRequest.edrpou())
-                .mfo(bankRequest.mfo())
-                .currentData(true)
+                .name(bankRequest.getName())
+                .website(bankRequest.getWebsite())
+                .edrpou(bankRequest.getEdrpou())
+                .mfo(bankRequest.getMfo())
                 .build();
     }
 
     @Override
     protected Bank createEntity(Response response) {
         var bankResponse = (BankResponse) response;
-        return Bank
-                .builder()
-                .id(bankResponse.id())
-                .name(bankResponse.name())
-                .website(bankResponse.website())
-                .edrpou(bankResponse.edrpou())
-                .mfo(bankResponse.mfo())
-                .currentData(true)
+        var builder = Bank.builder();
+        initEntityBuilder(builder, response);
+
+        return builder
+                .name(bankResponse.getName())
+                .website(bankResponse.getWebsite())
+                .edrpou(bankResponse.getEdrpou())
+                .mfo(bankResponse.getMfo())
                 .build();
     }
 
     @Override
     protected Response createResponse(@NonNull Bank entity) {
-        return BankResponse
-                .builder()
-                .id(entity.getId())
+        var builder = BankResponse.builder();
+        initResponseBuilder(builder, entity);
+
+        return builder
                 .name(entity.getName())
                 .website(entity.getWebsite())
                 .edrpou(entity.getEdrpou())
@@ -65,17 +65,17 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     protected void updateEntity(@NonNull Bank entity, @NonNull Request request) {
         var newValue = (BankRequest) request;
 
-        if(!newValue.name().isBlank()){
-            entity.setName(newValue.name());
+        if(!newValue.getName().isBlank()){
+            entity.setName(newValue.getName());
         }
-        if(!newValue.website().isEmpty()){
-            entity.setWebsite(newValue.website());
+        if(!newValue.getWebsite().isEmpty()){
+            entity.setWebsite(newValue.getWebsite());
         }
-        if(!newValue.edrpou().isEmpty()){
-            entity.setEdrpou(newValue.edrpou());
+        if(!newValue.getEdrpou().isEmpty()){
+            entity.setEdrpou(newValue.getEdrpou());
         }
-        if(!newValue.mfo().isBlank()){
-            entity.setMfo(newValue.mfo());
+        if(!newValue.getMfo().isBlank()){
+            entity.setMfo(newValue.getMfo());
         }
     }
 
@@ -83,8 +83,8 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var bankRequest = (BankRequest) request;
 
-        validateName(bankRequest.name());
-        validateMfo(bankRequest.mfo());
+        validateName(bankRequest.getName());
+        validateMfo(bankRequest.getMfo());
     }
 
     private void validateMfo(@NonNull String mfo) throws InvalidInputDataException {
@@ -106,7 +106,7 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
         var bankRequest = (BankRequest) request;
         return repository
                 .findByMfo(
-                        bankRequest.mfo()
+                        bankRequest.getMfo()
                 );
     }
 }

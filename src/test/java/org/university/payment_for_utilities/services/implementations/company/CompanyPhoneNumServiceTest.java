@@ -10,9 +10,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 
@@ -46,8 +46,8 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return CompanyPhoneNumResponse
                 .builder()
-                .id(response.id())
-                .company(companyKyivOblenergoPhoneNumRequest.company())
+                .id(response.getId())
+                .company(companyKyivOblenergoPhoneNumRequest.getCompany())
                 .phoneNum(updateBankPhoneNum)
                 .build();
     }
@@ -58,7 +58,7 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
         return CompanyPhoneNumRequest
                 .builder()
                 .company(Company.empty())
-                .phoneNum(response.phoneNum())
+                .phoneNum(response.getPhoneNum())
                 .build();
     }
 }

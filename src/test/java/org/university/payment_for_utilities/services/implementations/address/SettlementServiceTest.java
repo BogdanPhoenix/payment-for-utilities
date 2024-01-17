@@ -13,10 +13,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
 
@@ -53,10 +53,10 @@ class SettlementServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return SettlementResponse
                 .builder()
-                .id(response.id())
-                .type(settlementRequestKyiv.type())
+                .id(response.getId())
+                .type(settlementRequestKyiv.getType())
                 .zipCode("14523")
-                .name(settlementRequestKyiv.name())
+                .name(settlementRequestKyiv.getName())
                 .build();
     }
 
@@ -66,7 +66,7 @@ class SettlementServiceTest extends CrudServiceTest {
         return SettlementRequest
                 .builder()
                 .type(TypeSettlement.empty())
-                .zipCode(response.zipCode())
+                .zipCode(response.getZipCode())
                 .name(SettlementName.empty())
                 .build();
     }
@@ -78,9 +78,9 @@ class SettlementServiceTest extends CrudServiceTest {
         var settlementRequest = (SettlementRequest) firstRequest;
         var request = SettlementRequest
                 .builder()
-                .type(settlementRequest.type())
+                .type(settlementRequest.getType())
                 .zipCode(zipCode)
-                .name(settlementRequest.name())
+                .name(settlementRequest.getName())
                 .build();
 
         assertThrows(InvalidInputDataException.class,

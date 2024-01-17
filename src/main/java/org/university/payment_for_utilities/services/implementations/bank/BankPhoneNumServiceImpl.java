@@ -4,9 +4,9 @@ import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankPhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
@@ -24,29 +24,29 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
         return BankPhoneNum
                 .builder()
-                .bank(bankPhoneNumRequest.bank())
-                .phoneNum(bankPhoneNumRequest.phoneNum())
-                .currentData(true)
+                .bank(bankPhoneNumRequest.getBank())
+                .phoneNum(bankPhoneNumRequest.getPhoneNum())
                 .build();
     }
 
     @Override
     protected BankPhoneNum createEntity(Response response) {
         var bankPhoneNumResponse = (BankPhoneNumResponse) response;
-        return BankPhoneNum
-                .builder()
-                .id(bankPhoneNumResponse.id())
-                .bank(bankPhoneNumResponse.bank())
-                .phoneNum(bankPhoneNumResponse.phoneNum())
-                .currentData(true)
+        var builder = BankPhoneNum.builder();
+        initEntityBuilder(builder, response);
+
+        return builder
+                .bank(bankPhoneNumResponse.getBank())
+                .phoneNum(bankPhoneNumResponse.getPhoneNum())
                 .build();
     }
 
     @Override
     protected Response createResponse(@NonNull BankPhoneNum entity) {
-        return BankPhoneNumResponse
-                .builder()
-                .id(entity.getId())
+        var builder = BankPhoneNumResponse.builder();
+        initResponseBuilder(builder, entity);
+
+        return builder
                 .bank(entity.getBank())
                 .phoneNum(entity.getPhoneNum())
                 .build();
@@ -56,11 +56,11 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     protected void updateEntity(@NonNull BankPhoneNum entity, @NonNull Request request) {
         var newValue = (BankPhoneNumRequest) request;
 
-        if(!newValue.bank().isEmpty()){
-            entity.setBank(newValue.bank());
+        if(!newValue.getBank().isEmpty()){
+            entity.setBank(newValue.getBank());
         }
-        if(!newValue.phoneNum().isEmpty()){
-            entity.setPhoneNum(newValue.phoneNum());
+        if(!newValue.getPhoneNum().isEmpty()){
+            entity.setPhoneNum(newValue.getPhoneNum());
         }
     }
 
@@ -69,8 +69,8 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
         return repository
                 .findByBankAndPhoneNum(
-                        bankPhoneNumRequest.bank(),
-                        bankPhoneNumRequest.phoneNum()
+                        bankPhoneNumRequest.getBank(),
+                        bankPhoneNumRequest.getPhoneNum()
                 );
     }
 }

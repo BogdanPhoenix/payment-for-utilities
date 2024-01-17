@@ -4,9 +4,9 @@ import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.TypeOfferRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
@@ -22,37 +22,28 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
     @Override
     protected TypeOffer createEntity(Request request) {
         var typeOfferRequest = (TypeOfferRequest) request;
+
         return TypeOffer
                 .builder()
-                .unitMeasurement(typeOfferRequest.unitMeasurement())
-                .uaName(typeOfferRequest.uaName())
-                .enName(typeOfferRequest.enName())
-                .currentData(true)
+                .uaName(typeOfferRequest.getUaName())
+                .enName(typeOfferRequest.getEnName())
+                .unitMeasurement(typeOfferRequest.getUnitMeasurement())
                 .build();
     }
 
     @Override
     protected TypeOffer createEntity(Response response) {
+        var entity = (TypeOffer) initTransliterationPropertyBuilder(TypeOffer.builder(), response);
         var typeOfferResponse = (TypeOfferResponse) response;
-        return TypeOffer
-                .builder()
-                .id(typeOfferResponse.id())
-                .unitMeasurement(typeOfferResponse.unitMeasurement())
-                .uaName(typeOfferResponse.uaName())
-                .enName(typeOfferResponse.enName())
-                .currentData(true)
-                .build();
+        entity.setUnitMeasurement(typeOfferResponse.getUnitMeasurement());
+        return entity;
     }
 
     @Override
     protected Response createResponse(@NonNull TypeOffer entity) {
-        return TypeOfferResponse
-                .builder()
-                .id(entity.getId())
-                .unitMeasurement(entity.getUnitMeasurement())
-                .uaName(entity.getUaName())
-                .enName(entity.getEnName())
-                .build();
+        var response = (TypeOfferResponse) initResponseBuilder(TypeOfferResponse.builder(), entity);
+        response.setUnitMeasurement(entity.getUnitMeasurement());
+        return response;
     }
 
     @Override
@@ -60,8 +51,8 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
         var typeOfferRequest = (TypeOfferRequest) request;
         return repository
                 .findByUnitMeasurementAndEnName(
-                        typeOfferRequest.unitMeasurement(),
-                        typeOfferRequest.enName()
+                        typeOfferRequest.getUnitMeasurement(),
+                        typeOfferRequest.getEnName()
                 );
     }
 }

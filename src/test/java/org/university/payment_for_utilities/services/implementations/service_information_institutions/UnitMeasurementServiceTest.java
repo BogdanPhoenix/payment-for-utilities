@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 import org.university.payment_for_utilities.services.implementations.TransliterationServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.UnitMeasurementService;
@@ -43,7 +43,7 @@ public class UnitMeasurementServiceTest extends TransliterationServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return UnitMeasurementResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .uaName("куб. м.")
                 .enName("new data")
                 .build();
@@ -55,7 +55,7 @@ public class UnitMeasurementServiceTest extends TransliterationServiceTest {
         return UnitMeasurementRequest
                 .builder()
                 .uaName("")
-                .enName(response.enName())
+                .enName(response.getEnName())
                 .build();
     }
 

@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
@@ -50,7 +50,7 @@ class EdrpouServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response) {
         return EdrpouResponse
                 .builder()
-                .id(response.id())
+                .id(response.getId())
                 .edrpou("75231456")
                 .build();
     }
@@ -60,7 +60,7 @@ class EdrpouServiceTest extends CrudServiceTest {
         var response = (EdrpouResponse) expectedResponse;
         return EdrpouRequest
                 .builder()
-                .edrpou(response.edrpou())
+                .edrpou(response.getEdrpou())
                 .build();
     }
 

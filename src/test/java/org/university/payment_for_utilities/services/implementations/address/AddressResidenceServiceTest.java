@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 
@@ -44,8 +44,8 @@ class AddressResidenceServiceTest extends CrudServiceTest {
     protected Response updateExpectedResponse(@NonNull Response response){
         return AddressResidenceResponse
                 .builder()
-                .id(response.id())
-                .settlement(addressKyivRequest.settlement())
+                .id(response.getId())
+                .settlement(addressKyivRequest.getSettlement())
                 .uaNameStreet("вулиця нова")
                 .enNameStreet("new street")
                 .numHouse("41")
@@ -63,9 +63,9 @@ class AddressResidenceServiceTest extends CrudServiceTest {
                 .settlement(Settlement.empty())
                 .uaNameStreet("")
                 .enNameStreet("")
-                .numHouse(response.numHouse())
-                .numEntrance(response.numEntrance())
-                .numApartment(response.numApartment())
+                .numHouse(response.getNumHouse())
+                .numEntrance(response.getNumEntrance())
+                .numApartment(response.getNumApartment())
                 .build();
     }
 }

@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
-import org.university.payment_for_utilities.pojo.requests.interfaces.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
-import org.university.payment_for_utilities.pojo.responses.interfaces.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
@@ -29,37 +29,37 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var address = (AddressResidenceRequest) request;
         return AddressResidence
                 .builder()
-                .settlement(address.settlement())
-                .uaNameStreet(address.uaNameStreet())
-                .enNameStreet(address.enNameStreet())
-                .numHouse(address.numHouse())
-                .numEntrance(address.numEntrance())
-                .numApartment(address.numApartment())
-                .currentData(true)
+                .settlement(address.getSettlement())
+                .uaNameStreet(address.getUaNameStreet())
+                .enNameStreet(address.getEnNameStreet())
+                .numHouse(address.getNumHouse())
+                .numEntrance(address.getNumEntrance())
+                .numApartment(address.getNumApartment())
                 .build();
     }
 
     @Override
-    protected AddressResidence createEntity(Response response) {
+    protected AddressResidence createEntity(@NonNull Response response) {
         var addressResponse = (AddressResidenceResponse) response;
-        return AddressResidence
-                .builder()
-                .id(addressResponse.id())
-                .settlement(addressResponse.settlement())
-                .uaNameStreet(addressResponse.uaNameStreet())
-                .enNameStreet(addressResponse.enNameStreet())
-                .numHouse(addressResponse.numHouse())
-                .numEntrance(addressResponse.numEntrance())
-                .numApartment(addressResponse.numApartment())
-                .currentData(true)
+        var builder = AddressResidence.builder();
+        initEntityBuilder(builder, response);
+
+        return builder
+                .settlement(addressResponse.getSettlement())
+                .uaNameStreet(addressResponse.getUaNameStreet())
+                .enNameStreet(addressResponse.getEnNameStreet())
+                .numHouse(addressResponse.getNumHouse())
+                .numEntrance(addressResponse.getNumEntrance())
+                .numApartment(addressResponse.getNumApartment())
                 .build();
     }
 
     @Override
     protected Response createResponse(@NonNull AddressResidence entity) {
-        return AddressResidenceResponse
-                .builder()
-                .id(entity.getId())
+        var builder = AddressResidenceResponse.builder();
+        initResponseBuilder(builder, entity);
+
+        return builder
                 .settlement(entity.getSettlement())
                 .uaNameStreet(entity.getUaNameStreet())
                 .enNameStreet(entity.getEnNameStreet())
@@ -73,23 +73,23 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     protected void updateEntity(@NonNull AddressResidence entity, @NonNull Request request) {
         var newValue = (AddressResidenceRequest) request;
 
-        if(!newValue.settlement().isEmpty()){
-            entity.setSettlement(newValue.settlement());
+        if(!newValue.getSettlement().isEmpty()){
+            entity.setSettlement(newValue.getSettlement());
         }
-        if(!newValue.uaNameStreet().isBlank()){
-            entity.setUaNameStreet(newValue.uaNameStreet());
+        if(!newValue.getUaNameStreet().isBlank()){
+            entity.setUaNameStreet(newValue.getUaNameStreet());
         }
-        if(!newValue.enNameStreet().isBlank()){
-            entity.setEnNameStreet(newValue.enNameStreet());
+        if(!newValue.getEnNameStreet().isBlank()){
+            entity.setEnNameStreet(newValue.getEnNameStreet());
         }
-        if(!newValue.numHouse().isBlank()){
-            entity.setNumHouse(newValue.numHouse());
+        if(!newValue.getNumHouse().isBlank()){
+            entity.setNumHouse(newValue.getNumHouse());
         }
-        if(!newValue.numEntrance().isBlank()){
-            entity.setNumEntrance(newValue.numEntrance());
+        if(!newValue.getNumEntrance().isBlank()){
+            entity.setNumEntrance(newValue.getNumEntrance());
         }
-        if(!newValue.numApartment().isBlank()){
-            entity.setNumApartment(newValue.numApartment());
+        if(!newValue.getNumApartment().isBlank()){
+            entity.setNumApartment(newValue.getNumApartment());
         }
     }
 
@@ -97,8 +97,8 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var addressRequest = (AddressResidenceRequest) request;
 
-        validateStreet(addressRequest.uaNameStreet());
-        validateStreet(addressRequest.enNameStreet());
+        validateStreet(addressRequest.getUaNameStreet());
+        validateStreet(addressRequest.getEnNameStreet());
         validateNumHouse(addressRequest);
         validateNumEntrance(addressRequest);
         validateNumApartment(addressRequest);
@@ -114,11 +114,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private void validateNumHouse(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
-        if(isValidNumHouse(request.numHouse())){
+        if(isValidNumHouse(request.getNumHouse())){
             return;
         }
 
-        var message = String.format("You entered the wrong house number format: %s. The house number can contain Cyrillic or Latin letters, numbers, hyphens, and spaces.", request.numHouse());
+        var message = String.format("You entered the wrong house number format: %s. The house number can contain Cyrillic or Latin letters, numbers, hyphens, and spaces.", request.getNumHouse());
         throwRuntimeException(message, InvalidInputDataException::new);
     }
 
@@ -129,11 +129,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private void validateNumEntrance(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
-        if(isValidNumEntrance(request.numEntrance())){
+        if(isValidNumEntrance(request.getNumEntrance())){
             return;
         }
 
-        var message = String.format("You entered the wrong format for the entrance number: %s. The entrance number can contain no more than three digits.", request.numEntrance());
+        var message = String.format("You entered the wrong format for the entrance number: %s. The entrance number can contain no more than three digits.", request.getNumEntrance());
         throwRuntimeException(message, InvalidInputDataException::new);
     }
 
@@ -142,11 +142,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     private void validateNumApartment(@NonNull AddressResidenceRequest request) throws InvalidInputDataException {
-        if(isValidNumApartment(request.numApartment())){
+        if(isValidNumApartment(request.getNumApartment())){
             return;
         }
 
-        var message = String.format("You entered the wrong apartment number format: %s. The apartment number can contain no more than five digits.", request.numApartment());
+        var message = String.format("You entered the wrong apartment number format: %s. The apartment number can contain no more than five digits.", request.getNumApartment());
         throwRuntimeException(message, InvalidInputDataException::new);
     }
 
@@ -159,10 +159,10 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var address = (AddressResidenceRequest) request;
         return repository
                 .findBySettlementAndEnNameStreetAndNumHouseAndNumEntrance(
-                        address.settlement(),
-                        address.enNameStreet(),
-                        address.numHouse(),
-                        address.numEntrance()
+                        address.getSettlement(),
+                        address.getEnNameStreet(),
+                        address.getNumHouse(),
+                        address.getNumEntrance()
                 );
     }
 }
