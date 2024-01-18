@@ -2,18 +2,23 @@ package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.address.Settlement;
+import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
@@ -67,5 +72,50 @@ class AddressResidenceServiceTest extends CrudServiceTest {
                 .numEntrance(response.getNumEntrance())
                 .numApartment(response.getNumApartment())
                 .build();
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"uaNameStreet\" attribute.")
+    void testValidateUaNameStreetThrowInvalidInputDataException(){
+        var request = (AddressResidenceRequest) firstRequest;
+        request.setUaNameStreet("хибні@_@дані");
+
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"enNameStreet\" attribute.")
+    void testValidateEnNameStreetThrowInvalidInputDataException(){
+        var request = (AddressResidenceRequest) firstRequest;
+        request.setEnNameStreet("fatal@_@data");
+
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"numHouse\" attribute.")
+    void testValidateNumHouseThrowInvalidInputDataException(){
+        var request = (AddressResidenceRequest) firstRequest;
+        request.setNumHouse("5@B");
+
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"numEntrance\" attribute.")
+    void testValidateNumEntranceThrowInvalidInputDataException(){
+        var request = (AddressResidenceRequest) firstRequest;
+        request.setNumEntrance("B");
+
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"numApartment\" attribute.")
+    void testValidateNumApartmentThrowInvalidInputDataException(){
+        var request = (AddressResidenceRequest) firstRequest;
+        request.setNumApartment("test");
+
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
     }
 }

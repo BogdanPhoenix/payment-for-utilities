@@ -3,6 +3,7 @@ package org.university.payment_for_utilities.services.implementations.bank;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -97,5 +98,21 @@ class BankServiceTest extends CrudServiceTest {
                 Arguments.of("3099"),
                 Arguments.of("30529999")
         );
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"name\" attribute.")
+    void testValidateNameThrowInvalidInputDataException(){
+        var request = (BankRequest) firstRequest;
+        request.setName("fatal@_@data");
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+    }
+
+    @Test
+    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"mfo\" attribute.")
+    void testValidateMfoThrowInvalidInputDataException(){
+        var request = (BankRequest) firstRequest;
+        request.setMfo("@#");
+        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
     }
 }
