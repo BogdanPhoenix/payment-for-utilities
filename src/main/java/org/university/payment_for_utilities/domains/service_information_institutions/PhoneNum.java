@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
+import org.university.payment_for_utilities.domains.user.RegisteredUser;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -36,6 +37,11 @@ public class PhoneNum extends TableInfo {
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "phoneNum", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
     private BankPhoneNum bankPhoneNum;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "phoneNum", cascade={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
+    private RegisteredUser user;
 
     @Override
     public boolean isEmpty() {

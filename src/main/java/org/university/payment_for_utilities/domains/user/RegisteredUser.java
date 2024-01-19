@@ -2,27 +2,28 @@ package org.university.payment_for_utilities.domains.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.bank.Bank;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "registered_users")
-public class RegisteredUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class RegisteredUser extends TableInfo {
     @Column(name = "user_email", nullable = false, unique = true)
     @NonNull
     private String userEmail;
@@ -31,15 +32,13 @@ public class RegisteredUser {
     @NonNull
     private String passwordUser;
 
-    @Column(name = "phone_num", length = 20, nullable = false, unique = true)
+    @OneToOne
+    @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
     @NonNull
-    private String phoneNum;
-
-    @Column(name = "current_data")
-    private boolean currentData;
+    private PhoneNum phoneNum;
 
     @OneToOne(mappedBy = "registered", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private InfoAboutUser infoUser;
+    private transient InfoAboutUser infoUser;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -66,5 +65,24 @@ public class RegisteredUser {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "registeredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ContractEntity> contractEntities;
+    private transient List<ContractEntity> contractEntities;
+
+    @Override
+    public boolean isEmpty() {
+        return userEmail.isBlank() ||
+                passwordUser.isBlank() ||
+                phoneNum.isEmpty();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull RegisteredUser empty() {
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
+                .userEmail("")
+                .passwordUser("")
+                .phoneNum(PhoneNum.empty())
+                .build();
+    }
 }
