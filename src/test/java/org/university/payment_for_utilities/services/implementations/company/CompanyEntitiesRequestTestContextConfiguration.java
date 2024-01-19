@@ -10,12 +10,14 @@ import org.springframework.context.annotation.Lazy;
 import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.company.Company;
+import org.university.payment_for_utilities.domains.company.TypeOffer;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
+import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffRequest;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
 import org.university.payment_for_utilities.services.implementations.address.AddressEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
@@ -32,6 +34,9 @@ import static org.university.payment_for_utilities.AdditionalTestingTools.create
 public class CompanyEntitiesRequestTestContextConfiguration {
     @Autowired
     private CompanyServiceImpl companyService;
+    @Autowired
+    private TypeOfferServiceImpl typeOfferService;
+
     @Autowired
     @Qualifier("addressResidence")
     private AddressResidence addressResidence;
@@ -64,6 +69,37 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     private PhoneNum bankPhoneNum;
 
     @Lazy
+    @Bean(name = "createRivneTariffRequest")
+    public CompanyTariffRequest createRivneTariffRequest() {
+        var company = (Company) createEntity(companyService, companyRivneOblenergoRequest());
+        var type = (TypeOffer) createEntity(typeOfferService, typeOfferGasRequest());
+
+        return CompanyTariffRequest
+                .builder()
+                .company(company)
+                .type(type)
+                .name("Денний")
+                .fixedCost("13.5")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "createKyivTariffRequest")
+    public CompanyTariffRequest createKyivTariffRequest() {
+        var company = (Company) createEntity(companyService, companyKyivOblenergoRequest());
+        var type = (TypeOffer) createEntity(typeOfferService, typeOfferElectricRequest());
+
+        return CompanyTariffRequest
+                .builder()
+                .company(company)
+                .type(type)
+                .name("Нічний")
+                .fixedCost("1.68")
+                .build();
+
+    }
+
+    @Lazy
     @Bean(name = "typeOfferGasRequest")
     public TypeOfferRequest typeOfferGasRequest(){
         return TypeOfferRequest
@@ -82,6 +118,23 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .unitMeasurement(unitKilowatt)
                 .uaName("Цілодобовий")
                 .enName("All day")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "typeOfferUpdate")
+    public TypeOffer typeOfferUpdate() {
+        return (TypeOffer) createEntity(typeOfferService, typeOfferUpdateRequest());
+    }
+
+    @Lazy
+    @Bean(name = "typeOfferUpdateRequest")
+    public TypeOfferRequest typeOfferUpdateRequest(){
+        return TypeOfferRequest
+                .builder()
+                .unitMeasurement(unitKilowatt)
+                .uaName("Оновленні дані")
+                .enName("Update data")
                 .build();
     }
 

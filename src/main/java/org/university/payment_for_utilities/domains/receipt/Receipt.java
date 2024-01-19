@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.university.payment_for_utilities.domains.user.Contract;
+import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.bank.Bank;
 
 import java.sql.Date;
@@ -30,7 +30,7 @@ public class Receipt {
     @ManyToOne
     @JoinColumn(name = "id_contract", nullable = false)
     @NonNull
-    private Contract contract;
+    private ContractEntity contractEntity;
 
     @ManyToOne
     @JoinColumn(name = "id_bank", nullable = false)

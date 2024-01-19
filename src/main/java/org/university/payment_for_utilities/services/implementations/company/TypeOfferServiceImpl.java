@@ -22,7 +22,6 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
     @Override
     protected TypeOffer createEntity(Request request) {
         var typeOfferRequest = (TypeOfferRequest) request;
-
         return TypeOffer
                 .builder()
                 .uaName(typeOfferRequest.getUaName())
@@ -33,10 +32,14 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
 
     @Override
     protected TypeOffer createEntity(Response response) {
-        var entity = (TypeOffer) initTransliterationPropertyBuilder(TypeOffer.builder(), response);
         var typeOfferResponse = (TypeOfferResponse) response;
-        entity.setUnitMeasurement(typeOfferResponse.getUnitMeasurement());
-        return entity;
+        return TypeOffer
+                .builder()
+                .id(typeOfferResponse.getId())
+                .uaName(typeOfferResponse.getUaName())
+                .enName(typeOfferResponse.getEnName())
+                .unitMeasurement(typeOfferResponse.getUnitMeasurement())
+                .build();
     }
 
     @Override

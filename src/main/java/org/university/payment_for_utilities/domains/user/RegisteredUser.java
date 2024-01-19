@@ -66,5 +66,5 @@ public class RegisteredUser {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "registeredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Contract> contracts;
+    private List<ContractEntity> contractEntities;
 }

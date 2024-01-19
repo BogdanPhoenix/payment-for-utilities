@@ -2,29 +2,29 @@ package org.university.payment_for_utilities.domains.company;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.university.payment_for_utilities.domains.user.Contract;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
+import org.university.payment_for_utilities.domains.user.ContractEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "company_tariffs",
     uniqueConstraints = @UniqueConstraint(columnNames = {"id_company", "name"})
 )
-public class CompanyTariff {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class CompanyTariff extends TableInfo {
     @ManyToOne
     @JoinColumn(name = "id_company", nullable = false)
     @NonNull
@@ -43,11 +43,29 @@ public class CompanyTariff {
     @NonNull
     private BigDecimal fixedCost;
 
-    @Column(name = "current_data")
-    private boolean currentData;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "companyTariff", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Contract> contracts;
+    private transient List<ContractEntity> contractEntities;
+
+    @Override
+    public boolean isEmpty() {
+        return company.isEmpty() ||
+                type.isEmpty() ||
+                name.isBlank() ||
+                fixedCost.equals(BigDecimal.ZERO);
+    }
+
+    @Contract(" -> new")
+    public static @NonNull CompanyTariff empty(){
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
+                .company(Company.empty())
+                .type(TypeOffer.empty())
+                .name("")
+                .fixedCost(BigDecimal.ZERO)
+                .build();
+    }
 }

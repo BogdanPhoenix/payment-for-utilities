@@ -16,8 +16,8 @@ import java.util.List;
 @DynamicUpdate
 @DynamicInsert
 @Entity
-@Table(name = "contracts")
-public class Contract {
+@Table(name = "contract_entities")
+public class ContractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -42,6 +42,6 @@ public class Contract {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "contractEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Receipt> receipts;
 }
