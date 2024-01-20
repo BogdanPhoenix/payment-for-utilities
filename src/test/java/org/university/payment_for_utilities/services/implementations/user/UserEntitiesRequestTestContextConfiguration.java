@@ -8,11 +8,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
+import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.enumarations.Role;
+import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
+import org.university.payment_for_utilities.services.implementations.company.CompanyEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
 
 import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
@@ -21,6 +24,7 @@ import static org.university.payment_for_utilities.AdditionalTestingTools.create
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.user")
 @Import({
         DataBaseConfiguration.class,
+        CompanyEntitiesRequestTestContextConfiguration.class,
         ServiceInfoEntitiesRequestTestContextConfiguration.class
 })
 public class UserEntitiesRequestTestContextConfiguration {
@@ -33,6 +37,38 @@ public class UserEntitiesRequestTestContextConfiguration {
     @Autowired
     @Qualifier("bankPhoneNum")
     private PhoneNum olegPhoneNumber;
+    @Autowired
+    @Qualifier("createRivneTariff")
+    private CompanyTariff rivneTariff;
+    @Autowired
+    @Qualifier("createKyivTariff")
+    private CompanyTariff kyivTariff;
+
+    @Lazy
+    @Bean(name = "createRivneContractRequest")
+    public ContractEntityRequest createRivneContractRequest() {
+        var registered = createRegisteredUser(registeredUserIvanRequest());
+
+        return ContractEntityRequest
+                .builder()
+                .registeredUser(registered)
+                .companyTariff(rivneTariff)
+                .numContract("14231402132")
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "createKyivContractRequest")
+    public ContractEntityRequest createKyivContractRequest() {
+        var registered = createRegisteredUser(registeredUserOlegRequest());
+
+        return ContractEntityRequest
+                .builder()
+                .registeredUser(registered)
+                .companyTariff(kyivTariff)
+                .numContract("54231024692")
+                .build();
+    }
 
     @Lazy
     @Bean(name = "userIvanRequest")

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.company.Company;
+import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
@@ -34,6 +35,8 @@ import static org.university.payment_for_utilities.AdditionalTestingTools.create
 public class CompanyEntitiesRequestTestContextConfiguration {
     @Autowired
     private CompanyServiceImpl companyService;
+    @Autowired
+    private CompanyTariffServiceImpl companyTariffService;
     @Autowired
     private TypeOfferServiceImpl typeOfferService;
 
@@ -67,6 +70,18 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     @Autowired
     @Qualifier("bankPhoneNum")
     private PhoneNum bankPhoneNum;
+
+    @Lazy
+    @Bean(name = "createRivneTariff")
+    public CompanyTariff createRivneTariff() {
+        return (CompanyTariff) createEntity(companyTariffService, createRivneTariffRequest());
+    }
+
+    @Lazy
+    @Bean(name = "createKyivTariff")
+    public CompanyTariff createKyivTariff() {
+        return (CompanyTariff) createEntity(companyTariffService, createKyivTariffRequest());
+    }
 
     @Lazy
     @Bean(name = "createRivneTariffRequest")

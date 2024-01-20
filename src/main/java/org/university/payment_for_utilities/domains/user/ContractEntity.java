@@ -2,27 +2,27 @@ package org.university.payment_for_utilities.domains.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "contract_entities")
-public class ContractEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class ContractEntity extends TableInfo {
     @ManyToOne
     @JoinColumn(name = "id_registered_user", nullable = false)
     @NonNull
@@ -37,11 +37,27 @@ public class ContractEntity {
     @NonNull
     private String numContract;
 
-    @Column(name = "current_data")
-    private boolean currentData;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "contractEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Receipt> receipts;
+    private transient List<Receipt> receipts;
+
+    @Override
+    public boolean isEmpty() {
+        return registeredUser.isEmpty() ||
+                companyTariff.isEmpty() ||
+                numContract.isBlank();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull ContractEntity empty() {
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
+                .registeredUser(RegisteredUser.empty())
+                .companyTariff(CompanyTariff.empty())
+                .numContract("")
+                .build();
+    }
 }
