@@ -2,27 +2,30 @@ package org.university.payment_for_utilities.domains.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.enumarations.Role;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "info_about_users",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "patronymic"} )
+    uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name"} )
 )
-public class InfoAboutUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-    @OneToOne
+public class InfoAboutUser extends TableInfo {
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_registered_user", nullable = false, unique = true)
     @NonNull
     private RegisteredUser registered;
@@ -38,10 +41,24 @@ public class InfoAboutUser {
     @NonNull
     private String lastName;
 
-    @Column(name = "patronymic", nullable = false)
-    @NonNull
-    private String patronymic;
+    @Override
+    public boolean isEmpty() {
+        return registered.isEmpty() ||
+                firstName.isBlank() ||
+                lastName.isBlank() ||
+                role == Role.EMPTY;
+    }
 
-    @Column(name = "current_data")
-    private boolean currentData;
+    @Contract(" -> new")
+    public static @NonNull InfoAboutUser empty() {
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
+                .registered(RegisteredUser.empty())
+                .role(Role.EMPTY)
+                .firstName("")
+                .lastName("")
+                .build();
+    }
 }

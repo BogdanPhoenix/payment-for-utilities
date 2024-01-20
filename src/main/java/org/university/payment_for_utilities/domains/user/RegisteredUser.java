@@ -13,6 +13,9 @@ import org.university.payment_for_utilities.domains.service_information_institut
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
+
 @Entity
 @Getter
 @Setter
@@ -32,12 +35,12 @@ public class RegisteredUser extends TableInfo {
     @NonNull
     private String passwordUser;
 
-    @OneToOne
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
     @NonNull
     private PhoneNum phoneNum;
 
-    @OneToOne(mappedBy = "registered", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToOne(mappedBy = "registered", cascade = {MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
     private transient InfoAboutUser infoUser;
 
     @ToString.Exclude

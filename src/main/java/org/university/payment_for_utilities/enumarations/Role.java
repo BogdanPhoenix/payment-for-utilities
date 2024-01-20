@@ -6,5 +6,9 @@ package org.university.payment_for_utilities.enumarations;
  */
 
 public enum Role {
-    ADMIN
+    EMPTY,
+    ADMIN,
+    BANK_ADMIN,
+    COMPANY_ADMIN,
+    USER
 }

@@ -29,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class RegisteredUserServiceTest extends CrudServiceTest {
     @Autowired
-    @Qualifier("userIvanRequest")
+    @Qualifier("registeredUserIvanRequest")
     private RegisteredUserRequest userIvanRequest;
     @Autowired
-    @Qualifier("userOlegRequest")
+    @Qualifier("registeredUserOlegRequest")
     private RegisteredUserRequest userOlegRequest;
 
     @Autowired

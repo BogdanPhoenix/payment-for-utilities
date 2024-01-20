@@ -171,15 +171,24 @@ public abstract class CrudServiceTest {
 
     @Test
     @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    protected void updateValueCorrectWithOneChangedParameter(){
+    protected void updateValueCorrectWithOneChangedParameter() throws InterruptedException {
         var response = service.addValue(secondRequest);
+        Thread.sleep(1500L);
+
         var expectedResponse = updateExpectedResponse(response);
         var newValue = updateNewValue(expectedResponse);
+
         var updateResponse = service.updateValue(response.getId(), newValue);
 
         assertThat(updateResponse)
                 .isEqualTo(expectedResponse)
                 .isNotEqualTo(response);
+
+        assertThat(updateResponse.getCreateDate())
+                .isEqualToIgnoringNanos(response.getCreateDate());
+
+        assertThat(updateResponse.getUpdateDate().getSecond())
+                .isNotEqualTo(response.getUpdateDate().getSecond());
     }
 
     @Test
@@ -193,19 +202,5 @@ public abstract class CrudServiceTest {
                 .isEqualToIgnoringNanos(response.getUpdateDate())
                 .isEqualToIgnoringNanos(date);
         assertNotNull(response.getUpdateDate());
-    }
-
-    @Test
-    @DisplayName("Check if the value in the updateDate attribute was successfully updated when the entity content was updated.")
-    protected void testUpdateDate() throws InterruptedException {
-        var response = service.addValue(firstRequest);
-        Thread.sleep(1500L);
-        var updateResponse = service.updateValue(response.getId(), secondRequest);
-
-        assertThat(updateResponse.getCreateDate())
-                .isEqualToIgnoringNanos(response.getCreateDate());
-
-        assertNotEquals(updateResponse.getUpdateDate().getSecond(),
-                response.getUpdateDate().getSecond());
     }
 }
