@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
+import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
@@ -30,6 +31,8 @@ import static org.university.payment_for_utilities.AdditionalTestingTools.create
 public class UserEntitiesRequestTestContextConfiguration {
     @Autowired
     private RegisterUserServiceImpl registerUserService;
+    @Autowired
+    private ContractEntityServiceImpl contractEntityService;
 
     @Autowired
     @Qualifier("companyPhoneNum")
@@ -45,6 +48,12 @@ public class UserEntitiesRequestTestContextConfiguration {
     private CompanyTariff kyivTariff;
 
     @Lazy
+    @Bean(name = "rivneContract")
+    public ContractEntity rivneContract() {
+        return createContractEntity(createRivneContractRequest());
+    }
+
+    @Lazy
     @Bean(name = "createRivneContractRequest")
     public ContractEntityRequest createRivneContractRequest() {
         var registered = createRegisteredUser(registeredUserIvanRequest());
@@ -54,19 +63,6 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .registeredUser(registered)
                 .companyTariff(rivneTariff)
                 .numContract("14231402132")
-                .build();
-    }
-
-    @Lazy
-    @Bean(name = "createKyivContractRequest")
-    public ContractEntityRequest createKyivContractRequest() {
-        var registered = createRegisteredUser(registeredUserOlegRequest());
-
-        return ContractEntityRequest
-                .builder()
-                .registeredUser(registered)
-                .companyTariff(kyivTariff)
-                .numContract("54231024692")
                 .build();
     }
 
@@ -85,6 +81,36 @@ public class UserEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "registeredUserIvanRequest")
+    public RegisteredUserRequest registeredUserIvanRequest(){
+        return RegisteredUserRequest
+                .builder()
+                .userEmail("test@gmail.com")
+                .passwordUser("qwerTy4iop$")
+                .phoneNum(ivanPhoneNumber)
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "kyivContract")
+    public ContractEntity kyivContract() {
+        return createContractEntity(createKyivContractRequest());
+    }
+
+    @Lazy
+    @Bean(name = "createKyivContractRequest")
+    public ContractEntityRequest createKyivContractRequest() {
+        var registered = createRegisteredUser(registeredUserOlegRequest());
+
+        return ContractEntityRequest
+                .builder()
+                .registeredUser(registered)
+                .companyTariff(kyivTariff)
+                .numContract("54231024692")
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "userOlegRequest")
     public InfoAboutUserRequest userOlegRequest(){
         var registered = createRegisteredUser(registeredUserOlegRequest());
@@ -95,17 +121,6 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .role(Role.ADMIN)
                 .firstName("Oleg")
                 .lastName("Nick")
-                .build();
-    }
-
-    @Lazy
-    @Bean(name = "registeredUserIvanRequest")
-    public RegisteredUserRequest registeredUserIvanRequest(){
-        return RegisteredUserRequest
-                .builder()
-                .userEmail("test@gmail.com")
-                .passwordUser("qwerTy4iop$")
-                .phoneNum(ivanPhoneNumber)
                 .build();
     }
 
@@ -122,5 +137,9 @@ public class UserEntitiesRequestTestContextConfiguration {
 
     private RegisteredUser createRegisteredUser(RegisteredUserRequest request) {
         return (RegisteredUser) createEntity(registerUserService, request);
+    }
+
+    private ContractEntity createContractEntity(ContractEntityRequest request) {
+        return (ContractEntity) createEntity(contractEntityService, request);
     }
 }

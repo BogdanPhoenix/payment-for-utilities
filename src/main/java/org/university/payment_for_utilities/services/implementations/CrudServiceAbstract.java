@@ -96,9 +96,9 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     @Transactional
     @Override
     public Response updateValue(@NonNull Long id, @NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException, NotFindEntityInDataBaseException {
+        var entity = findById(id);
         validateUpdate(request);
 
-        var entity = findById(id);
         updateEntity(entity, request);
         entity.setUpdateDate(LocalDateTime.now());
         var result = repository.save(entity);

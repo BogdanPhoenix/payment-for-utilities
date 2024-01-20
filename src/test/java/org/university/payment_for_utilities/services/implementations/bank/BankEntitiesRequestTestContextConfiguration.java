@@ -44,9 +44,15 @@ public class BankEntitiesRequestTestContextConfiguration {
     private PhoneNum raiffeisenBankPhoneNum;
 
     @Lazy
+    @Bean(name = "privateBank")
+    public Bank privateBank() {
+        return createBank(privateBankRequest());
+    }
+
+    @Lazy
     @Bean(name = "privateBankPhoneNumRequest")
     public BankPhoneNumRequest privateBankPhoneNumRequest(){
-        var bank = createBank(privateBankRequest());
+        var bank = privateBank();
 
         return BankPhoneNumRequest
                 .builder()
@@ -68,9 +74,15 @@ public class BankEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "raiffeisenBank")
+    public Bank raiffeisenBank() {
+        return createBank(raiffeisenBankRequest());
+    }
+
+    @Lazy
     @Bean(name = "raiffeisenBankPhoneNumRequest")
     public BankPhoneNumRequest raiffeisenBankPhoneNumRequest(){
-        var bank = createBank(raiffeisenBankRequest());
+        var bank = raiffeisenBank();
 
         return BankPhoneNumRequest
                 .builder()

@@ -2,31 +2,30 @@ package org.university.payment_for_utilities.domains.receipt;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.bank.Bank;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "receipts",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"id_contract", "id_bank", "bill_month_and_year", "date_time_create"})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"id_contract", "id_bank", "bill_month"})
 )
-public class Receipt {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
+public class Receipt extends TableInfo {
     @ManyToOne
     @JoinColumn(name = "id_contract", nullable = false)
     @NonNull
@@ -37,29 +36,41 @@ public class Receipt {
     @NonNull
     private Bank bank;
 
-    @Column(name = "bill_month_and_year", nullable = false)
+    @Column(name = "bill_month", nullable = false)
     @NonNull
-    private Date billMonthAndYear;
-
-    @Column(name = "date_time_create", nullable = false)
-    @NonNull
-    private Timestamp dateTimeCreate;
-
-    @Column(name = "current_data")
-    private boolean currentData;
+    private LocalDate billMonth;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PaymentHistory> paymentHistories;
+    private transient List<PaymentHistory> paymentHistories;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<BlockAccrualAmount> blockAccrualAmounts;
+    private transient List<BlockAccrualAmount> blockAccrualAmounts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<BlockMeterReading> blockMeterReadings;
+    private transient List<BlockMeterReading> blockMeterReadings;
+
+    @Override
+    public boolean isEmpty() {
+        return contractEntity.isEmpty() ||
+                bank.isEmpty() ||
+                billMonth == LocalDate.MIN;
+    }
+
+    @Contract(" -> new")
+    public static @NonNull Receipt empty() {
+        var builder = builder();
+        TableInfo.initEmpty(builder);
+
+        return builder
+                .contractEntity(ContractEntity.empty())
+                .bank(Bank.empty())
+                .billMonth(LocalDate.MIN)
+                .build();
+    }
 }
