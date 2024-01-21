@@ -9,18 +9,13 @@ import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffR
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
 import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.FinanceServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
-public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
-    private static final String FIXED_COST_TEMPLATE = "^\\d+\\.\\d{1,2}$";
-    private static final int FRACTIONAL_ACCURACY = 2;
-    private static final String COMPLEMENT_SYMBOL = "0";
-
+public class CompanyTariffServiceImpl extends FinanceServiceAbstract<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
     protected CompanyTariffServiceImpl(CompanyTariffRepository repository) {
         super(repository, "Company tariffs");
     }
@@ -90,21 +85,7 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
         var companyTariffRequest = (CompanyTariffRequest) request;
 
         validateName(companyTariffRequest.getName());
-        validateFixedCost(companyTariffRequest.getFixedCost());
-    }
-
-    private void validateFixedCost(@NonNull String fixedCost) throws InvalidInputDataException {
-        if(isFixedCost(fixedCost)){
-            return;
-        }
-
-        var message = String.format("Fixed value provided by you: \"%s\" has not been validated. It should contain only a fractional number and should be separated by a period.", fixedCost);
-        throwRuntimeException(message, InvalidInputDataException::new);
-    }
-
-    private boolean isFixedCost(@NonNull String fixedCost) {
-        return fixedCost.isBlank() || fixedCost
-                .matches(FIXED_COST_TEMPLATE);
+        validateFinance(companyTariffRequest.getFixedCost());
     }
 
     @Override
@@ -117,14 +98,5 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
                 );
     }
 
-    private @NonNull BigDecimal convertStringToBigDecimal(@NonNull String money) {
-        int indexPoint = money.lastIndexOf(".");
-        int fractionalValue = money.length() - indexPoint - 1;
 
-        if(fractionalValue < FRACTIONAL_ACCURACY) {
-            money += COMPLEMENT_SYMBOL.repeat(FRACTIONAL_ACCURACY - fractionalValue);
-        }
-
-        return new BigDecimal(money);
-    }
 }
