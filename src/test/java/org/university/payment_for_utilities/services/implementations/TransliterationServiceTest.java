@@ -12,12 +12,8 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
     protected abstract void testUpdateValueThrowInvalidInputData();
 
     protected void testAddValueThrowInvalidInputData(Request withNum, Request withSpecialCharacter) {
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(withNum)
-        );
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(withSpecialCharacter)
-        );
+        addValueThrowInvalidInputData(withNum);
+        addValueThrowInvalidInputData(withSpecialCharacter);
     }
 
     protected void testUpdateValueThrowInvalidInputData(Request incorrectRequest) {

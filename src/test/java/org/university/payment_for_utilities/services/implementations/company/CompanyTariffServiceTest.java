@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -20,8 +19,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
 
 import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(CompanyEntitiesRequestTestContextConfiguration.class)
@@ -79,7 +76,7 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     void testValidateNameThrow(){
         var request = (CompanyTariffRequest) firstRequest;
         request.setName("fatal@_@data");
-        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     @Test
@@ -87,6 +84,6 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     void testValidateFixedCostThrow(){
         var request = (CompanyTariffRequest) firstRequest;
         request.setFixedCost("13,5");
-        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 }

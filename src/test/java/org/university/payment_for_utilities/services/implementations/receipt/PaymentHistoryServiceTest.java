@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -23,7 +22,6 @@ import org.university.payment_for_utilities.services.interfaces.receipt.PaymentH
 import java.math.BigDecimal;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.university.payment_for_utilities.domains.abstract_class.CounterSearcher.EMPTY_COUNTER;
 
 @SpringBootTest
@@ -80,8 +78,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
         var request = (PaymentHistoryRequest) firstRequest;
         request.setPrevValueCounter(previousValue);
         request.setCurrentValueCounter(currentValue);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testPrevValueCounters() {
@@ -97,8 +94,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
     void testValidateFinalPaymentAmountThrowInvalidInputDataException(String finalPay) {
         var request = (PaymentHistoryRequest) firstRequest;
         request.setFinalPaymentAmount(finalPay);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testFinalPayments() {

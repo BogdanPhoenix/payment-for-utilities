@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -21,8 +20,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 import org.university.payment_for_utilities.services.interfaces.user.RegisterUserService;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(UserEntitiesRequestTestContextConfiguration.class)
@@ -73,12 +70,9 @@ class RegisteredUserServiceTest extends CrudServiceTest {
     @MethodSource("testUserEmails")
     @DisplayName("Check exceptions if the request has an incorrect email format.")
     void testValidateUserEmailThrowInvalidInputDataException(String email) {
-        var registerUserRequest = (RegisteredUserRequest) firstRequest;
-        registerUserRequest.setUserEmail(email);
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(registerUserRequest)
-        );
+        var request = (RegisteredUserRequest) firstRequest;
+        request.setUserEmail(email);
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testUserEmails() {
@@ -94,12 +88,9 @@ class RegisteredUserServiceTest extends CrudServiceTest {
     @MethodSource("testPasswords")
     @DisplayName("Check exceptions if the request has an incorrect password format.")
     void testValidatePasswordThrowInvalidInputDataException(String password) {
-        var registerUserRequest = (RegisteredUserRequest) firstRequest;
-        registerUserRequest.setPasswordUser(password);
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(registerUserRequest)
-        );
+        var request = (RegisteredUserRequest) firstRequest;
+        request.setPasswordUser(password);
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testPasswords() {

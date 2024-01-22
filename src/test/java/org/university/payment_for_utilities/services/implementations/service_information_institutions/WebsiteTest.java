@@ -9,15 +9,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(ServiceInfoEntitiesRequestTestContextConfiguration.class)
@@ -68,8 +65,6 @@ class WebsiteTest extends CrudServiceTest {
                 .website("privatbank.ua")
                 .build();
 
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
+        addValueThrowInvalidInputData(request);
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -23,8 +22,6 @@ import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptS
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(ReceiptEntitiesRequestTestContextConfiguration.class)
@@ -77,10 +74,7 @@ class ReceiptServiceTest extends CrudServiceTest {
     void testValidateBillMonths(LocalDate month) {
         var request = (ReceiptRequest) firstRequest;
         request.setBillMonth(month);
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testBillMonths() {

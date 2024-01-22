@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
@@ -202,5 +203,11 @@ public abstract class CrudServiceTest {
                 .isEqualToIgnoringNanos(response.getUpdateDate())
                 .isEqualToIgnoringNanos(date);
         assertNotNull(response.getUpdateDate());
+    }
+
+    protected void addValueThrowInvalidInputData(Request request){
+        assertThrows(InvalidInputDataException.class,
+                () -> service.addValue(request)
+        );
     }
 }

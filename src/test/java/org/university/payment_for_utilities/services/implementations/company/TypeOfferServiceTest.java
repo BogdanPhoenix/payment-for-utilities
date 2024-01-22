@@ -43,7 +43,6 @@ class TypeOfferServiceTest extends CrudServiceTest {
     protected void initRequest() {
         firstRequest = typeOfferRequest;
         secondRequest = typeOfferGasRequest;
-
         emptyRequest = TypeOfferRequest
                 .empty();
     }
@@ -72,18 +71,14 @@ class TypeOfferServiceTest extends CrudServiceTest {
 
     @ParameterizedTest
     @MethodSource("testNames")
-    @DisplayName("")
+    @DisplayName("Check exceptions if one of the attributes with a name has an incorrect format.")
     void testNameThrowInvalidInputDataException(String uaName, String enName){
         var typeOfferRequest = (TypeOfferRequest) firstRequest;
-        var request = TypeOfferRequest
-                .builder()
-                .unitMeasurement(typeOfferRequest.getUnitMeasurement())
-                .uaName(uaName)
-                .enName(enName)
-                .build();
+        typeOfferRequest.setUaName(uaName);
+        typeOfferRequest.setEnName(enName);
 
         assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
+                () -> service.addValue(typeOfferRequest)
         );
     }
 

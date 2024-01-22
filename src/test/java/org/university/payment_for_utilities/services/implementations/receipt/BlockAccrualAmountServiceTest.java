@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockAccrualAmountRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -22,8 +21,6 @@ import org.university.payment_for_utilities.services.interfaces.receipt.BlockAcc
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(ReceiptEntitiesRequestTestContextConfiguration.class)
@@ -85,8 +82,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     void testValidateDebtBeginMonthThrowInvalidInputDataException(String debtBegin) {
         var request = (BlockAccrualAmountRequest) firstRequest;
         request.setDebtBeginMonth(debtBegin);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     @ParameterizedTest
@@ -95,8 +91,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     void testValidateDebtEndMonthThrowInvalidInputDataException(String debtEnd) {
         var request = (BlockAccrualAmountRequest) firstRequest;
         request.setDebtEndMonth(debtEnd);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     @ParameterizedTest
@@ -105,8 +100,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     void testValidateFineThrowInvalidInputDataException(String fine) {
         var request = (BlockAccrualAmountRequest) firstRequest;
         request.setFine(fine);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     @ParameterizedTest
@@ -115,8 +109,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     void testValidateLastCreditedPaymentThrowInvalidInputDataException(String lastCredited) {
         var request = (BlockAccrualAmountRequest) firstRequest;
         request.setLastCreditedPayment(lastCredited);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     @ParameterizedTest
@@ -125,8 +118,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     void testValidateAmountDueThrowInvalidInputDataException(String amountDue) {
         var request = (BlockAccrualAmountRequest) firstRequest;
         request.setAmountDue(amountDue);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testFinanceData() {

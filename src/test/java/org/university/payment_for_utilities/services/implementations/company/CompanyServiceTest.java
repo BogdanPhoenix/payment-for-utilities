@@ -15,7 +15,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
@@ -24,8 +23,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(CompanyEntitiesRequestTestContextConfiguration.class)
@@ -80,19 +77,10 @@ class CompanyServiceTest extends CrudServiceTest {
     @MethodSource("testCurrentAccounts")
     @DisplayName("Check the exceptions if the request has an incorrect current account format.")
     void testCurrentAccountThrowInvalidInputDataException(String numAccount){
-        var companyRequest = (CompanyRequest) firstRequest;
-        var request = CompanyRequest
-                .builder()
-                .address(companyRequest.getAddress())
-                .edrpou(companyRequest.getEdrpou())
-                .website(companyRequest.getWebsite())
-                .name(companyRequest.getName())
-                .currentAccount(numAccount)
-                .build();
+        var request = (CompanyRequest) firstRequest;
+        request.setCurrentAccount(numAccount);
 
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testCurrentAccounts(){
@@ -109,6 +97,7 @@ class CompanyServiceTest extends CrudServiceTest {
     void testValidateNameThrowInvalidInputDataException(){
         var request = (CompanyRequest) firstRequest;
         request.setName("fatal@_@data");
-        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+
+        addValueThrowInvalidInputData(request);
     }
 }

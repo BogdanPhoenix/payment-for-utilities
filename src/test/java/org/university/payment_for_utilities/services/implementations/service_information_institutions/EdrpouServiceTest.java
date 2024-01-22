@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -20,8 +19,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(ServiceInfoEntitiesRequestTestContextConfiguration.class)
@@ -74,9 +71,7 @@ class EdrpouServiceTest extends CrudServiceTest {
                 .edrpou(edrpou)
                 .build();
 
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testPhoneEdrpous(){

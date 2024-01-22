@@ -15,14 +15,11 @@ import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(AddressEntitiesRequestTestContextConfiguration.class)
@@ -75,17 +72,9 @@ class SettlementServiceTest extends CrudServiceTest {
     @MethodSource("testPhoneZipCodes")
     @DisplayName("Check for exceptions when an invalid zip code format was passed in the request.")
     void testIndexThrowInvalidInputData(String zipCode){
-        var settlementRequest = (SettlementRequest) firstRequest;
-        var request = SettlementRequest
-                .builder()
-                .type(settlementRequest.getType())
-                .zipCode(zipCode)
-                .name(settlementRequest.getName())
-                .build();
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
+        var request = (SettlementRequest) firstRequest;
+        request.setZipCode(zipCode);
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testPhoneZipCodes(){

@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
@@ -23,8 +22,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(BankEntitiesRequestTestContextConfiguration.class)
@@ -77,18 +74,9 @@ class BankServiceTest extends CrudServiceTest {
     @MethodSource("testPhoneMfos")
     @DisplayName("Check for exceptions when the request has an invalid MFO format.")
     void testMfoThrowInvalidInputDataException(String mfo){
-        var bankRequest = (BankRequest) firstRequest;
-        var request = BankRequest
-                .builder()
-                .name(bankRequest.getName())
-                .website(bankRequest.getWebsite())
-                .edrpou(bankRequest.getEdrpou())
-                .mfo(mfo)
-                .build();
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request)
-        );
+        var request = (BankRequest) firstRequest;
+        request.setMfo(mfo);
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testPhoneMfos(){
@@ -105,7 +93,7 @@ class BankServiceTest extends CrudServiceTest {
     void testValidateNameThrowInvalidInputDataException(){
         var request = (BankRequest) firstRequest;
         request.setName("fatal@_@data");
-        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 
     @Test
@@ -113,6 +101,6 @@ class BankServiceTest extends CrudServiceTest {
     void testValidateMfoThrowInvalidInputDataException(){
         var request = (BankRequest) firstRequest;
         request.setMfo("@#");
-        assertThrows(InvalidInputDataException.class, () -> service.addValue(request));
+        addValueThrowInvalidInputData(request);
     }
 }

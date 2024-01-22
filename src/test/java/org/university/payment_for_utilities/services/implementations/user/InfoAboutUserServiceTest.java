@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.enumarations.Role;
-import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -22,8 +21,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUserService;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Import(UserEntitiesRequestTestContextConfiguration.class)
@@ -76,12 +73,9 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
     @MethodSource("testFirstNames")
     @DisplayName("Check exceptions if the request has an incorrect first name format.")
     void testValidateFirstNameThrowInvalidInputDataException(String firstName) {
-        var infoAboutUserRequest = (InfoAboutUserRequest) firstRequest;
-        infoAboutUserRequest.setFirstName(firstName);
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(infoAboutUserRequest)
-        );
+        var request = (InfoAboutUserRequest) firstRequest;
+        request.setFirstName(firstName);
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testFirstNames() {
@@ -95,12 +89,9 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
     @MethodSource("testPasswords")
     @DisplayName("Check exceptions if the request has an incorrect last name format.")
     void testValidateLastNameThrowInvalidInputDataException(String lastName) {
-        var infoAboutUserRequest = (InfoAboutUserRequest) firstRequest;
-        infoAboutUserRequest.setLastName(lastName);
-
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(infoAboutUserRequest)
-        );
+        var request = (InfoAboutUserRequest) firstRequest;
+        request.setLastName(lastName);
+        addValueThrowInvalidInputData(request);
     }
 
     private static @NonNull Stream<Arguments> testPasswords() {
