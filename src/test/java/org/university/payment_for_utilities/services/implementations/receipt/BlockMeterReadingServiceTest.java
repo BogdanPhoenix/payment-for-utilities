@@ -14,62 +14,58 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
+import org.university.payment_for_utilities.pojo.requests.receipt.BlockMeterReadingRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.receipt.PaymentHistoryResponse;
+import org.university.payment_for_utilities.pojo.responses.receipt.BlockMeterReadingResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
-import org.university.payment_for_utilities.services.interfaces.receipt.PaymentHistoryService;
+import org.university.payment_for_utilities.services.interfaces.receipt.BlockMeterReadingService;
 
-import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.university.payment_for_utilities.domains.abstract_class.CounterSearcher.EMPTY_COUNTER;
 
 @SpringBootTest
 @Import(ReceiptEntitiesRequestTestContextConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class PaymentHistoryServiceTest extends CrudServiceTest {
+class BlockMeterReadingServiceTest extends CrudServiceTest {
     @Autowired
-    @Qualifier("rivnePaymentHistoryRequest")
-    private PaymentHistoryRequest rivnePaymentHistoryRequest;
+    @Qualifier("rivneBlockMeter")
+    private BlockMeterReadingRequest rivneBlockMeter;
     @Autowired
-    @Qualifier("kyivPaymentHistoryRequest")
-    private PaymentHistoryRequest kyivPaymentHistoryRequest;
+    @Qualifier("kyivBlockMeter")
+    private BlockMeterReadingRequest kyivBlockMeter;
 
     @Autowired
-    public PaymentHistoryServiceTest(PaymentHistoryService service) { this.service = service; }
+    public BlockMeterReadingServiceTest(BlockMeterReadingService service) { this.service = service; }
 
     @BeforeEach
     @Override
     protected void initRequest() {
-        firstRequest = rivnePaymentHistoryRequest;
-        secondRequest = kyivPaymentHistoryRequest;
-        emptyRequest = PaymentHistoryRequest
+        firstRequest = rivneBlockMeter;
+        secondRequest = kyivBlockMeter;
+        emptyRequest = BlockMeterReadingRequest
                 .empty();
     }
 
     @Override
     protected Response updateExpectedResponse(@NonNull Response response) {
-        return PaymentHistoryResponse
+        return BlockMeterReadingResponse
                 .builder()
                 .id(response.getId())
-                .receipt(kyivPaymentHistoryRequest.getReceipt())
-                .prevValueCounter(kyivPaymentHistoryRequest.getPrevValueCounter())
-                .currentValueCounter(1500f)
-                .finalPaymentAmount(new BigDecimal("500.00"))
+                .receipt(kyivBlockMeter.getReceipt())
+                .prevValueCounter(101f)
+                .currentValueCounter(125.3f)
                 .build();
     }
 
     @Override
     protected Request updateNewValue(@NonNull Response expectedResponse) {
-        var response = (PaymentHistoryResponse) expectedResponse;
-        return PaymentHistoryRequest
+        var response = (BlockMeterReadingResponse) expectedResponse;
+        return BlockMeterReadingRequest
                 .builder()
                 .receipt(Receipt.empty())
-                .prevValueCounter(EMPTY_COUNTER)
+                .prevValueCounter(response.getPrevValueCounter())
                 .currentValueCounter(response.getCurrentValueCounter())
-                .finalPaymentAmount(response.getFinalPaymentAmount().toString())
                 .build();
     }
 
@@ -77,7 +73,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
     @MethodSource("testPrevValueCounters")
     @DisplayName("Check for exceptions when the current counter value is lower than the previous one.")
     void testValidatePrevValueCounterThrow(Float previousValue, Float currentValue) {
-        var request = (PaymentHistoryRequest) firstRequest;
+        var request = (BlockMeterReadingRequest) firstRequest;
         request.setPrevValueCounter(previousValue);
         request.setCurrentValueCounter(currentValue);
         assertThrows(InvalidInputDataException.class,
@@ -88,24 +84,6 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
         return Stream.of(
                 Arguments.of(12f, 10f),
                 Arguments.of(10f, 10f)
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("testFinalPayments")
-    @DisplayName("Check exceptions when the entered payment value is not correct.")
-    void testValidateFinalPaymentAmountThrow(String finalPay) {
-        var request = (PaymentHistoryRequest) firstRequest;
-        request.setFinalPaymentAmount(finalPay);
-        assertThrows(InvalidInputDataException.class,
-                () -> service.addValue(request));
-    }
-
-    private static @NonNull Stream<Arguments> testFinalPayments() {
-        return Stream.of(
-                Arguments.of("13,5"),
-                Arguments.of("ff"),
-                Arguments.of("13#5")
         );
     }
 }

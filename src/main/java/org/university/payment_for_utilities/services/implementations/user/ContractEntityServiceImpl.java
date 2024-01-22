@@ -14,6 +14,8 @@ import org.university.payment_for_utilities.services.interfaces.user.ContractEnt
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntity, ContractEntityRepository> implements ContractEntityService {
     private static final String NUM_CONTRACT_TEMPLATE = "^\\d{11}$";

@@ -17,6 +17,8 @@ import org.university.payment_for_utilities.services.interfaces.address.Settleme
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, SettlementRepository> implements SettlementService {
     private static final String INDEX_TEMPLATE = "^\\d{5}$";

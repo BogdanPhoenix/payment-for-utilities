@@ -14,6 +14,8 @@ import org.university.payment_for_utilities.services.interfaces.service_informat
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouRepository> implements EdrpouService {
     private static final String EDRPOU_TEMPLATE = "^\\d{8}$";

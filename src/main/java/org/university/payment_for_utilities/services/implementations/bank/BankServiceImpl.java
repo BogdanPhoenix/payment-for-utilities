@@ -14,6 +14,8 @@ import org.university.payment_for_utilities.services.interfaces.bank.BankService
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> implements BankService {
     private static final String MFO_TEMPLATE = "^\\d{6}$";

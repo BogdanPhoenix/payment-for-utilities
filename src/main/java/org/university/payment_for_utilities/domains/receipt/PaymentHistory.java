@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
+import org.university.payment_for_utilities.domains.abstract_class.CounterSearcher;
 
 import java.math.BigDecimal;
 
@@ -18,45 +18,25 @@ import java.math.BigDecimal;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "payment_history")
-public class PaymentHistory extends TableInfo {
-    public static final Integer EMPTY_COUNTER = -1;
-
-    @ManyToOne
-    @JoinColumn(name = "id_receipt", nullable = false, unique = true)
-    @NonNull
-    private Receipt receipt;
-
-    @Column(name = "prev_value_counter", nullable = false)
-    @NonNull
-    private Integer prevValueCounter;
-
-    @Column(name = "current_value_counter", nullable = false)
-    @NonNull
-    private Integer currentValueCounter;
-
+public class PaymentHistory extends CounterSearcher {
     @Column(name = "final_payment_amount", nullable = false)
     @NonNull
     private BigDecimal finalPaymentAmount;
 
     @Override
     public boolean isEmpty() {
-        return receipt.isEmpty() ||
-                prevValueCounter.equals(EMPTY_COUNTER) ||
-                currentValueCounter.equals(EMPTY_COUNTER) ||
+        return super.isEmpty() ||
                 finalPaymentAmount.equals(BigDecimal.ZERO);
     }
 
     @Contract(" -> new")
     public static @NonNull PaymentHistory empty() {
         var builder = builder();
-        TableInfo.initEmpty(builder);
+        CounterSearcher.initEmpty(builder);
 
         return builder
-                .receipt(Receipt.empty())
-                .prevValueCounter(EMPTY_COUNTER)
-                .currentValueCounter(EMPTY_COUNTER)
                 .finalPaymentAmount(BigDecimal.ZERO)
                 .build();
     }

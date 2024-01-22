@@ -9,13 +9,16 @@ import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffR
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
 import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
-import org.university.payment_for_utilities.services.implementations.FinanceServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.convertStringToBigDecimal;
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.validateFinance;
+
 @Service
-public class CompanyTariffServiceImpl extends FinanceServiceAbstract<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
+public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
     protected CompanyTariffServiceImpl(CompanyTariffRepository repository) {
         super(repository, "Company tariffs");
     }
@@ -97,6 +100,4 @@ public class CompanyTariffServiceImpl extends FinanceServiceAbstract<CompanyTari
                         companyTariffRequest.getName()
                 );
     }
-
-
 }

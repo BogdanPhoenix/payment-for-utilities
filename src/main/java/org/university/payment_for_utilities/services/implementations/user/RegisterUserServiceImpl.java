@@ -14,6 +14,8 @@ import org.university.payment_for_utilities.services.interfaces.user.RegisterUse
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class RegisterUserServiceImpl extends CrudServiceAbstract<RegisteredUser, RegisteredUserRepository> implements RegisterUserService {
     private static final String USER_EMAIL_TEMPLATE = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";

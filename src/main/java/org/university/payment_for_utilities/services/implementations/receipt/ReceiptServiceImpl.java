@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepository> implements ReceiptService {
     private static final int MAX_DIFFERENCE_MONTHS = 1;

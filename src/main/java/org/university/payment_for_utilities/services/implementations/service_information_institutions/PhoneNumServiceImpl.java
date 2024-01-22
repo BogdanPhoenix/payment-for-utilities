@@ -15,6 +15,8 @@ import org.university.payment_for_utilities.services.interfaces.service_informat
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumRepository> implements PhoneNumService {
     private static final String PHONE_NUM_TEMPLATE = "^380\\d{9}$";

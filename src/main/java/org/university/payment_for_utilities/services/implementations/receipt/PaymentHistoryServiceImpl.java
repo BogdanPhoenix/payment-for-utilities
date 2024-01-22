@@ -9,15 +9,14 @@ import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistory
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.PaymentHistoryResponse;
 import org.university.payment_for_utilities.repositories.receipt.PaymentHistoryRepository;
-import org.university.payment_for_utilities.services.implementations.FinanceServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.CounterSearcherService;
 import org.university.payment_for_utilities.services.interfaces.receipt.PaymentHistoryService;
 
-import java.util.Optional;
-
-import static org.university.payment_for_utilities.domains.receipt.PaymentHistory.EMPTY_COUNTER;
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.convertStringToBigDecimal;
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.validateFinance;
 
 @Service
-public class PaymentHistoryServiceImpl extends FinanceServiceAbstract<PaymentHistory, PaymentHistoryRepository> implements PaymentHistoryService {
+public class PaymentHistoryServiceImpl extends CounterSearcherService<PaymentHistory, PaymentHistoryRepository> implements PaymentHistoryService {
     protected PaymentHistoryServiceImpl(PaymentHistoryRepository repository) {
         super(repository, "Payment history");
     }
@@ -39,12 +38,9 @@ public class PaymentHistoryServiceImpl extends FinanceServiceAbstract<PaymentHis
     protected PaymentHistory createEntity(Response response) {
         var historyResponse = (PaymentHistoryResponse) response;
         var builder = PaymentHistory.builder();
-        initEntityBuilder(builder, response);
+        super.initCounterSearcherBuilder(builder, response);
 
         return builder
-                .receipt(historyResponse.getReceipt())
-                .prevValueCounter(historyResponse.getPrevValueCounter())
-                .currentValueCounter(historyResponse.getCurrentValueCounter())
                 .finalPaymentAmount(historyResponse.getFinalPaymentAmount())
                 .build();
     }
@@ -52,29 +48,18 @@ public class PaymentHistoryServiceImpl extends FinanceServiceAbstract<PaymentHis
     @Override
     protected Response createResponse(PaymentHistory entity) {
         var builder = PaymentHistoryResponse.builder();
-        initResponseBuilder(builder, entity);
+        super.initCounterResponseBuilder(builder, entity);
 
         return builder
-                .receipt(entity.getReceipt())
-                .prevValueCounter(entity.getPrevValueCounter())
-                .currentValueCounter(entity.getCurrentValueCounter())
                 .finalPaymentAmount(entity.getFinalPaymentAmount())
                 .build();
     }
 
     @Override
     protected void updateEntity(@NonNull PaymentHistory entity, @NonNull Request request) {
+        super.updateEntity(entity, request);
         var newValue = (PaymentHistoryRequest) request;
 
-        if(!newValue.getReceipt().isEmpty()){
-            entity.setReceipt(newValue.getReceipt());
-        }
-        if(!newValue.getPrevValueCounter().equals(EMPTY_COUNTER)){
-            entity.setPrevValueCounter(newValue.getPrevValueCounter());
-        }
-        if(!newValue.getCurrentValueCounter().equals(EMPTY_COUNTER)){
-            entity.setCurrentValueCounter(newValue.getCurrentValueCounter());
-        }
         if(!newValue.getFinalPaymentAmount().isBlank()){
             var payment = convertStringToBigDecimal(newValue.getFinalPaymentAmount());
             entity.setFinalPaymentAmount(payment);
@@ -83,31 +68,8 @@ public class PaymentHistoryServiceImpl extends FinanceServiceAbstract<PaymentHis
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
+        super.validationProcedureRequest(request);
         var historyRequest = (PaymentHistoryRequest) request;
-
-        validatePrevValueCounter(historyRequest);
         validateFinance(historyRequest.getFinalPaymentAmount());
-    }
-
-    private void validatePrevValueCounter(PaymentHistoryRequest historyRequest) throws InvalidInputDataException {
-        if(isPrevValueCounter(historyRequest)) {
-            return;
-        }
-
-        var message = "The current meter reading you provide cannot be less than or equal to the previous one.";
-        throwRuntimeException(message, InvalidInputDataException::new);
-    }
-
-    private boolean isPrevValueCounter(@NonNull PaymentHistoryRequest historyRequest) {
-        return historyRequest.getPrevValueCounter() < historyRequest.getCurrentValueCounter();
-    }
-
-    @Override
-    protected Optional<PaymentHistory> findEntity(@NonNull Request request) {
-        var historyRequest = (PaymentHistoryRequest) request;
-        return repository
-                .findByReceipt(
-                        historyRequest.getReceipt()
-                );
     }
 }

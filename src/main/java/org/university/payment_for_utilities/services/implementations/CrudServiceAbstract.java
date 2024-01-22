@@ -19,7 +19,9 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwNotFindEntityInDataBaseException;
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
 
 @Slf4j
 public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepository<T, Long>> implements CrudService {
@@ -222,16 +224,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return name
                 .toUpperCase()
                 .matches(NAME_TEMPLATE);
-    }
-
-    protected NotFindEntityInDataBaseException throwNotFindEntityInDataBaseException(@NonNull String message){
-        log.error(message);
-        return new NotFindEntityInDataBaseException(message);
-    }
-
-    protected void throwRuntimeException(@NonNull String message, @NonNull Function<String, ? extends RuntimeException> exception){
-        log.error(message);
-        throw exception.apply(message);
     }
 
     protected abstract T createEntity(Request request);

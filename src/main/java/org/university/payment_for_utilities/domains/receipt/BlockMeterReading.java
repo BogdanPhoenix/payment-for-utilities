@@ -2,36 +2,26 @@ package org.university.payment_for_utilities.domains.receipt;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.CounterSearcher;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "blocks_meter_readings")
-public class BlockMeterReading {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "id_receipt", nullable = false, unique = true)
-    @NonNull
-    private Receipt receipt;
-
-    @Column(name = "prev_value_counter", nullable = false)
-    @NonNull
-    private Float prevValueCounter;
-
-    @Column(name = "current_value_counter", nullable = false)
-    @NonNull
-    private Float currentValueCounter;
-
-    @Column(name = "current_data")
-    private boolean currentData;
+public class BlockMeterReading extends CounterSearcher {
+    @Contract(" -> new")
+    public static @NonNull BlockMeterReading empty() {
+        var builder = builder();
+        CounterSearcher.initEmpty(builder);
+        return builder.build();
+    }
 }

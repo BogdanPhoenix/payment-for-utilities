@@ -14,6 +14,8 @@ import org.university.payment_for_utilities.services.interfaces.service_informat
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepository> implements WebsiteService {
     private static final String WEBSITE_TEMPLATE = "^(http|https)://.+";

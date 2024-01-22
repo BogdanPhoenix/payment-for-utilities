@@ -9,29 +9,21 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Counter
 
 import static org.university.payment_for_utilities.domains.abstract_class.CounterSearcher.EMPTY_COUNTER;
 
+
 @Getter
 @Setter
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PaymentHistoryRequest extends CounterSearcherRequest {
-    private String finalPaymentAmount;
-
-    @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                finalPaymentAmount.isBlank();
-    }
-
+public class BlockMeterReadingRequest extends CounterSearcherRequest {
     @Contract(" -> new")
-    public static @NonNull PaymentHistoryRequest empty() {
-        return PaymentHistoryRequest
+    public static @NonNull BlockMeterReadingRequest empty() {
+        return BlockMeterReadingRequest
                 .builder()
                 .receipt(Receipt.empty())
                 .prevValueCounter(EMPTY_COUNTER)
                 .currentValueCounter(EMPTY_COUNTER)
-                .finalPaymentAmount("")
                 .build();
     }
 }

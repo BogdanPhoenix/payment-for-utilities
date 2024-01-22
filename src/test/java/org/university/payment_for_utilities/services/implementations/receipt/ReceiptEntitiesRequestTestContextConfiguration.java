@@ -11,6 +11,7 @@ import org.university.payment_for_utilities.configurations.DataBaseConfiguration
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
+import org.university.payment_for_utilities.pojo.requests.receipt.BlockMeterReadingRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
 import org.university.payment_for_utilities.services.implementations.bank.BankEntitiesRequestTestContextConfiguration;
@@ -45,6 +46,19 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     private ContractEntity kyivContract;
 
     @Lazy
+    @Bean(name = "rivneBlockMeter")
+    public BlockMeterReadingRequest rivneBlockMeter() {
+        var receipt = createReceipt(rivneReceiptRequest());
+
+        return BlockMeterReadingRequest
+                .builder()
+                .receipt(receipt)
+                .prevValueCounter(4231.5f)
+                .currentValueCounter(4321f)
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "rivnePaymentHistoryRequest")
     public PaymentHistoryRequest rivnePaymentHistoryRequest() {
         var receipt = createReceipt(rivneReceiptRequest());
@@ -52,8 +66,8 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
         return PaymentHistoryRequest
                 .builder()
                 .receipt(receipt)
-                .prevValueCounter(1)
-                .currentValueCounter(34)
+                .prevValueCounter(1f)
+                .currentValueCounter(34f)
                 .finalPaymentAmount("420.32")
                 .build();
     }
@@ -70,6 +84,19 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "kyivBlockMeter")
+    public BlockMeterReadingRequest kyivBlockMeter() {
+        var receipt = createReceipt(kyivReceiptRequest());
+
+        return BlockMeterReadingRequest
+                .builder()
+                .receipt(receipt)
+                .prevValueCounter(41.9f)
+                .currentValueCounter(60.1f)
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "kyivPaymentHistoryRequest")
     public PaymentHistoryRequest kyivPaymentHistoryRequest() {
         var receipt = createReceipt(kyivReceiptRequest());
@@ -77,8 +104,8 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
         return PaymentHistoryRequest
                 .builder()
                 .receipt(receipt)
-                .prevValueCounter(1243)
-                .currentValueCounter(1450)
+                .prevValueCounter(1243f)
+                .currentValueCounter(1450f)
                 .finalPaymentAmount("520.5")
                 .build();
     }

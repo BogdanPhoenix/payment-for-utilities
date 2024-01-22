@@ -14,6 +14,8 @@ import org.university.payment_for_utilities.services.interfaces.company.CompanyS
 
 import java.util.Optional;
 
+import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
+
 @Service
 public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepository> implements CompanyService {
     private static final String CURRENT_ACCOUNT_TEMPLATE = "^\\d{14}$";
