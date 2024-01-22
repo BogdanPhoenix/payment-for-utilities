@@ -11,6 +11,7 @@ import org.university.payment_for_utilities.configurations.DataBaseConfiguration
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
+import org.university.payment_for_utilities.pojo.requests.receipt.BlockAccrualAmountRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockMeterReadingRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
@@ -44,6 +45,22 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     @Autowired
     @Qualifier("kyivContract")
     private ContractEntity kyivContract;
+
+    @Lazy
+    @Bean(name = "rivneAccrualAmountRequest")
+    public BlockAccrualAmountRequest rivneAccrualAmountRequest() {
+        var receipt = createReceipt(rivneReceiptRequest());
+
+        return BlockAccrualAmountRequest
+                .builder()
+                .receipt(receipt)
+                .debtBeginMonth("124")
+                .debtEndMonth("10")
+                .fine("50.05")
+                .lastCreditedPayment("420.5")
+                .amountDue("656")
+                .build();
+    }
 
     @Lazy
     @Bean(name = "rivneBlockMeter")
@@ -80,6 +97,22 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
                 .contractEntity(rivneContract)
                 .bank(privateBank)
                 .billMonth(LocalDate.now())
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "kyivAccrualAmountRequest")
+    public BlockAccrualAmountRequest kyivAccrualAmountRequest() {
+        var receipt = createReceipt(kyivReceiptRequest());
+
+        return BlockAccrualAmountRequest
+                .builder()
+                .receipt(receipt)
+                .debtBeginMonth("452")
+                .debtEndMonth("120")
+                .fine("120.05")
+                .lastCreditedPayment("356.50")
+                .amountDue("512.00")
                 .build();
     }
 

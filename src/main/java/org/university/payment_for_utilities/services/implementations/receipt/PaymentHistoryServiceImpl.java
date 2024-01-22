@@ -70,6 +70,6 @@ public class PaymentHistoryServiceImpl extends CounterSearcherService<PaymentHis
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         super.validationProcedureRequest(request);
         var historyRequest = (PaymentHistoryRequest) request;
-        validateFinance(historyRequest.getFinalPaymentAmount());
+        validateFinance("final payment amount", historyRequest.getFinalPaymentAmount());
     }
 }

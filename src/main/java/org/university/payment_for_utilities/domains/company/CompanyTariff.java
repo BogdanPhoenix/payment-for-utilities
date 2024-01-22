@@ -12,6 +12,8 @@ import org.university.payment_for_utilities.domains.user.ContractEntity;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.EMPTY_BIG_DECIMAL;
+
 @Entity
 @Getter
 @Setter
@@ -53,7 +55,7 @@ public class CompanyTariff extends TableInfo {
         return company.isEmpty() ||
                 type.isEmpty() ||
                 name.isBlank() ||
-                fixedCost.equals(BigDecimal.ZERO);
+                fixedCost.equals(EMPTY_BIG_DECIMAL);
     }
 
     @Contract(" -> new")
@@ -65,7 +67,7 @@ public class CompanyTariff extends TableInfo {
                 .company(Company.empty())
                 .type(TypeOffer.empty())
                 .name("")
-                .fixedCost(BigDecimal.ZERO)
+                .fixedCost(EMPTY_BIG_DECIMAL)
                 .build();
     }
 }

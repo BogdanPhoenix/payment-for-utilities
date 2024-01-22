@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.CounterSearch
 
 import java.math.BigDecimal;
 
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.EMPTY_BIG_DECIMAL;
+
 @Entity
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class PaymentHistory extends CounterSearcher {
     @Override
     public boolean isEmpty() {
         return super.isEmpty() ||
-                finalPaymentAmount.equals(BigDecimal.ZERO);
+                finalPaymentAmount.equals(EMPTY_BIG_DECIMAL);
     }
 
     @Contract(" -> new")
@@ -37,7 +39,7 @@ public class PaymentHistory extends CounterSearcher {
         CounterSearcher.initEmpty(builder);
 
         return builder
-                .finalPaymentAmount(BigDecimal.ZERO)
+                .finalPaymentAmount(EMPTY_BIG_DECIMAL)
                 .build();
     }
 }

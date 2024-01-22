@@ -2,30 +2,27 @@ package org.university.payment_for_utilities.domains.receipt;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.ReceiptSearcher;
 
 import java.math.BigDecimal;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.EMPTY_BIG_DECIMAL;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder
 @DynamicUpdate
 @DynamicInsert
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "blocks_accrual_amount")
-public class BlockAccrualAmount {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "id_receipt", nullable = false, unique = true)
-    @NonNull
-    private Receipt receipt;
-
+public class BlockAccrualAmount extends ReceiptSearcher {
     @Column(name = "debt_begin_month", nullable = false)
     @NonNull
     private BigDecimal debtBeginMonth;
@@ -46,6 +43,27 @@ public class BlockAccrualAmount {
     @NonNull
     private BigDecimal amountDue;
 
-    @Column(name = "current_data")
-    private boolean currentData;
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty() ||
+                debtBeginMonth.equals(EMPTY_BIG_DECIMAL) ||
+                debtEndMonth.equals(EMPTY_BIG_DECIMAL) ||
+                fine.equals(EMPTY_BIG_DECIMAL) ||
+                lastCreditedPayment.equals(EMPTY_BIG_DECIMAL) ||
+                amountDue.equals(EMPTY_BIG_DECIMAL);
+    }
+
+    @Contract(" -> new")
+    public static @NonNull BlockAccrualAmount empty() {
+        var builder = builder();
+        ReceiptSearcher.initEmpty(builder);
+
+        return builder
+                .debtBeginMonth(EMPTY_BIG_DECIMAL)
+                .debtEndMonth(EMPTY_BIG_DECIMAL)
+                .fine(EMPTY_BIG_DECIMAL)
+                .lastCreditedPayment(EMPTY_BIG_DECIMAL)
+                .amountDue(EMPTY_BIG_DECIMAL)
+                .build();
+    }
 }

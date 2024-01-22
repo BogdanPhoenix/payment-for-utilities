@@ -88,7 +88,7 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
         var companyTariffRequest = (CompanyTariffRequest) request;
 
         validateName(companyTariffRequest.getName());
-        validateFinance(companyTariffRequest.getFixedCost());
+        validateFinance("fixed cost", companyTariffRequest.getFixedCost());
     }
 
     @Override

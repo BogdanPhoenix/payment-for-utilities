@@ -76,7 +76,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
     @ParameterizedTest
     @MethodSource("testPrevValueCounters")
     @DisplayName("Check for exceptions when the current counter value is lower than the previous one.")
-    void testValidatePrevValueCounterThrow(Float previousValue, Float currentValue) {
+    void testValidatePrevValueCounterThrowInvalidInputDataException(Float previousValue, Float currentValue) {
         var request = (PaymentHistoryRequest) firstRequest;
         request.setPrevValueCounter(previousValue);
         request.setCurrentValueCounter(currentValue);
@@ -94,7 +94,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
     @ParameterizedTest
     @MethodSource("testFinalPayments")
     @DisplayName("Check exceptions when the entered payment value is not correct.")
-    void testValidateFinalPaymentAmountThrow(String finalPay) {
+    void testValidateFinalPaymentAmountThrowInvalidInputDataException(String finalPay) {
         var request = (PaymentHistoryRequest) firstRequest;
         request.setFinalPaymentAmount(finalPay);
         assertThrows(InvalidInputDataException.class,
