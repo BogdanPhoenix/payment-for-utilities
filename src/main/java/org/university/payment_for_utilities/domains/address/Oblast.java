@@ -30,7 +30,7 @@ public class Oblast extends TransliterationProperty {
             inverseJoinColumns = @JoinColumn(name = "id_district", nullable = false),
             uniqueConstraints = @UniqueConstraint(columnNames = {"id_oblast", "id_district"})
     )
-    private transient List<District> districts;
+    private List<District> districts;
 
     @Contract(" -> new")
     public static @NonNull Oblast empty(){

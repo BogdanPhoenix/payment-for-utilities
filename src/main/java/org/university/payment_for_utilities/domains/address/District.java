@@ -35,7 +35,7 @@ public class District extends TransliterationProperty {
             inverseJoinColumns = @JoinColumn(name = "id_settlement", nullable = false),
             uniqueConstraints = @UniqueConstraint(columnNames = {"id_district", "id_settlement"})
     )
-    private transient List<Settlement> settlements;
+    private List<Settlement> settlements;
 
     @Contract(" -> new")
     public static @NonNull District empty(){
