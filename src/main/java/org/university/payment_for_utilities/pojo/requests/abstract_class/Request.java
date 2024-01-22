@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 /**
  * An abstract class representing the query structure that can be used to interact with the system.
  */
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @EqualsAndHashCode

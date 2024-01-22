@@ -7,6 +7,7 @@ import org.university.payment_for_utilities.domains.receipt.Receipt;
 
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor

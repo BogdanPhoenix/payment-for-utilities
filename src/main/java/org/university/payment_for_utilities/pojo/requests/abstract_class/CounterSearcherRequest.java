@@ -8,6 +8,7 @@ import static org.university.payment_for_utilities.domains.abstract_class.Counte
 
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor

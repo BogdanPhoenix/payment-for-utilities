@@ -9,6 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor

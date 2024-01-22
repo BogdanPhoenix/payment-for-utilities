@@ -18,6 +18,7 @@ import static jakarta.persistence.CascadeType.*;
 @Entity
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert

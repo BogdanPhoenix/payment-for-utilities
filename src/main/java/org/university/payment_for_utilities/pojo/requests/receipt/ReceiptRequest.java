@@ -12,6 +12,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor

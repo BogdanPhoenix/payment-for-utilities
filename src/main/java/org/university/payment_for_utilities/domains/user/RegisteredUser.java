@@ -19,6 +19,7 @@ import static jakarta.persistence.CascadeType.DETACH;
 @Entity
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert

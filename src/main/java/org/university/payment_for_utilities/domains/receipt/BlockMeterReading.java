@@ -11,6 +11,7 @@ import org.university.payment_for_utilities.domains.abstract_class.CounterSearch
 @Entity
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert

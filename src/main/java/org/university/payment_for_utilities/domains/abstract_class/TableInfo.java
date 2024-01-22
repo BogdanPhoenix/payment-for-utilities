@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert

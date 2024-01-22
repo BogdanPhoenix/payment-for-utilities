@@ -15,6 +15,7 @@ import static org.university.payment_for_utilities.services.implementations.tool
 @Entity
 @Getter
 @Setter
+@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
