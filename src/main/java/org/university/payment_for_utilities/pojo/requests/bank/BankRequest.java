@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
 
 @Getter
 @Setter
@@ -15,28 +15,27 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @MappedSuperclass
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class BankRequest extends Request {
-    private String name;
+public class BankRequest extends TransliterationRequest {
     private Website website;
     private Edrpou edrpou;
     private String mfo;
 
     @Override
     public boolean isEmpty() {
-        return this.name.isBlank() ||
-                this.website.isEmpty() ||
-                this.edrpou.isEmpty() ||
-                this.mfo.isBlank();
+        return super.isEmpty() ||
+                website.isEmpty() ||
+                edrpou.isEmpty() ||
+                mfo.isBlank();
     }
 
     @Contract(" -> new")
     public static @NonNull BankRequest empty(){
-        return BankRequest
-                .builder()
-                .name("")
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
-                .mfo("")
-                .build();
+        var entity = (BankRequest) initEmpty(BankRequest.builder());
+
+        entity.setWebsite(Website.empty());
+        entity.setEdrpou(Edrpou.empty());
+        entity.setMfo("");
+
+        return entity;
     }
 }

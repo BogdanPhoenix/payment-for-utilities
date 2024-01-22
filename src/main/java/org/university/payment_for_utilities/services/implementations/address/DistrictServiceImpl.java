@@ -20,16 +20,22 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
 
     @Override
     protected District createEntity(@NonNull Request request){
-        return (District) initTransliterationPropertyBuilder(District.builder(), request);
+        var builder = District.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
+        return builder.build();
     }
 
     @Override
     protected District createEntity(@NonNull Response response){
-        return (District) initTransliterationPropertyBuilder(District.builder(), response);
+        var builder = District.builder();
+        super.initTransliterationPropertyBuilder(builder, response);
+        return builder.build();
     }
 
     @Override
     protected Response createResponse(@NonNull District entity){
-        return initResponseBuilder(DistrictResponse.builder(), entity);
+        var builder = DistrictResponse.builder();
+        super.initResponseBuilder(builder, entity);
+        return builder.build();
     }
 }

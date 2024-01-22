@@ -1,13 +1,12 @@
 package org.university.payment_for_utilities.repositories.bank;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.repositories.TableSearcherRepository;
 
 import java.util.Optional;
 
 @Repository
-public interface BankRepository extends JpaRepository<Bank, Long> {
+public interface BankRepository extends TableSearcherRepository<Bank> {
     Optional<Bank> findByMfo(String mfo);
 }

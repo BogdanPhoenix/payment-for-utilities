@@ -20,16 +20,22 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
 
     @Override
     protected TypeSettlement createEntity(@NonNull Request request) {
-        return (TypeSettlement) initTransliterationPropertyBuilder(TypeSettlement.builder(), request);
+        var builder = TypeSettlement.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
+        return builder.build();
     }
 
     @Override
     protected TypeSettlement createEntity(Response response) {
-        return (TypeSettlement) initTransliterationPropertyBuilder(TypeSettlement.builder(), response);
+        var builder = TypeSettlement.builder();
+        super.initTransliterationPropertyBuilder(builder, response);
+        return builder.build();
     }
 
     @Override
     protected Response createResponse(@NonNull TypeSettlement entity) {
-        return initResponseBuilder(TypeSettlementResponse.builder(), entity);
+        var builder = TypeSettlementResponse.builder();
+        super.initResponseBuilder(builder, entity);
+        return builder.build();
     }
 }

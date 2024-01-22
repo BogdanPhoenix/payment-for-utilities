@@ -6,8 +6,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 
@@ -26,7 +26,7 @@ import static jakarta.persistence.CascadeType.*;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "companies")
-public class Company extends TableInfo {
+public class Company extends TransliterationProperty {
     @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_address", nullable = false, unique = true)
     @NonNull
@@ -41,10 +41,6 @@ public class Company extends TableInfo {
     @JoinColumn(name = "id_website", nullable = false, unique = true)
     @NonNull
     private Website website;
-
-    @Column(name = "name", nullable = false, unique = true)
-    @NonNull
-    private String name;
 
     @Column(name = "current_account", length = 14, nullable = false, unique = true)
     @NonNull
@@ -62,8 +58,8 @@ public class Company extends TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return address.isEmpty() ||
-                name.isBlank() ||
+        return super.isEmpty() ||
+                address.isEmpty() ||
                 website.isEmpty() ||
                 edrpou.isEmpty() ||
                 currentAccount.isBlank();
@@ -72,11 +68,10 @@ public class Company extends TableInfo {
     @Contract(" -> new")
     public static @NonNull Company empty(){
         var builder = builder();
-        TableInfo.initEmpty(builder);
+        TransliterationProperty.initEmpty(builder);
 
         return builder
                 .address(AddressResidence.empty())
-                .name("")
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())
                 .currentAccount("")

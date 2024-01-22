@@ -9,7 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
 import java.util.Optional;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
 
 @Service
-public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepository> implements CompanyService {
+public class CompanyServiceImpl extends TransliterationService<Company, CompanyRepository> implements CompanyService {
     private static final String CURRENT_ACCOUNT_TEMPLATE = "^\\d{14}$";
     protected CompanyServiceImpl(CompanyRepository repository) {
         super(repository, "Companies");
@@ -25,28 +25,28 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
 
     @Override
     protected Company createEntity(Request request) {
+        var builder = Company.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
         var companyRequest = (CompanyRequest) request;
-        return Company
-                .builder()
+
+        return builder
                 .address(companyRequest.getAddress())
                 .edrpou(companyRequest.getEdrpou())
                 .website(companyRequest.getWebsite())
-                .name(companyRequest.getName())
                 .currentAccount(companyRequest.getCurrentAccount())
                 .build();
     }
 
     @Override
     protected Company createEntity(Response response) {
-        var companyResponse = (CompanyResponse) response;
         var builder = Company.builder();
-        initEntityBuilder(builder, response);
+        var companyResponse = (CompanyResponse) response;
+        super.initTransliterationPropertyBuilder(builder, response);
 
         return builder
                 .address(companyResponse.getAddress())
                 .edrpou(companyResponse.getEdrpou())
                 .website(companyResponse.getWebsite())
-                .name(companyResponse.getName())
                 .currentAccount(companyResponse.getCurrentAccount())
                 .build();
     }
@@ -54,19 +54,19 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
     @Override
     protected Response createResponse(@NonNull Company entity) {
         var builder = CompanyResponse.builder();
-        initResponseBuilder(builder, entity);
+        super.initResponseBuilder(builder, entity);
 
         return builder
                 .address(entity.getAddress())
                 .edrpou(entity.getEdrpou())
                 .website(entity.getWebsite())
-                .name(entity.getName())
                 .currentAccount(entity.getCurrentAccount())
                 .build();
     }
 
     @Override
     protected void updateEntity(@NonNull Company entity, @NonNull Request request) {
+        super.updateEntity(entity, request);
         var newValue = (CompanyRequest) request;
 
         if(!newValue.getAddress().isEmpty()){
@@ -78,9 +78,6 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
         if(!newValue.getWebsite().isEmpty()){
             entity.setWebsite(newValue.getWebsite());
         }
-        if(!newValue.getName().isBlank()){
-            entity.setName(newValue.getName());
-        }
         if(!newValue.getCurrentAccount().isBlank()){
             entity.setCurrentAccount(newValue.getCurrentAccount());
         }
@@ -88,9 +85,9 @@ public class CompanyServiceImpl extends CrudServiceAbstract<Company, CompanyRepo
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
+        super.validationProcedureRequest(request);
         var companyRequest = (CompanyRequest) request;
 
-        validateName(companyRequest.getName());
         validateCurrentAccount(companyRequest.getCurrentAccount());
     }
 

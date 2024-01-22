@@ -51,7 +51,8 @@ class BankServiceTest extends CrudServiceTest {
         return BankResponse
                 .builder()
                 .id(response.getId())
-                .name("Raiffeisen Bank Ua")
+                .uaName(raiffeisenBankRequest.getUaName())
+                .enName("Raiffeisen Bank Ua")
                 .website(raiffeisenBankRequest.getWebsite())
                 .edrpou(raiffeisenBankRequest.getEdrpou())
                 .mfo("423147")
@@ -63,7 +64,8 @@ class BankServiceTest extends CrudServiceTest {
         var response = (BankResponse) expectedResponse;
         return BankRequest
                 .builder()
-                .name(response.getName())
+                .uaName("")
+                .enName(response.getEnName())
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())
                 .mfo(response.getMfo())
@@ -86,14 +88,6 @@ class BankServiceTest extends CrudServiceTest {
                 Arguments.of("3099"),
                 Arguments.of("30529999")
         );
-    }
-
-    @Test
-    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"name\" attribute.")
-    void testValidateNameThrowInvalidInputDataException(){
-        var request = (BankRequest) firstRequest;
-        request.setName("fatal@_@data");
-        addValueThrowInvalidInputData(request);
     }
 
     @Test

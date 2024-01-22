@@ -173,7 +173,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .address(addressResidence)
                 .edrpou(edrpou)
                 .website(website)
-                .name("Рівне ОблЕнерго")
+                .uaName("Рівне ОблЕнерго")
+                .enName("Rivne Oblenergo")
                 .currentAccount("96410247789652")
                 .build();
     }
@@ -198,7 +199,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .address(addressKyivResidence)
                 .edrpou(raiffeisenBankEdrpou)
                 .website(raiffeisenBankWebsite)
-                .name("Київ ОблЕнерго")
+                .uaName("Київ ОблЕнерго")
+                .enName("Kyiv Oblenergo")
                 .currentAccount("41203654129521")
                 .build();
     }

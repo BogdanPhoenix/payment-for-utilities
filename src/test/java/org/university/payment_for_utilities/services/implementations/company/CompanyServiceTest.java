@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.services.implementations.company;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,7 +54,8 @@ class CompanyServiceTest extends CrudServiceTest {
                 .address(companyKyivOblenergoRequest.getAddress())
                 .edrpou(companyKyivOblenergoRequest.getEdrpou())
                 .website(companyKyivOblenergoRequest.getWebsite())
-                .name("Київ-обленерго")
+                .uaName("Київ-обленерго")
+                .enName("Kyivoblenergo")
                 .currentAccount("72341000245521")
                 .build();
     }
@@ -68,7 +68,8 @@ class CompanyServiceTest extends CrudServiceTest {
                 .address(AddressResidence.empty())
                 .edrpou(Edrpou.empty())
                 .website(Website.empty())
-                .name(response.getName())
+                .uaName(response.getUaName())
+                .enName(response.getEnName())
                 .currentAccount(response.getCurrentAccount())
                 .build();
     }
@@ -90,14 +91,5 @@ class CompanyServiceTest extends CrudServiceTest {
                 Arguments.of("452136"),
                 Arguments.of("145236985123654786")
         );
-    }
-
-    @Test
-    @DisplayName("Check for an exception when the user passed data in the wrong format to the \"name\" attribute.")
-    void testValidateNameThrowInvalidInputDataException(){
-        var request = (CompanyRequest) firstRequest;
-        request.setName("fatal@_@data");
-
-        addValueThrowInvalidInputData(request);
     }
 }

@@ -66,7 +66,8 @@ public class BankEntitiesRequestTestContextConfiguration {
     public BankRequest privateBankRequest(){
         return BankRequest
                 .builder()
-                .name("Приват Банк")
+                .uaName("Приват Банк")
+                .enName("Private Bank")
                 .website(privateBankWebsite)
                 .edrpou(privateBankEdrpou)
                 .mfo("305299")
@@ -96,7 +97,8 @@ public class BankEntitiesRequestTestContextConfiguration {
     public BankRequest raiffeisenBankRequest(){
         return BankRequest
                 .builder()
-                .name("Raiffeisen Bank")
+                .uaName("Райффайзен Банк")
+                .enName("Raiffeisen Bank")
                 .website(raiffeisenBankWebsite)
                 .edrpou(raiffeisenBankEdrpou)
                 .mfo("380805")

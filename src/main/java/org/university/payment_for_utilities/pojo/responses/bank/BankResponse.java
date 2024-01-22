@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.TransliterationResponse;
 
 @Getter
 @Setter
@@ -14,8 +14,7 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 @MappedSuperclass
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class BankResponse extends Response {
-    private String name;
+public class BankResponse extends TransliterationResponse {
     private Website website;
     private Edrpou edrpou;
     private String mfo;

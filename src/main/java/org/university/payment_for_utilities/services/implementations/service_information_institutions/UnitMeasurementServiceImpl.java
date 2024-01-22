@@ -18,16 +18,22 @@ public class UnitMeasurementServiceImpl extends TransliterationService<UnitMeasu
 
     @Override
     protected UnitMeasurement createEntity(Request request) {
-        return (UnitMeasurement) initTransliterationPropertyBuilder(UnitMeasurement.builder(), request);
+        var builder = UnitMeasurement.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
+        return builder.build();
     }
 
     @Override
     protected UnitMeasurement createEntity(Response response) {
-        return (UnitMeasurement) initTransliterationPropertyBuilder(UnitMeasurement.builder(), response);
+        var builder = UnitMeasurement.builder();
+        super.initTransliterationPropertyBuilder(builder, response);
+        return builder.build();
     }
 
     @Override
     protected Response createResponse(@NonNull UnitMeasurement entity) {
-        return initResponseBuilder(UnitMeasurementResponse.builder(), entity);
+        var builder = UnitMeasurementResponse.builder();
+        super.initResponseBuilder(builder, entity);
+        return builder.build();
     }
 }

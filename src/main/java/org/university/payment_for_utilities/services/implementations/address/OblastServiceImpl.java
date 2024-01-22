@@ -20,16 +20,22 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
 
     @Override
     protected Oblast createEntity(@NonNull Request request){
-        return (Oblast) initTransliterationPropertyBuilder(Oblast.builder(), request);
+        var builder = Oblast.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
+        return builder.build();
     }
 
     @Override
     protected Oblast createEntity(Response response) {
-        return (Oblast) initTransliterationPropertyBuilder(Oblast.builder(), response);
+        var builder = Oblast.builder();
+        super.initTransliterationPropertyBuilder(builder, response);
+        return builder.build();
     }
 
     @Override
     protected Response createResponse(@NonNull Oblast entity){
-        return initResponseBuilder(OblastResponse.builder(), entity);
+        var builder = OblastResponse.builder();
+        super.initResponseBuilder(builder, entity);
+        return builder.build();
     }
 }

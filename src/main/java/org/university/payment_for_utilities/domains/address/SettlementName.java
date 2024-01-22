@@ -29,6 +29,8 @@ public class SettlementName extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull SettlementName empty(){
-        return (SettlementName) TransliterationProperty.initEmpty(builder());
+        var builder = SettlementName.builder();
+        TransliterationProperty.initEmpty(builder);
+        return builder.build();
     }
 }

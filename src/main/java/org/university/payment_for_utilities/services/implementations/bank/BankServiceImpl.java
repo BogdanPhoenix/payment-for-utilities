@@ -9,7 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
-import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 
 import java.util.Optional;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
 
 @Service
-public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> implements BankService {
+public class BankServiceImpl extends TransliterationService<Bank, BankRepository> implements BankService {
     private static final String MFO_TEMPLATE = "^\\d{6}$";
 
     protected BankServiceImpl(BankRepository repository) {
@@ -26,10 +26,11 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
 
     @Override
     protected Bank createEntity(Request request) {
+        var builder = Bank.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
         var bankRequest = (BankRequest) request;
-        return Bank
-                .builder()
-                .name(bankRequest.getName())
+
+        return builder
                 .website(bankRequest.getWebsite())
                 .edrpou(bankRequest.getEdrpou())
                 .mfo(bankRequest.getMfo())
@@ -40,10 +41,9 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     protected Bank createEntity(Response response) {
         var bankResponse = (BankResponse) response;
         var builder = Bank.builder();
-        initEntityBuilder(builder, response);
+        super.initTransliterationPropertyBuilder(builder, response);
 
         return builder
-                .name(bankResponse.getName())
                 .website(bankResponse.getWebsite())
                 .edrpou(bankResponse.getEdrpou())
                 .mfo(bankResponse.getMfo())
@@ -53,10 +53,9 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
     @Override
     protected Response createResponse(@NonNull Bank entity) {
         var builder = BankResponse.builder();
-        initResponseBuilder(builder, entity);
+        super.initResponseBuilder(builder, entity);
 
         return builder
-                .name(entity.getName())
                 .website(entity.getWebsite())
                 .edrpou(entity.getEdrpou())
                 .mfo(entity.getMfo())
@@ -65,11 +64,9 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
 
     @Override
     protected void updateEntity(@NonNull Bank entity, @NonNull Request request) {
+        super.updateEntity(entity, request);
         var newValue = (BankRequest) request;
 
-        if(!newValue.getName().isBlank()){
-            entity.setName(newValue.getName());
-        }
         if(!newValue.getWebsite().isEmpty()){
             entity.setWebsite(newValue.getWebsite());
         }
@@ -83,9 +80,9 @@ public class BankServiceImpl extends CrudServiceAbstract<Bank, BankRepository> i
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
-        var bankRequest = (BankRequest) request;
+        super.validationProcedureRequest(request);
 
-        validateName(bankRequest.getName());
+        var bankRequest = (BankRequest) request;
         validateMfo(bankRequest.getMfo());
     }
 

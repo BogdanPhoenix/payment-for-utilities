@@ -19,30 +19,27 @@ public abstract class TransliterationService<T extends TransliterationProperty, 
         super(repository, tableName);
     }
 
-    protected TransliterationProperty initTransliterationPropertyBuilder(@NonNull TransliterationPropertyBuilder<?,?> builder, @NonNull Request request) {
+    protected void initTransliterationPropertyBuilder(@NonNull TransliterationPropertyBuilder<?,?> builder, @NonNull Request request) {
         var transliterationRequest = (TransliterationRequest) request;
-        return builder
+        builder
                 .uaName(transliterationRequest.getUaName())
-                .enName(transliterationRequest.getEnName())
-                .build();
+                .enName(transliterationRequest.getEnName());
     }
 
-    protected TransliterationProperty initTransliterationPropertyBuilder(@NonNull TransliterationPropertyBuilder<?,?> builder, @NonNull Response response) {
+    protected void initTransliterationPropertyBuilder(@NonNull TransliterationPropertyBuilder<?,?> builder, @NonNull Response response) {
         super.initEntityBuilder(builder, response);
 
         var transliterationResponse = (TransliterationResponse) response;
-        return builder
+        builder
                 .uaName(transliterationResponse.getUaName())
-                .enName(transliterationResponse.getEnName())
-                .build();
+                .enName(transliterationResponse.getEnName());
     }
 
-    protected TransliterationResponse initResponseBuilder(@NonNull TransliterationResponseBuilder<?, ?> builder, @NonNull T entity) {
+    protected void initResponseBuilder(@NonNull TransliterationResponseBuilder<?, ?> builder, @NonNull T entity) {
         super.initResponseBuilder(builder, entity);
-        return builder
+        builder
                 .uaName(entity.getUaName())
-                .enName(entity.getEnName())
-                .build();
+                .enName(entity.getEnName());
     }
 
     @Override

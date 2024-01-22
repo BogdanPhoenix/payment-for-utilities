@@ -20,16 +20,22 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
 
     @Override
     protected SettlementName createEntity(@NonNull Request request) {
-        return (SettlementName) initTransliterationPropertyBuilder(SettlementName.builder(), request);
+        var builder = SettlementName.builder();
+        super.initTransliterationPropertyBuilder(builder, request);
+        return builder.build();
     }
 
     @Override
     protected SettlementName createEntity(Response response) {
-        return (SettlementName) initTransliterationPropertyBuilder(SettlementName.builder(), response);
+        var builder = SettlementName.builder();
+        super.initTransliterationPropertyBuilder(builder, response);
+        return builder.build();
     }
 
     @Override
     protected Response createResponse(@NonNull SettlementName entity) {
-        return initResponseBuilder(SettlementNameResponse.builder(), entity);
+        var builder = SettlementNameResponse.builder();
+        super.initResponseBuilder(builder, entity);
+        return builder.build();
     }
 }

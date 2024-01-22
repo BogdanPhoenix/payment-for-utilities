@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
+import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
@@ -27,7 +28,7 @@ import static jakarta.persistence.CascadeType.*;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "banks")
-public class Bank extends TableInfo {
+public class Bank extends TransliterationProperty {
     @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_edrpou", nullable = false, unique = true)
     @NonNull
@@ -37,10 +38,6 @@ public class Bank extends TableInfo {
     @JoinColumn(name = "id_website", nullable = false, unique = true)
     @NonNull
     private Website website;
-
-    @Column(name = "name", nullable = false, unique = true)
-    @NonNull
-    private String name;
 
     @Column(name = "mfo", length = 6, nullable = false, unique = true)
     @NonNull
@@ -63,7 +60,7 @@ public class Bank extends TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return name.isBlank() ||
+        return super.isEmpty() ||
                 website.isEmpty() ||
                 edrpou.isEmpty() ||
                 mfo.isBlank();
@@ -72,10 +69,9 @@ public class Bank extends TableInfo {
     @Contract(" -> new")
     public static @NonNull Bank empty(){
         var builder = builder();
-        TableInfo.initEmpty(builder);
+        TransliterationProperty.initEmpty(builder);
 
         return builder
-                .name("")
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())
                 .mfo("")
