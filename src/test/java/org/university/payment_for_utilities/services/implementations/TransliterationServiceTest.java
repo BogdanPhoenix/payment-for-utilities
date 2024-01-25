@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
+import org.university.payment_for_utilities.services.interfaces.CrudService;
 
 import java.util.stream.Stream;
 
@@ -18,6 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public abstract class TransliterationServiceTest extends CrudServiceTest {
     protected abstract void testAddValueThrowInvalidInputData();
     protected abstract void testUpdateValueThrowInvalidInputData();
+
+    public TransliterationServiceTest(CrudService service) {
+        super(service);
+    }
 
     protected void testAddValueThrowInvalidInputData(Request withNum, Request withSpecialCharacter) {
         addValueThrowInvalidInputData(withNum);

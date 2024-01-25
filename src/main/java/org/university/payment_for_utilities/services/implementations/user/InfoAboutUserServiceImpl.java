@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.user.InfoAboutUser;
 import org.university.payment_for_utilities.enumarations.Role;
@@ -17,7 +18,8 @@ import java.util.Optional;
 
 @Service
 public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser, InfoAboutUserRepository> implements InfoAboutUserService {
-    protected InfoAboutUserServiceImpl(InfoAboutUserRepository repository) {
+    @Autowired
+    public InfoAboutUserServiceImpl(InfoAboutUserRepository repository) {
         super(repository, "Info about users");
     }
 

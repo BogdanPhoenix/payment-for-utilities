@@ -27,7 +27,7 @@ class OblastServiceTest extends TransliterationServiceTest {
 
     @Autowired
     public OblastServiceTest(OblastService service) {
-        this.service = service;
+        super(service);
     }
 
     @BeforeEach

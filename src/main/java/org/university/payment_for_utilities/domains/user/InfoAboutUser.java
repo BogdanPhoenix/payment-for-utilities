@@ -10,7 +10,6 @@ import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.enumarations.Role;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Entity
 @Getter

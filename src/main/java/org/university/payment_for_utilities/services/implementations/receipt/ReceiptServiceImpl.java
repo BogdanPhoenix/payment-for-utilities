@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.receipt;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -10,6 +11,9 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 import org.university.payment_for_utilities.repositories.receipt.ReceiptRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.interfaces.receipt.BlockAccrualAmountService;
+import org.university.payment_for_utilities.services.interfaces.receipt.BlockMeterReadingService;
+import org.university.payment_for_utilities.services.interfaces.receipt.PaymentHistoryService;
 import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptService;
 
 import java.time.LocalDate;
@@ -22,8 +26,21 @@ import static org.university.payment_for_utilities.services.implementations.tool
 public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepository> implements ReceiptService {
     private static final int MAX_DIFFERENCE_MONTHS = 1;
 
-    protected ReceiptServiceImpl(ReceiptRepository repository) {
+    private final PaymentHistoryService paymentHistoryService;
+    private final BlockAccrualAmountService blockAccrualAmountService;
+    private final BlockMeterReadingService blockMeterReadingService;
+
+    @Autowired
+    public ReceiptServiceImpl(
+            ReceiptRepository repository,
+            PaymentHistoryService paymentHistoryService,
+            BlockAccrualAmountService blockAccrualAmountService,
+            BlockMeterReadingService blockMeterReadingService
+    ) {
         super(repository, "Receipts");
+        this.paymentHistoryService = paymentHistoryService;
+        this.blockAccrualAmountService = blockAccrualAmountService;
+        this.blockMeterReadingService = blockMeterReadingService;
     }
 
     @Override
@@ -60,6 +77,13 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
                 .bank(entity.getBank())
                 .billMonth(entity.getBillMonth())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull Receipt entity) {
+        deactivateChildrenCollection(entity.getPaymentHistories(), paymentHistoryService);
+        deactivateChildrenCollection(entity.getBlockAccrualAmounts(), blockAccrualAmountService);
+        deactivateChildrenCollection(entity.getBlockMeterReadings(), blockMeterReadingService);
     }
 
     @Override

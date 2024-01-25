@@ -25,12 +25,15 @@ import static org.university.payment_for_utilities.services.implementations.tool
 
 @Slf4j
 public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepository<T, Long>> implements CrudService {
-    protected static final String MESSAGE_SUCCESS_VALIDATION = "Input data has been successfully validated";
+    protected static final String MESSAGE_SUCCESS_VALIDATION = "The %s method was executed successfully.";
+    protected static final String MESSAGE_INPUT_TO_METHOD = "Input to the %s method";
+    protected static final String METHOD_NAME = "%s.%s";
     private static final String NAME_TEMPLATE = "^[A-ZА-ЯІЇҐ\\-.\\s]*$";
 
     protected final String fatalMessageAddEntity;
     protected final String fatalMessageUpdateEntity;
     protected final String fatalMessageFindOldEntity;
+    private final String nameClass;
 
     protected J repository;
     protected String tableName;
@@ -42,12 +45,32 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         fatalMessageAddEntity = String.format("You sent an empty request when trying to add a new record to the \"%s\" table.", tableName);
         fatalMessageUpdateEntity = String.format("You sent an empty query in the \"oldValue\" field when trying to update a record in the \"%s\" table.", tableName);
         fatalMessageFindOldEntity = String.format("Failed to find an entity in the \"%s\" table by the old value when updating the table entity.", tableName);
+        nameClass = this.getClass().getSimpleName();
+    }
+
+    protected static <R extends TableInfo> void deactivateChildrenCollection(List<R> collection, CrudService service){
+        Optional.ofNullable(collection)
+                .ifPresent(collect ->
+                        collect
+                                .forEach(
+                                        settlement ->
+                                                service.removeValue(settlement.getId())
+                                )
+                );
+    }
+
+    protected static void deactivateChild(TableInfo child, CrudService service) {
+        Optional.ofNullable(child)
+                .ifPresent(entity ->
+                        service.removeValue(entity.getId())
+                );
     }
 
     protected void initEntityBuilder(@NonNull TableInfoBuilder<?,?> builder, @NonNull Response response) {
         builder.id(response.getId())
                 .createDate(response.getCreateDate())
-                .updateDate(response.getUpdateDate());
+                .updateDate(response.getUpdateDate())
+                .currentData(true);
     }
 
     protected void initResponseBuilder(@NonNull ResponseBuilder<?, ?> builder, @NonNull T entity) {
@@ -59,10 +82,8 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     @Transactional(readOnly = true)
     @Override
     public List<Response> getAll(){
-        return repository
-                .findAll()
+        return findAll()
                 .stream()
-                .filter(TableInfo::isCurrentData)
                 .map(this::createResponse)
                 .toList();
     }
@@ -86,13 +107,14 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     }
 
     protected void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
-        log.info("Input to the addValue() method");
+        var methodName = String.format(METHOD_NAME, nameClass, "addValue(Request request)");
+        log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
         validateRequestEmpty(request, fatalMessageAddEntity);
         validationProcedureRequest(request);
         validateDuplicate(request);
 
-        log.info(MESSAGE_SUCCESS_VALIDATION);
+        log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
     }
 
     @Transactional
@@ -109,18 +131,20 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     }
 
     protected void validateUpdate(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
-        log.info("Input to the updateValue() method");
+        var methodName = String.format(METHOD_NAME, nameClass, "updateValue(Request request)");
+        log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
         validationProcedureRequest(request);
         validateDuplicate(request);
 
-        log.info(MESSAGE_SUCCESS_VALIDATION);
+        log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
     }
 
     @Transactional
     @Override
     public Response removeValue(@NonNull Request request) throws NotFindEntityInDataBaseException {
-        log.info("Input to the removeValue() method");
+        var methodName = String.format(METHOD_NAME, nameClass, "removeValue(Request request)");
+        log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
         var entity = findOldEntity(request)
                 .orElseThrow(() -> {
@@ -129,43 +153,44 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                     }
                 );
 
-        entity.setCurrentData(false);
-        repository.save(entity);
+        removeEntity(entity);
 
-        log.info(MESSAGE_SUCCESS_VALIDATION);
+        log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
         return createResponse(entity);
     }
 
     @Transactional
     @Override
     public Response removeValue(Long id) throws NotFindEntityInDataBaseException {
-        log.info("Input to the removeValue() method");
+        var methodName = String.format(METHOD_NAME, nameClass, "removeValue(Long id)");
+        log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
         var entity = findById(id);
-        entity.setCurrentData(false);
-        repository.save(entity);
+        removeEntity(entity);
 
-        log.info(MESSAGE_SUCCESS_VALIDATION);
+        log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
         return createResponse(entity);
     }
 
     @Transactional
     @Override
     public Long removeAll() {
-        log.info("Input to the removeAll() method");
+        var methodName = String.format(METHOD_NAME, nameClass, "removeAll()");
+        log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
         var numDeleteItems = repository.count();
-        repository
+        findAll().forEach(this::removeEntity);
+
+        log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
+        return numDeleteItems;
+    }
+
+    private List<T> findAll() {
+        return repository
                 .findAll()
                 .stream()
                 .filter(TableInfo::isCurrentData)
-                .forEach(ent -> {
-                    ent.setCurrentData(false);
-                    repository.save(ent);
-                });
-
-        log.info(MESSAGE_SUCCESS_VALIDATION);
-        return numDeleteItems;
+                .toList();
     }
 
     protected T findById(@NonNull Long id) throws NotFindEntityInDataBaseException {
@@ -177,6 +202,17 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                             return throwNotFindEntityInDataBaseException(message);
                         }
                 );
+    }
+
+    private void removeEntity(@NonNull T entity){
+        entity.setCurrentData(false);
+        entity.setUpdateDate(LocalDateTime.now());
+        repository.save(entity);
+        deactivatedChildren(entity);
+    }
+
+    protected void deactivatedChildren(@NonNull T entity){
+        //TODO It is not required in all classes. I am a basic stub for all classes
     }
 
     protected void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
@@ -201,7 +237,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     }
 
     protected boolean isDuplicate(@NonNull Request request){
-        return !request.isEmpty() && findOldEntity(request)
+        return !request.isEmpty() && findEntity(request)
                 .isPresent();
     }
 

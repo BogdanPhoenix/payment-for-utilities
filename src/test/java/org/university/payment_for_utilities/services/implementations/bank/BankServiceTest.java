@@ -35,7 +35,7 @@ class BankServiceTest extends CrudServiceTest {
     private BankRequest raiffeisenBankRequest;
 
     @Autowired
-    public BankServiceTest(BankService service){ this.service = service; }
+    public BankServiceTest(BankService service){ super(service); }
 
     @BeforeEach
     @Override

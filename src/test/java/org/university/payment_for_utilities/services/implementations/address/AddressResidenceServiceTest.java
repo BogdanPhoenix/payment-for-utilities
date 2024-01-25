@@ -30,7 +30,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
 
     @Autowired
     public AddressResidenceServiceTest(AddressResidenceService service){
-        this.service = service;
+        super(service);
     }
 
     @BeforeEach

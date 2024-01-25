@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.Transliterati
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -25,11 +27,11 @@ public class District extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "districts")
-    private transient List<Oblast> oblasts;
+    private List<Oblast> oblasts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "district_settlements",
             joinColumns = @JoinColumn(name = "id_district", nullable = false),

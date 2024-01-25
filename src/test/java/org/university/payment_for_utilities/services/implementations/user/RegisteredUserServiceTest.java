@@ -17,7 +17,7 @@ import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserReq
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.RegisterUserResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
-import org.university.payment_for_utilities.services.interfaces.user.RegisterUserService;
+import org.university.payment_for_utilities.services.interfaces.user.RegisteredUserService;
 
 import java.util.stream.Stream;
 
@@ -33,7 +33,7 @@ class RegisteredUserServiceTest extends CrudServiceTest {
     private RegisteredUserRequest userOlegRequest;
 
     @Autowired
-    public RegisteredUserServiceTest(RegisterUserService service) { this.service = service; }
+    public RegisteredUserServiceTest(RegisteredUserService service) { super(service); }
 
     @BeforeEach
     @Override

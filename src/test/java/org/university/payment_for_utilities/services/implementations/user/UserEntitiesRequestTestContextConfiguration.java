@@ -30,7 +30,7 @@ import static org.university.payment_for_utilities.AdditionalTestingTools.create
 })
 public class UserEntitiesRequestTestContextConfiguration {
     @Autowired
-    private RegisterUserServiceImpl registerUserService;
+    private RegisteredUserServiceImpl registerUserService;
     @Autowired
     private ContractEntityServiceImpl contractEntityService;
 

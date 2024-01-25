@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -10,14 +11,17 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import org.university.payment_for_utilities.pojo.responses.user.RegisterUserResponse;
 import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
-import org.university.payment_for_utilities.services.interfaces.user.RegisterUserService;
+import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
+import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
+import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUserService;
+import org.university.payment_for_utilities.services.interfaces.user.RegisteredUserService;
 
 import java.util.Optional;
 
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
 
 @Service
-public class RegisterUserServiceImpl extends CrudServiceAbstract<RegisteredUser, RegisteredUserRepository> implements RegisterUserService {
+public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUser, RegisteredUserRepository> implements RegisteredUserService {
     private static final String USER_EMAIL_TEMPLATE = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
     private static final String PASSWORD_TEMPLATE = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$&*_])[a-zA-Z\\d!@#$&*_]{8,}$";
     private static final String TEXT_MESSAGE_VALIDATE_EMAIL = """
@@ -36,8 +40,22 @@ public class RegisterUserServiceImpl extends CrudServiceAbstract<RegisteredUser,
                 - Allowed special characters: !@#$&*_
             """;
 
-    protected RegisterUserServiceImpl(RegisteredUserRepository repository) {
+    private final ContractEntityService contractEntityService;
+    private final InfoAboutUserService infoAboutUserService;
+    private final PhoneNumService phoneNumService;
+
+    @Autowired
+    public RegisteredUserServiceImpl(
+            RegisteredUserRepository repository,
+            ContractEntityService contractEntityService,
+            InfoAboutUserService infoAboutUserService,
+            PhoneNumService phoneNumService
+    ) {
         super(repository, "Registered users");
+
+        this.contractEntityService = contractEntityService;
+        this.infoAboutUserService = infoAboutUserService;
+        this.phoneNumService = phoneNumService;
     }
 
     @Override
@@ -74,6 +92,13 @@ public class RegisterUserServiceImpl extends CrudServiceAbstract<RegisteredUser,
                 .passwordUser(entity.getPasswordUser())
                 .phoneNum(entity.getPhoneNum())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull RegisteredUser entity) {
+        deactivateChild(entity.getInfoUser(), infoAboutUserService);
+        deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
+        deactivateChild(entity.getPhoneNum(), phoneNumService);
     }
 
     @Override

@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.Transliterati
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -24,8 +26,8 @@ import java.util.List;
 public class SettlementName extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "name", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<Settlement> settlements;
+    @OneToMany(mappedBy = "name", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<Settlement> settlements;
 
     @Contract(" -> new")
     public static @NonNull SettlementName empty(){

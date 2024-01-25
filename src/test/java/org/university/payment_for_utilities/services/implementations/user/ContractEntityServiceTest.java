@@ -27,7 +27,7 @@ public class ContractEntityServiceTest extends CrudServiceTest {
     private ContractEntityRequest kyivContractRequest;
 
     @Autowired
-    public ContractEntityServiceTest(ContractEntityService service) { this.service = service; }
+    public ContractEntityServiceTest(ContractEntityService service) { super(service); }
 
     @BeforeEach
     @Override

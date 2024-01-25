@@ -29,7 +29,7 @@ class SettlementNameServiceTest extends TransliterationServiceTest {
 
     @Autowired
     public SettlementNameServiceTest(SettlementNameService service){
-        this.service = service;
+        super(service);
     }
 
     @BeforeEach

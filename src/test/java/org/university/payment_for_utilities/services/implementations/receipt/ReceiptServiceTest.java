@@ -35,7 +35,7 @@ class ReceiptServiceTest extends CrudServiceTest {
     private ReceiptRequest kyivReceiptRequest;
 
     @Autowired
-    public ReceiptServiceTest(ReceiptService service) { this.service = service; }
+    public ReceiptServiceTest(ReceiptService service) { super(service); }
 
     @BeforeEach
     @Override

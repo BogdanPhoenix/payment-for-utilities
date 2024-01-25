@@ -33,7 +33,7 @@ class BlockMeterReadingServiceTest extends CrudServiceTest {
     private BlockMeterReadingRequest kyivBlockMeter;
 
     @Autowired
-    public BlockMeterReadingServiceTest(BlockMeterReadingService service) { this.service = service; }
+    public BlockMeterReadingServiceTest(BlockMeterReadingService service) { super(service); }
 
     @BeforeEach
     @Override

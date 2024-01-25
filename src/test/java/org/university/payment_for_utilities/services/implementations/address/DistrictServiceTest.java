@@ -27,7 +27,7 @@ class DistrictServiceTest extends TransliterationServiceTest {
 
     @Autowired
     public DistrictServiceTest(DistrictService service) {
-        this.service = service;
+        super(service);
     }
 
     @BeforeEach

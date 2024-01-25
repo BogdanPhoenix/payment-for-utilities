@@ -48,13 +48,13 @@ public class Company extends TransliterationProperty {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<CompanyPhoneNum> phones;
+    @OneToMany(mappedBy = "company", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<CompanyPhoneNum> phones;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<CompanyTariff> tariffs;
+    @OneToMany(mappedBy = "company", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<CompanyTariff> tariffs;
 
     @Override
     public boolean isEmpty() {

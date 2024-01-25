@@ -32,7 +32,7 @@ class EdrpouServiceTest extends CrudServiceTest {
     private EdrpouRequest raiffeisenBankEdrpouRequest;
 
     @Autowired
-    public EdrpouServiceTest(EdrpouService service) { this.service = service;}
+    public EdrpouServiceTest(EdrpouService service) { super(service); }
 
     @BeforeEach
     @Override

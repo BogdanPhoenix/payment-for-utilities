@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -10,7 +11,11 @@ import org.university.payment_for_utilities.pojo.responses.company.CompanyRespon
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
+import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
+import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
 
 import java.util.Optional;
 
@@ -19,8 +24,25 @@ import static org.university.payment_for_utilities.services.implementations.tool
 @Service
 public class CompanyServiceImpl extends TransliterationService<Company, CompanyRepository> implements CompanyService {
     private static final String CURRENT_ACCOUNT_TEMPLATE = "^\\d{14}$";
-    protected CompanyServiceImpl(CompanyRepository repository) {
+
+    private final EdrpouService edrpouService;
+    private final WebsiteService websiteService;
+    private final CompanyPhoneNumService companyPhoneNumService;
+    private final CompanyTariffService companyTariffService;
+
+    @Autowired
+    public CompanyServiceImpl(
+            CompanyRepository repository,
+            EdrpouService edrpouService,
+            WebsiteService websiteService,
+            CompanyPhoneNumService companyPhoneNumService,
+            CompanyTariffService companyTariffService
+    ) {
         super(repository, "Companies");
+        this.edrpouService = edrpouService;
+        this.websiteService = websiteService;
+        this.companyPhoneNumService = companyPhoneNumService;
+        this.companyTariffService = companyTariffService;
     }
 
     @Override
@@ -62,6 +84,14 @@ public class CompanyServiceImpl extends TransliterationService<Company, CompanyR
                 .website(entity.getWebsite())
                 .currentAccount(entity.getCurrentAccount())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull Company entity) {
+        deactivateChild(entity.getEdrpou(), edrpouService);
+        deactivateChild(entity.getWebsite(), websiteService);
+        deactivateChildrenCollection(entity.getPhones(), companyPhoneNumService);
+        deactivateChildrenCollection(entity.getTariffs(), companyTariffService);
     }
 
     @Override

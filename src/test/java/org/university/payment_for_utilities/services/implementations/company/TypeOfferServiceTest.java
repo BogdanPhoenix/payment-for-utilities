@@ -36,7 +36,7 @@ class TypeOfferServiceTest extends CrudServiceTest {
     private TypeOfferRequest typeOfferGasRequest;
 
     @Autowired
-    public TypeOfferServiceTest(TypeOfferService service) { this.service = service; }
+    public TypeOfferServiceTest(TypeOfferService service) { super(service); }
 
     @BeforeEach
     @Override

@@ -55,13 +55,13 @@ public class AddressResidence extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "address", cascade = {MERGE, REFRESH, DETACH}, orphanRemoval = true)
+    @OneToOne(mappedBy = "address", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private Company company;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "addresses", cascade = {MERGE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private transient List<RegisteredUser> users;
+    @ManyToMany(mappedBy = "addresses", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<RegisteredUser> users;
 
     @Override
     public boolean isEmpty() {

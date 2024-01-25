@@ -13,6 +13,8 @@ import org.university.payment_for_utilities.domains.bank.Bank;
 import java.time.LocalDate;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -43,18 +45,18 @@ public class Receipt extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<PaymentHistory> paymentHistories;
+    @OneToMany(mappedBy = "receipt", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<PaymentHistory> paymentHistories;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<BlockAccrualAmount> blockAccrualAmounts;
+    @OneToMany(mappedBy = "receipt", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<BlockAccrualAmount> blockAccrualAmounts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<BlockMeterReading> blockMeterReadings;
+    @OneToMany(mappedBy = "receipt", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<BlockMeterReading> blockMeterReadings;
 
     @Override
     public boolean isEmpty() {

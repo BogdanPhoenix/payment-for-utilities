@@ -11,6 +11,8 @@ import org.university.payment_for_utilities.domains.company.TypeOffer;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -24,7 +26,7 @@ import java.util.List;
 public class UnitMeasurement extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "unitMeasurement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "unitMeasurement", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private List<TypeOffer> offers;
 
     @Contract(" -> new")

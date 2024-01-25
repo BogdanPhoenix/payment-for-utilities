@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.Transliterati
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -24,7 +26,7 @@ import java.util.List;
 public class Oblast extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "oblast_districts",
             joinColumns = @JoinColumn(name = "id_oblast", nullable = false),

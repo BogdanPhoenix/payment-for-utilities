@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -11,6 +12,7 @@ import org.university.payment_for_utilities.pojo.responses.company.CompanyTariff
 import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
+import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
 
 import java.util.Optional;
 
@@ -19,8 +21,15 @@ import static org.university.payment_for_utilities.services.implementations.tool
 
 @Service
 public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
-    protected CompanyTariffServiceImpl(CompanyTariffRepository repository) {
+    private final ContractEntityService contractEntityService;
+
+    @Autowired
+    public CompanyTariffServiceImpl(
+            CompanyTariffRepository repository,
+            ContractEntityService contractEntityService
+    ) {
         super(repository, "Company tariffs");
+        this.contractEntityService = contractEntityService;
     }
 
     @Override
@@ -62,6 +71,11 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
                 .name(entity.getName())
                 .fixedCost(entity.getFixedCost())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull CompanyTariff entity) {
+        deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
     }
 
     @Override

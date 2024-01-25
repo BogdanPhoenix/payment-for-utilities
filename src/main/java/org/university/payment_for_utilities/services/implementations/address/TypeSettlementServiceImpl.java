@@ -9,13 +9,20 @@ import org.university.payment_for_utilities.pojo.responses.address.TypeSettlemen
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.TypeSettlementRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
 import org.university.payment_for_utilities.services.interfaces.address.TypeSettlementService;
 
 @Service
 public class TypeSettlementServiceImpl extends TransliterationService<TypeSettlement, TypeSettlementRepository> implements TypeSettlementService {
+    private final SettlementService settlementService;
+
     @Autowired
-    public TypeSettlementServiceImpl(TypeSettlementRepository repository){
+    public TypeSettlementServiceImpl(
+            TypeSettlementRepository repository,
+            SettlementService settlementService
+    ){
         super(repository, "Types settlement");
+        this.settlementService = settlementService;
     }
 
     @Override
@@ -37,5 +44,10 @@ public class TypeSettlementServiceImpl extends TransliterationService<TypeSettle
         var builder = TypeSettlementResponse.builder();
         super.initResponseBuilder(builder, entity);
         return builder.build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull TypeSettlement entity) {
+        deactivateChildrenCollection(entity.getSettlements(), settlementService);
     }
 }

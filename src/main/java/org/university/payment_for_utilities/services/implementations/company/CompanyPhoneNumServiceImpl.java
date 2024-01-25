@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
@@ -10,13 +11,21 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import org.university.payment_for_utilities.repositories.company.CompanyPhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
+import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
 
 import java.util.Optional;
 
 @Service
 public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<CompanyPhoneNum, CompanyPhoneNumRepository> implements CompanyPhoneNumService {
-    protected CompanyPhoneNumServiceImpl(CompanyPhoneNumRepository repository) {
+    private final PhoneNumService phoneNumService;
+
+    @Autowired
+    public CompanyPhoneNumServiceImpl(
+            CompanyPhoneNumRepository repository,
+            PhoneNumService phoneNumService
+    ) {
         super(repository, "Company phone nums");
+        this.phoneNumService = phoneNumService;
     }
 
     @Override
@@ -50,6 +59,11 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
                 .company(entity.getCompany())
                 .phoneNum(entity.getPhoneNum())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull CompanyPhoneNum entity) {
+        deactivateChild(entity.getPhoneNum(), phoneNumService);
     }
 
     @Override

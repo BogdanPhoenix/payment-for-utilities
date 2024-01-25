@@ -12,6 +12,9 @@ import org.university.payment_for_utilities.domains.receipt.Receipt;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.DETACH;
+
 @Entity
 @Getter
 @Setter
@@ -40,8 +43,8 @@ public class ContractEntity extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "contractEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<Receipt> receipts;
+    @OneToMany(mappedBy = "contractEntity", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<Receipt> receipts;
 
     @Override
     public boolean isEmpty() {

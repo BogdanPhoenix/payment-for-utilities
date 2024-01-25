@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.company;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
@@ -9,14 +10,22 @@ import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResp
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.TypeOfferRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
 
 import java.util.Optional;
 
 @Service
 public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, TypeOfferRepository> implements TypeOfferService {
-    protected TypeOfferServiceImpl(TypeOfferRepository repository) {
+    private final CompanyTariffService companyTariffService;
+
+    @Autowired
+    public TypeOfferServiceImpl(
+            TypeOfferRepository repository,
+            CompanyTariffService companyTariffService
+    ) {
         super(repository, "Type offers");
+        this.companyTariffService = companyTariffService;
     }
 
     @Override
@@ -48,6 +57,11 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
         return builder
                 .unitMeasurement(entity.getUnitMeasurement())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull TypeOffer entity) {
+        deactivateChildrenCollection(entity.getTariffs(), companyTariffService);
     }
 
     @Override

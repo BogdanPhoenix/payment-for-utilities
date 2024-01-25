@@ -14,7 +14,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Entity
 @Getter
@@ -41,12 +40,14 @@ public class RegisteredUser extends TableInfo {
     @NonNull
     private PhoneNum phoneNum;
 
-    @OneToOne(mappedBy = "registered", cascade = {MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true)
-    private transient InfoAboutUser infoUser;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "registered", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private InfoAboutUser infoUser;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_payment_addresses",
             joinColumns = @JoinColumn(name = "id_registered_user", nullable = false),
@@ -57,7 +58,7 @@ public class RegisteredUser extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "registered_user_banks",
             joinColumns = @JoinColumn(name = "id_registered_user", nullable = false),
@@ -68,8 +69,8 @@ public class RegisteredUser extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "registeredUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private transient List<ContractEntity> contractEntities;
+    @OneToMany(mappedBy = "registeredUser", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<ContractEntity> contractEntities;
 
     @Override
     public boolean isEmpty() {

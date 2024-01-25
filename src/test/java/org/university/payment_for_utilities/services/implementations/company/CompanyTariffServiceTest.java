@@ -35,7 +35,7 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     private TypeOffer typeOfferUpdate;
 
     @Autowired
-    public CompanyTariffServiceTest(CompanyTariffService service) { this.service = service; }
+    public CompanyTariffServiceTest(CompanyTariffService service) { super(service); }
 
     @BeforeEach
     @Override

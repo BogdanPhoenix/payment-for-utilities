@@ -36,7 +36,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
     private PaymentHistoryRequest kyivPaymentHistoryRequest;
 
     @Autowired
-    public PaymentHistoryServiceTest(PaymentHistoryService service) { this.service = service; }
+    public PaymentHistoryServiceTest(PaymentHistoryService service) { super(service); }
 
     @BeforeEach
     @Override

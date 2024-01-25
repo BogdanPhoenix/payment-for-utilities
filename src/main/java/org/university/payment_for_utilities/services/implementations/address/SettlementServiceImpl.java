@@ -13,6 +13,7 @@ import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.repositories.address.SettlementRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
 
 import java.util.Optional;
@@ -22,10 +23,15 @@ import static org.university.payment_for_utilities.services.implementations.tool
 @Service
 public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, SettlementRepository> implements SettlementService {
     private static final String INDEX_TEMPLATE = "^\\d{5}$";
+    private final AddressResidenceService addressResidenceService;
 
     @Autowired
-    public SettlementServiceImpl(SettlementRepository repository) {
+    public SettlementServiceImpl(
+            SettlementRepository repository,
+            AddressResidenceService addressResidenceService
+    ) {
         super(repository, "Settlements");
+        this.addressResidenceService = addressResidenceService;
     }
 
 
@@ -63,6 +69,11 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
                 .zipCode(entity.getZipCode())
                 .name(entity.getName())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull Settlement entity) {
+        deactivateChildrenCollection(entity.getAddresses(), addressResidenceService);
     }
 
     @Override

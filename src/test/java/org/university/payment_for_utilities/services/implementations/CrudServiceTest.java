@@ -26,6 +26,8 @@ public abstract class CrudServiceTest {
     protected Request emptyRequest;
     protected CrudService service;
 
+    protected CrudServiceTest(CrudService service) { this.service = service;}
+
     protected abstract void initRequest();
     protected abstract Response updateExpectedResponse(@NonNull Response response);
     protected abstract Request updateNewValue(@NonNull Response expectedResponse);

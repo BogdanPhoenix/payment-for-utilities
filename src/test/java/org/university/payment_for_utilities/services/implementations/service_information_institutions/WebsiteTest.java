@@ -28,7 +28,7 @@ class WebsiteTest extends CrudServiceTest {
     private WebsiteRequest raiffeisenBankWebsiteRequest;
 
     @Autowired
-    public WebsiteTest(WebsiteService service) { this.service = service; }
+    public WebsiteTest(WebsiteService service) { super(service); }
 
     @BeforeEach
     @Override

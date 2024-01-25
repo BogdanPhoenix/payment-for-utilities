@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.address;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -11,6 +12,7 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
+import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
 import java.util.Optional;
 
@@ -22,8 +24,15 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     private static final String NUM_ENTRANCE_TEMPLATE = "^\\d{0,3}$";
     private static final String NUM_APARTMENT_TEMPLATE = "^\\d{0,5}$";
 
-    protected AddressResidenceServiceImpl(AddressResidenceRepository repository) {
+    private final CompanyService companyService;
+
+    @Autowired
+    public AddressResidenceServiceImpl(
+            AddressResidenceRepository repository,
+            CompanyService companyService
+    ) {
         super(repository, "Addresses residence");
+        this.companyService = companyService;
     }
 
     @Override
@@ -69,6 +78,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
                 .numEntrance(entity.getNumEntrance())
                 .numApartment(entity.getNumApartment())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull AddressResidence entity) {
+        deactivateChild(entity.getCompany(), companyService);
     }
 
     @Override

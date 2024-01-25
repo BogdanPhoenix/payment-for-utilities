@@ -29,7 +29,7 @@ class TypeSettlementServiceTest extends TransliterationServiceTest {
 
     @Autowired
     public TypeSettlementServiceTest(TypeSettlementService service){
-        this.service = service;
+        super(service);
     }
 
     @BeforeEach

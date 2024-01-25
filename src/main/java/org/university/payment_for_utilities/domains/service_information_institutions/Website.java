@@ -30,12 +30,12 @@ public class Website extends TableInfo {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "website", cascade ={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "website", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private Company company;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(mappedBy = "website", cascade ={MERGE, REMOVE, REFRESH, DETACH}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "website", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private Bank bank;
 
     @Override

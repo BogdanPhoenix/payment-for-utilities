@@ -28,7 +28,7 @@ public class UnitMeasurementServiceTest extends TransliterationServiceTest {
     private UnitMeasurementRequest unitCubicMeterRequest;
 
     @Autowired
-    public UnitMeasurementServiceTest(UnitMeasurementService service) { this.service = service; }
+    public UnitMeasurementServiceTest(UnitMeasurementService service) { super(service); }
 
     @BeforeEach
     @Override

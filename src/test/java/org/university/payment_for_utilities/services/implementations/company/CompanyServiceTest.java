@@ -35,7 +35,7 @@ class CompanyServiceTest extends CrudServiceTest {
     private CompanyRequest companyKyivOblenergoRequest;
 
     @Autowired
-    public CompanyServiceTest(CompanyService service) { this.service = service; }
+    public CompanyServiceTest(CompanyService service) { super(service); }
 
     @BeforeEach
     @Override

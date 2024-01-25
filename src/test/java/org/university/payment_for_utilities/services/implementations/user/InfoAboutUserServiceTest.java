@@ -34,7 +34,7 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
     private InfoAboutUserRequest userOlegRequest;
 
     @Autowired
-    public InfoAboutUserServiceTest (InfoAboutUserService service) { this.service = service; }
+    public InfoAboutUserServiceTest (InfoAboutUserService service) { super(service); }
 
     @BeforeEach
     @Override

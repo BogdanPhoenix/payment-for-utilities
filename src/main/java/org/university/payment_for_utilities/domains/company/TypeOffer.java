@@ -11,6 +11,8 @@ import org.university.payment_for_utilities.domains.service_information_institut
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -34,8 +36,8 @@ public class TypeOffer extends TransliterationProperty {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<CompanyTariff> tariffs;
+    @OneToMany(mappedBy = "type", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<CompanyTariff> tariffs;
 
     @Override
     public boolean isEmpty() {

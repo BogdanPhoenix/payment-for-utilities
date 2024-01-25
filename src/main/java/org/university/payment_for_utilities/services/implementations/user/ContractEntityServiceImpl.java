@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -10,6 +11,7 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 import org.university.payment_for_utilities.repositories.user.ContractEntityRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptService;
 import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
 
 import java.util.Optional;
@@ -20,8 +22,15 @@ import static org.university.payment_for_utilities.services.implementations.tool
 public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntity, ContractEntityRepository> implements ContractEntityService {
     private static final String NUM_CONTRACT_TEMPLATE = "^\\d{11}$";
 
-    protected ContractEntityServiceImpl(ContractEntityRepository repository) {
+    private final ReceiptService receiptService;
+
+    @Autowired
+    public ContractEntityServiceImpl(
+            ContractEntityRepository repository,
+            ReceiptService receiptService
+    ) {
         super(repository, "Contract entities");
+        this.receiptService = receiptService;
     }
 
     @Override
@@ -58,6 +67,11 @@ public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntit
                 .companyTariff(entity.getCompanyTariff())
                 .numContract(entity.getNumContract())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull ContractEntity entity) {
+        deactivateChildrenCollection(entity.getReceipts(), receiptService);
     }
 
     @Override

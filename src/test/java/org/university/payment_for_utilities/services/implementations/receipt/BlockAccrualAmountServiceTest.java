@@ -34,7 +34,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     private BlockAccrualAmountRequest kyivAccrualAmountRequest;
 
     @Autowired
-    public BlockAccrualAmountServiceTest(BlockAccrualAmountService service) { this.service = service; }
+    public BlockAccrualAmountServiceTest(BlockAccrualAmountService service) { super(service); }
 
     @BeforeEach
     @Override

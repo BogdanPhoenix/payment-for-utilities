@@ -34,7 +34,7 @@ class SettlementServiceTest extends CrudServiceTest {
 
     @Autowired
     public SettlementServiceTest(SettlementService service) {
-        this.service = service;
+        super(service);
     }
 
     @BeforeEach

@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.implementations.bank;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -10,7 +11,11 @@ import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
+import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptService;
+import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
+import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
 
 import java.util.Optional;
 
@@ -19,9 +24,24 @@ import static org.university.payment_for_utilities.services.implementations.tool
 @Service
 public class BankServiceImpl extends TransliterationService<Bank, BankRepository> implements BankService {
     private static final String MFO_TEMPLATE = "^\\d{6}$";
+    private final EdrpouService edrpouService;
+    private final WebsiteService websiteService;
+    private final BankPhoneNumService bankPhoneNumService;
+    private final ReceiptService receiptService;
 
-    protected BankServiceImpl(BankRepository repository) {
+    @Autowired
+    public BankServiceImpl(
+            BankRepository repository,
+            EdrpouService edrpouService,
+            WebsiteService websiteService,
+            BankPhoneNumService bankPhoneNumService,
+            ReceiptService receiptService
+    ) {
         super(repository, "Banks");
+        this.edrpouService = edrpouService;
+        this.websiteService = websiteService;
+        this.bankPhoneNumService = bankPhoneNumService;
+        this.receiptService = receiptService;
     }
 
     @Override
@@ -60,6 +80,14 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
                 .edrpou(entity.getEdrpou())
                 .mfo(entity.getMfo())
                 .build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull Bank entity) {
+        edrpouService.removeValue(entity.getEdrpou().getId());
+        websiteService.removeValue(entity.getWebsite().getId());
+        deactivateChildrenCollection(entity.getPhones(), bankPhoneNumService);
+        deactivateChildrenCollection(entity.getReceipts(), receiptService);
     }
 
     @Override

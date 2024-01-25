@@ -32,7 +32,7 @@ class PhoneNumServiceTest extends CrudServiceTest {
     private PhoneNumRequest bankPhoneNumRequest;
 
     @Autowired
-    public PhoneNumServiceTest(PhoneNumService service) { this.service = service; }
+    public PhoneNumServiceTest(PhoneNumService service) { super(service); }
 
     @BeforeEach
     @Override

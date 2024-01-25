@@ -10,12 +10,19 @@ import org.university.payment_for_utilities.pojo.responses.address.SettlementNam
 import org.university.payment_for_utilities.repositories.address.SettlementNameRepository;
 import org.university.payment_for_utilities.services.implementations.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
+import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
 
 @Service
 public class SettlementNameServiceImpl extends TransliterationService<SettlementName, SettlementNameRepository> implements SettlementNameService {
+    private final SettlementService settlementService;
+
     @Autowired
-    public SettlementNameServiceImpl(SettlementNameRepository repository){
+    public SettlementNameServiceImpl(
+            SettlementNameRepository repository,
+            SettlementService settlementService
+    ){
         super(repository, "Names administrative units");
+        this.settlementService = settlementService;
     }
 
     @Override
@@ -37,5 +44,10 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
         var builder = SettlementNameResponse.builder();
         super.initResponseBuilder(builder, entity);
         return builder.build();
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull SettlementName entity) {
+        deactivateChildrenCollection(entity.getSettlements(), settlementService);
     }
 }

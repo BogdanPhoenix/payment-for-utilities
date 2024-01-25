@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -41,12 +43,12 @@ public class Settlement extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "settlements")
-    private transient List<District> districts;
+    private List<District> districts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "settlement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private transient List<AddressResidence> addresses;
+    @OneToMany(mappedBy = "settlement", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<AddressResidence> addresses;
 
     @Override
     public boolean isEmpty() {
