@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
-import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -51,7 +50,6 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
                 .builder()
                 .id(response.getId())
                 .registered(userOlegRequest.getRegistered())
-                .role(Role.BANK_ADMIN)
                 .firstName("Petro")
                 .lastName("Petro")
                 .build();
@@ -63,7 +61,6 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
         return InfoAboutUserRequest
                 .builder()
                 .registered(RegisteredUser.empty())
-                .role(response.getRole())
                 .firstName(response.getFirstName())
                 .lastName(response.getLastName())
                 .build();

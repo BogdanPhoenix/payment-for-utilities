@@ -14,6 +14,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class CompanyRequest extends TransliterationRequest {

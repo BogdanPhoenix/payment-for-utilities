@@ -4,6 +4,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
@@ -63,8 +64,9 @@ public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUse
         var userRequest = (RegisteredUserRequest) request;
         return RegisteredUser
                 .builder()
-                .userEmail(userRequest.getUserEmail())
-                .passwordUser(userRequest.getPasswordUser())
+                .username(userRequest.getUsername())
+                .password(userRequest.getPassword())
+                .role(userRequest.getRole())
                 .phoneNum(userRequest.getPhoneNum())
                 .build();
     }
@@ -76,8 +78,9 @@ public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUse
         initEntityBuilder(builder, response);
 
         return builder
-                .userEmail(userResponse.getUserEmail())
-                .passwordUser(userResponse.getPasswordUser())
+                .username(userResponse.getUsername())
+                .password(userResponse.getPassword())
+                .role(userResponse.getRole())
                 .phoneNum(userResponse.getPhoneNum())
                 .build();
     }
@@ -88,8 +91,9 @@ public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUse
         initResponseBuilder(builder, entity);
 
         return builder
-                .userEmail(entity.getUserEmail())
-                .passwordUser(entity.getPasswordUser())
+                .username(entity.getUsername())
+                .password(entity.getPassword())
+                .role(entity.getRole())
                 .phoneNum(entity.getPhoneNum())
                 .build();
     }
@@ -105,11 +109,14 @@ public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUse
     protected void updateEntity(@NonNull RegisteredUser entity, @NonNull Request request) {
         var newValue = (RegisteredUserRequest) request;
 
-        if(!newValue.getUserEmail().isBlank()){
-            entity.setUserEmail(newValue.getUserEmail());
+        if(!newValue.getUsername().isBlank()){
+            entity.setUsername(newValue.getUsername());
         }
-        if(!newValue.getPasswordUser().isBlank()){
-            entity.setPasswordUser(newValue.getPasswordUser());
+        if(!newValue.getPassword().isBlank()){
+            entity.setPassword(newValue.getPassword());
+        }
+        if(!newValue.getRole().equals(Role.EMPTY)){
+            entity.setRole(newValue.getRole());
         }
         if(!newValue.getPhoneNum().isEmpty()){
             entity.setPhoneNum(newValue.getPhoneNum());
@@ -120,8 +127,8 @@ public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUse
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var userRequest = (RegisteredUserRequest) request;
 
-        validateUserEmail(userRequest.getUserEmail());
-        validatePassword(userRequest.getPasswordUser());
+        validateUserEmail(userRequest.getUsername());
+        validatePassword(userRequest.getPassword());
     }
 
     private void validateUserEmail(@NonNull String userEmail) throws InvalidInputDataException {
@@ -156,8 +163,8 @@ public class RegisteredUserServiceImpl extends CrudServiceAbstract<RegisteredUse
     protected Optional<RegisteredUser> findEntity(@NonNull Request request) {
         var userRequest = (RegisteredUserRequest) request;
         return repository
-                .findByUserEmail(
-                        userRequest.getUserEmail()
+                .findByUsername(
+                        userRequest.getUsername()
                 );
     }
 }

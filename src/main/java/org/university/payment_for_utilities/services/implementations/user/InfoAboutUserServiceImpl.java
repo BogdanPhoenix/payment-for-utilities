@@ -4,7 +4,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.user.InfoAboutUser;
-import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
@@ -29,7 +28,6 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
         return InfoAboutUser
                 .builder()
                 .registered(infoRequest.getRegistered())
-                .role(infoRequest.getRole())
                 .firstName(infoRequest.getFirstName())
                 .lastName(infoRequest.getLastName())
                 .build();
@@ -43,7 +41,6 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
 
         return builder
                 .registered(infoResponse.getRegistered())
-                .role(infoResponse.getRole())
                 .firstName(infoResponse.getFirstName())
                 .lastName(infoResponse.getLastName())
                 .build();
@@ -56,7 +53,6 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
 
         return builder
                 .registered(entity.getRegistered())
-                .role(entity.getRole())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .build();
@@ -68,9 +64,6 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
 
         if(!newValue.getRegistered().isEmpty()){
             entity.setRegistered(newValue.getRegistered());
-        }
-        if(newValue.getRole() != Role.EMPTY){
-            entity.setRole(newValue.getRole());
         }
         if(!newValue.getFirstName().isBlank()){
             entity.setFirstName(newValue.getFirstName());

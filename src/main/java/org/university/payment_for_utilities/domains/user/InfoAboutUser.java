@@ -7,7 +7,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
-import org.university.payment_for_utilities.enumarations.Role;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -30,9 +29,6 @@ public class InfoAboutUser extends TableInfo {
     @NonNull
     private RegisteredUser registered;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Column(name = "first_name", nullable = false)
     @NonNull
     private String firstName;
@@ -45,8 +41,7 @@ public class InfoAboutUser extends TableInfo {
     public boolean isEmpty() {
         return registered.isEmpty() ||
                 firstName.isBlank() ||
-                lastName.isBlank() ||
-                role == Role.EMPTY;
+                lastName.isBlank();
     }
 
     @Contract(" -> new")
@@ -56,7 +51,6 @@ public class InfoAboutUser extends TableInfo {
 
         return builder
                 .registered(RegisteredUser.empty())
-                .role(Role.EMPTY)
                 .firstName("")
                 .lastName("")
                 .build();

@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ReceiptRequest extends Request {

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;

@@ -11,6 +11,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class EdrpouRequest extends Request {

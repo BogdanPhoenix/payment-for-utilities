@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.user.ContractEntity;

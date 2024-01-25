@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
@@ -74,7 +74,6 @@ public class UserEntitiesRequestTestContextConfiguration {
         return InfoAboutUserRequest
                 .builder()
                 .registered(registered)
-                .role(Role.USER)
                 .firstName("Ivan")
                 .lastName("Ivanov")
                 .build();
@@ -85,8 +84,9 @@ public class UserEntitiesRequestTestContextConfiguration {
     public RegisteredUserRequest registeredUserIvanRequest(){
         return RegisteredUserRequest
                 .builder()
-                .userEmail("test@gmail.com")
-                .passwordUser("qwerTy4iop$")
+                .username("test@gmail.com")
+                .password("qwerTy4iop$")
+                .role(Role.USER)
                 .phoneNum(ivanPhoneNumber)
                 .build();
     }
@@ -118,7 +118,6 @@ public class UserEntitiesRequestTestContextConfiguration {
         return InfoAboutUserRequest
                 .builder()
                 .registered(registered)
-                .role(Role.ADMIN)
                 .firstName("Oleg")
                 .lastName("Nick")
                 .build();
@@ -129,8 +128,9 @@ public class UserEntitiesRequestTestContextConfiguration {
     public RegisteredUserRequest registeredUserOlegRequest(){
         return RegisteredUserRequest
                 .builder()
-                .userEmail("oleg@ukr.net")
-                .passwordUser("qWerty5iop$@")
+                .username("oleg@ukr.net")
+                .password("qWerty5iop$@")
+                .role(Role.ADMIN)
                 .phoneNum(olegPhoneNumber)
                 .build();
     }

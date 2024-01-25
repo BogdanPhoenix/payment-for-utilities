@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.configurations;
+package org.university.payment_for_utilities.configurations.database;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -19,7 +19,7 @@ public class DataBaseConfiguration {
     public DataSource dataSource(){
         var dotenv = Dotenv.configure().load();
 
-        var url = dotenv.get("DB_TEST_URL");
+        var url = dotenv.get("DB_URL");
         var username = dotenv.get("DB_USERNAME");
         var password = dotenv.get("DB_PASSWORD");
 

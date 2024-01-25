@@ -6,11 +6,15 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
+import org.university.payment_for_utilities.enumarations.Role;
 
+import java.util.Collection;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -26,14 +30,17 @@ import static jakarta.persistence.CascadeType.*;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "registered_users")
-public class RegisteredUser extends TableInfo {
+public class RegisteredUser extends TableInfo implements UserDetails {
     @Column(name = "user_email", nullable = false, unique = true)
     @NonNull
-    private String userEmail;
+    private String username;
 
     @Column(name = "password_user", length = 1000, nullable = false)
     @NonNull
-    private String passwordUser;
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
@@ -74,9 +81,10 @@ public class RegisteredUser extends TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return userEmail.isBlank() ||
-                passwordUser.isBlank() ||
-                phoneNum.isEmpty();
+        return username.isBlank() ||
+                password.isBlank() ||
+                phoneNum.isEmpty() ||
+                role == Role.EMPTY;
     }
 
     @Contract(" -> new")
@@ -85,9 +93,37 @@ public class RegisteredUser extends TableInfo {
         TableInfo.initEmpty(builder);
 
         return builder
-                .userEmail("")
-                .passwordUser("")
+                .role(Role.EMPTY)
+                .username("")
+                .password("")
                 .phoneNum(PhoneNum.empty())
                 .build();
+    }
+
+    //Security
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return currentData;
     }
 }

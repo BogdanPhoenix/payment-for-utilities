@@ -12,6 +12,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Receipt
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class BlockAccrualAmountRequest extends ReceiptSearcherRequest {

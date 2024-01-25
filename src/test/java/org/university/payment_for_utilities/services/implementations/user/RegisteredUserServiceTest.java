@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
+import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
@@ -49,8 +50,9 @@ class RegisteredUserServiceTest extends CrudServiceTest {
         return RegisterUserResponse
                 .builder()
                 .id(response.getId())
-                .userEmail("update@gmail.com")
-                .passwordUser("newpaSs@o4d")
+                .username("update@gmail.com")
+                .password("newpaSs@o4d")
+                .role(Role.BANK_ADMIN)
                 .phoneNum(userOlegRequest.getPhoneNum())
                 .build();
     }
@@ -60,8 +62,9 @@ class RegisteredUserServiceTest extends CrudServiceTest {
         var response = (RegisterUserResponse) expectedResponse;
         return RegisteredUserRequest
                 .builder()
-                .userEmail(response.getUserEmail())
-                .passwordUser(response.getPasswordUser())
+                .username(response.getUsername())
+                .password(response.getPassword())
+                .role(response.getRole())
                 .phoneNum(PhoneNum.empty())
                 .build();
     }
@@ -71,7 +74,7 @@ class RegisteredUserServiceTest extends CrudServiceTest {
     @DisplayName("Check exceptions if the request has an incorrect email format.")
     void testValidateUserEmailThrowInvalidInputDataException(String email) {
         var request = (RegisteredUserRequest) firstRequest;
-        request.setUserEmail(email);
+        request.setUsername(email);
         addValueThrowInvalidInputData(request);
     }
 
@@ -89,7 +92,7 @@ class RegisteredUserServiceTest extends CrudServiceTest {
     @DisplayName("Check exceptions if the request has an incorrect password format.")
     void testValidatePasswordThrowInvalidInputDataException(String password) {
         var request = (RegisteredUserRequest) firstRequest;
-        request.setPasswordUser(password);
+        request.setPassword(password);
         addValueThrowInvalidInputData(request);
     }
 

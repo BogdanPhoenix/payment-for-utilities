@@ -14,6 +14,7 @@ import static org.university.payment_for_utilities.domains.abstract_class.Counte
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PaymentHistoryRequest extends CounterSearcherRequest {

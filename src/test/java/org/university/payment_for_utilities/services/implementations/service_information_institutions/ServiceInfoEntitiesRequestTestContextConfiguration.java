@@ -3,7 +3,7 @@ package org.university.payment_for_utilities.services.implementations.service_in
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
