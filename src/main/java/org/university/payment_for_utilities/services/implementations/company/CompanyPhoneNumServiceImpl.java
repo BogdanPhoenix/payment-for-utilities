@@ -9,7 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyPhoneNumRepository;
-import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
 

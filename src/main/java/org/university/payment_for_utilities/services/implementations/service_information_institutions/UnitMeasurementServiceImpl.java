@@ -8,7 +8,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.UnitMeasurementRepository;
-import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.UnitMeasurementService;
 

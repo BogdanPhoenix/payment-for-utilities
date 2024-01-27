@@ -9,7 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.receipt.BlockAccrualAm
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.BlockAccrualAmountResponse;
 import org.university.payment_for_utilities.repositories.receipt.BlockAccrualAmountRepository;
-import org.university.payment_for_utilities.services.implementations.ReceiptSearcherAbstract;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.ReceiptSearcherAbstract;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockAccrualAmountService;
 
 import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.convertStringToBigDecimal;

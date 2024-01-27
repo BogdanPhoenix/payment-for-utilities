@@ -9,7 +9,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankPhoneNumRepository;
-import org.university.payment_for_utilities.services.implementations.WorkingWithPhoneNumAbstract;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.WorkingWithPhoneNumAbstract;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
 

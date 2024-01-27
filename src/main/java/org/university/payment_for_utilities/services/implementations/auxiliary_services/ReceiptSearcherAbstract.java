@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.services.implementations;
+package org.university.payment_for_utilities.services.implementations.auxiliary_services;
 
 import lombok.NonNull;
 import org.university.payment_for_utilities.domains.abstract_class.ReceiptSearcher;
@@ -9,6 +9,7 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Receip
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.ReceiptSearcherResponse.ReceiptSearcherResponseBuilder;
 import org.university.payment_for_utilities.repositories.ReceiptSearcherRepository;
+import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 
 import java.util.Optional;
 

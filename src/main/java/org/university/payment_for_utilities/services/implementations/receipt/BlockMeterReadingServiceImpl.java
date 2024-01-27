@@ -7,7 +7,7 @@ import org.university.payment_for_utilities.pojo.requests.receipt.BlockMeterRead
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.BlockMeterReadingResponse;
 import org.university.payment_for_utilities.repositories.receipt.BlockMeterReadingRepository;
-import org.university.payment_for_utilities.services.implementations.CounterSearcherService;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.CounterSearcherService;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockMeterReadingService;
 
 @Service

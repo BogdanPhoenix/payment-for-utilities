@@ -10,7 +10,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
-import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;

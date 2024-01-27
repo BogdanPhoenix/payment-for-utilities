@@ -79,6 +79,11 @@ public class RegisteredUser extends TableInfo implements UserDetails {
     @OneToMany(mappedBy = "registeredUser", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private List<ContractEntity> contractEntities;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private List<Token> tokens;
+
     @Override
     public boolean isEmpty() {
         return username.isBlank() ||
