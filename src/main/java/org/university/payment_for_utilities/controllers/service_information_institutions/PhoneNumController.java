@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.university.payment_for_utilities.controllers.interfaces.CruController;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
 
 @RestController
@@ -13,10 +12,5 @@ public class PhoneNumController extends CruController<PhoneNumRequest> {
     @Autowired
     public PhoneNumController(PhoneNumService service) {
         super(service);
-    }
-
-    @DeleteMapping("/{id}")
-    public Response delete(@PathVariable Long id) {
-        return service.removeValue(id);
     }
 }

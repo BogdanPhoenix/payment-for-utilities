@@ -19,7 +19,7 @@ public class DataBaseConfiguration {
     public DataSource dataSource(){
         var dotenv = Dotenv.configure().load();
 
-        var url = dotenv.get("DB_URL");
+        var url = dotenv.get("DB_TEST_URL");
         var username = dotenv.get("DB_USERNAME");
         var password = dotenv.get("DB_PASSWORD");
 
