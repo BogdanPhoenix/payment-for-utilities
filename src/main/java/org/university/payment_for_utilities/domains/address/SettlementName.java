@@ -15,12 +15,12 @@ import static jakarta.persistence.CascadeType.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "names_administrative_units")
 public class SettlementName extends TransliterationProperty {

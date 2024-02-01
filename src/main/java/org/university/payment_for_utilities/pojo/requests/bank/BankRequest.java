@@ -10,11 +10,11 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public class BankRequest extends TransliterationRequest {
     private Website website;

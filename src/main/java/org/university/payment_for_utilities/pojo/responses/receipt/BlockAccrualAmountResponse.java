@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class BlockAccrualAmountResponse extends ReceiptSearcherResponse {
     private BigDecimal debtBeginMonth;

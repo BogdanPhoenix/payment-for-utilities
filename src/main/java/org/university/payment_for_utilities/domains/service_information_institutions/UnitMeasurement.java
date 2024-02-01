@@ -21,6 +21,7 @@ import static jakarta.persistence.CascadeType.*;
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "units_measurement")
 public class UnitMeasurement extends TransliterationProperty {

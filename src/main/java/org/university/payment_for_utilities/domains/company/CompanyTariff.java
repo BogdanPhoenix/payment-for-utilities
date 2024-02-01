@@ -18,12 +18,12 @@ import static org.university.payment_for_utilities.services.implementations.tool
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "company_tariffs",
     uniqueConstraints = @UniqueConstraint(columnNames = {"id_company", "name"})

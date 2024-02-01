@@ -11,11 +11,11 @@ import org.university.payment_for_utilities.domains.abstract_class.CounterSearch
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "blocks_meter_readings")
 public class BlockMeterReading extends CounterSearcher {

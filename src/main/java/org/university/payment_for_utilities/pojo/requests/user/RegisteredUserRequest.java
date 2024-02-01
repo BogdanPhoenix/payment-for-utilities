@@ -7,11 +7,11 @@ import org.jetbrains.annotations.Contract;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class RegisteredUserRequest extends UserRequest {
     private String password;

@@ -6,11 +6,11 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CounterSearcherResponse extends ReceiptSearcherResponse {
     private Float prevValueCounter;

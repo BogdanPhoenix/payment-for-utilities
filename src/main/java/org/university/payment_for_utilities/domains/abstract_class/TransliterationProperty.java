@@ -9,13 +9,13 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public abstract class TransliterationProperty extends TableInfo {
     @Column(name = "ua_name", nullable = false, unique = true)

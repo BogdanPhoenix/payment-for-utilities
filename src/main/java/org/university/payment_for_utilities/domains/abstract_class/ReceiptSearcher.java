@@ -12,13 +12,13 @@ import org.university.payment_for_utilities.domains.receipt.Receipt;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public abstract class ReceiptSearcher extends TableInfo {
     @ManyToOne

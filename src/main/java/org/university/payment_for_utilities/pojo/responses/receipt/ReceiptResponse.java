@@ -11,10 +11,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ReceiptResponse extends Response {
     private ContractEntity contractEntity;

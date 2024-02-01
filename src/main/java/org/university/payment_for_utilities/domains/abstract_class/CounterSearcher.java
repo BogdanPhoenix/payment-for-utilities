@@ -9,13 +9,13 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CounterSearcher extends ReceiptSearcher {
     public static final Float EMPTY_COUNTER = -1.0f;

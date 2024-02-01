@@ -10,10 +10,10 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Transl
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CompanyResponse extends TransliterationResponse {
     private AddressResidence address;

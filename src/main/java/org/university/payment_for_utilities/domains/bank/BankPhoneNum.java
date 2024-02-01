@@ -14,12 +14,12 @@ import static jakarta.persistence.CascadeType.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "bank_phone_nums")
 public class BankPhoneNum extends TableInfo {

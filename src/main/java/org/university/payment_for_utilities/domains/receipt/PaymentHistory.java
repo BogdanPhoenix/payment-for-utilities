@@ -15,12 +15,12 @@ import static org.university.payment_for_utilities.services.implementations.tool
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "payment_history")
 public class PaymentHistory extends CounterSearcher {

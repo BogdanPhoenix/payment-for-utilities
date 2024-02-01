@@ -11,12 +11,12 @@ import org.university.payment_for_utilities.enumarations.TokenType;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "tokens")
 public class Token extends TableInfo {

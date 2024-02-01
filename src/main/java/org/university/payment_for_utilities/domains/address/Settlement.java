@@ -16,12 +16,12 @@ import static jakarta.persistence.CascadeType.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "settlements",
     uniqueConstraints = @UniqueConstraint(columnNames = {"id_type", "zip_code", "id_name"})

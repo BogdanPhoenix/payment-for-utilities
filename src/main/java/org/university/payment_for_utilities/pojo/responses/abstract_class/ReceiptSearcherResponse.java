@@ -7,11 +7,11 @@ import org.university.payment_for_utilities.domains.receipt.Receipt;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ReceiptSearcherResponse extends Response {
     private Receipt receipt;

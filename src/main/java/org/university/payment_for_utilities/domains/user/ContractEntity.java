@@ -18,12 +18,12 @@ import static jakarta.persistence.CascadeType.DETACH;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "contract_entities")
 public class ContractEntity extends TableInfo {
