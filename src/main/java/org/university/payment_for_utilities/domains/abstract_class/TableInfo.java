@@ -31,7 +31,7 @@ public abstract class TableInfo implements Serializable {
     private LocalDateTime updateDate;
 
     @Column(name = "current_data")
-    protected boolean currentData;
+    protected boolean enabled;
 
     /**
      * Checks if the entity is empty.
@@ -48,7 +48,7 @@ public abstract class TableInfo implements Serializable {
 
     @PrePersist
     public void onPrePersist(){
-        this.setCurrentData(true);
+        this.setEnabled(true);
         this.setCreateDate(LocalDateTime.now());
         this.setUpdateDate(LocalDateTime.now());
     }

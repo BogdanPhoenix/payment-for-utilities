@@ -126,9 +126,4 @@ public class RegisteredUser extends TableInfo implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
-    @Override
-    public boolean isEnabled() {
-        return currentData;
-    }
 }

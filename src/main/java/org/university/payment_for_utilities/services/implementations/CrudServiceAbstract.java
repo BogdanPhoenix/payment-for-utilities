@@ -70,7 +70,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         builder.id(response.getId())
                 .createDate(response.getCreateDate())
                 .updateDate(response.getUpdateDate())
-                .currentData(true);
+                .enabled(true);
     }
 
     protected void initResponseBuilder(@NonNull ResponseBuilder<?, ?> builder, @NonNull T entity) {
@@ -183,14 +183,14 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return repository
                 .findAll()
                 .stream()
-                .filter(TableInfo::isCurrentData)
+                .filter(TableInfo::isEnabled)
                 .toList();
     }
 
     private T findById(@NonNull Long id) throws NotFindEntityInDataBaseException {
         return repository
                 .findById(id)
-                .filter(TableInfo::isCurrentData)
+                .filter(TableInfo::isEnabled)
                 .orElseThrow(() -> {
                             var message = String.format("Unable to find an entity in the \"%s\" table using the specified identifier: %d.", tableName, id);
                             return throwNotFindEntityInDataBaseException(message);
@@ -199,7 +199,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     }
 
     private void removeEntity(@NonNull T entity){
-        entity.setCurrentData(false);
+        entity.setEnabled(false);
         entity.setUpdateDate(LocalDateTime.now());
         repository.save(entity);
         deactivatedChildren(entity);
@@ -238,7 +238,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
 
     protected T findOldEntity(@NonNull Request request) throws NotFindEntityInDataBaseException {
         return findEntity(request)
-                .filter(TableInfo::isCurrentData)
+                .filter(TableInfo::isEnabled)
                 .orElseThrow(() -> {
                             var message = String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request);
                             return throwNotFindEntityInDataBaseException(message);
