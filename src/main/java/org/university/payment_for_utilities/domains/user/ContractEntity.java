@@ -55,10 +55,8 @@ public class ContractEntity extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull ContractEntity empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .registeredUser(RegisteredUser.empty())
                 .companyTariff(CompanyTariff.empty())
                 .numContract("")

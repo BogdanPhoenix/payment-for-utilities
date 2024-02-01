@@ -21,8 +21,8 @@ import org.university.payment_for_utilities.domains.abstract_class.CounterSearch
 public class BlockMeterReading extends CounterSearcher {
     @Contract(" -> new")
     public static @NonNull BlockMeterReading empty() {
-        var builder = builder();
-        CounterSearcher.initEmpty(builder);
-        return builder.build();
+        return CounterSearcher
+                .initEmpty(builder())
+                .build();
     }
 }

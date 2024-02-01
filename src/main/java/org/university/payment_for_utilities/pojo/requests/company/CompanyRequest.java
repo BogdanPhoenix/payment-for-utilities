@@ -34,13 +34,12 @@ public class CompanyRequest extends TransliterationRequest {
 
     @Contract(" -> new")
     public static @NonNull CompanyRequest empty(){
-        var entity = (CompanyRequest) initEmpty(CompanyRequest.builder());
-
-        entity.setAddress(AddressResidence.empty());
-        entity.setWebsite(Website.empty());
-        entity.setEdrpou(Edrpou.empty());
-        entity.setCurrentAccount("");
-
-        return entity;
+        return TransliterationRequest
+                .initEmpty(builder())
+                .address(AddressResidence.empty())
+                .website(Website.empty())
+                .edrpou(Edrpou.empty())
+                .currentAccount("")
+                .build();
     }
 }

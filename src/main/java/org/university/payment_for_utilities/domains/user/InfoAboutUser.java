@@ -46,10 +46,8 @@ public class InfoAboutUser extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull InfoAboutUser empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .registered(RegisteredUser.empty())
                 .firstName("")
                 .lastName("")

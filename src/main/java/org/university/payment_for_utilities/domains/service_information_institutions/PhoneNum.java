@@ -51,10 +51,8 @@ public class PhoneNum extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull PhoneNum empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .number("")
                 .build();
     }

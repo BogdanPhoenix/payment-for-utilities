@@ -37,8 +37,8 @@ public class Oblast extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull Oblast empty(){
-        var builder = Oblast.builder();
-        TransliterationProperty.initEmpty(builder);
-        return builder.build();
+        return TransliterationProperty
+                .initEmpty(builder())
+                .build();
     }
 }

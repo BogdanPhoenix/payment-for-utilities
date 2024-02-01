@@ -45,10 +45,8 @@ public class Website extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Website empty(){
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo.
+                initEmpty(builder())
                 .value("")
                 .build();
     }

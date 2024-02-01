@@ -36,10 +36,8 @@ public class PaymentHistory extends CounterSearcher {
 
     @Contract(" -> new")
     public static @NonNull PaymentHistory empty() {
-        var builder = builder();
-        CounterSearcher.initEmpty(builder);
-
-        return builder
+        return CounterSearcher
+                .initEmpty(builder())
                 .finalPaymentAmount(EMPTY_BIG_DECIMAL)
                 .build();
     }

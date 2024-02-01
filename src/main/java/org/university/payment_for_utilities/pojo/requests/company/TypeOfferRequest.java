@@ -25,8 +25,9 @@ public class TypeOfferRequest extends TransliterationRequest {
 
     @Contract(" -> new")
     public static @NonNull TypeOfferRequest empty(){
-        var entity = (TypeOfferRequest) initEmpty(TypeOfferRequest.builder());
-        entity.setUnitMeasurement(UnitMeasurement.empty());
-        return entity;
+        return TransliterationRequest
+                .initEmpty(builder())
+                .unitMeasurement(UnitMeasurement.empty())
+                .build();
     }
 }

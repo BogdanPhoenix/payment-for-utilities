@@ -62,10 +62,8 @@ public class CompanyTariff extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull CompanyTariff empty(){
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .company(Company.empty())
                 .type(TypeOffer.empty())
                 .name("")

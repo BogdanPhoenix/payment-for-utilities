@@ -95,10 +95,8 @@ public class RegisteredUser extends TableInfo implements UserDetails {
 
     @Contract(" -> new")
     public static @NonNull RegisteredUser empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .role(Role.EMPTY)
                 .username("")
                 .password("")

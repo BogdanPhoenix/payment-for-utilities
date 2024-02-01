@@ -35,10 +35,11 @@ public class CounterSearcher extends ReceiptSearcher {
                 currentValueCounter.equals(EMPTY_COUNTER);
     }
 
-    protected static void initEmpty(@NonNull CounterSearcherBuilder<?, ?> builder) {
-        ReceiptSearcher.initEmpty(builder);
-        builder
+    protected static <T extends CounterSearcherBuilder<?, ?>> T initEmpty(@NonNull T builder) {
+        ReceiptSearcher
+                .initEmpty(builder)
                 .prevValueCounter(EMPTY_COUNTER)
                 .currentValueCounter(EMPTY_COUNTER);
+        return builder;
     }
 }

@@ -16,8 +16,9 @@ import org.university.payment_for_utilities.services.interfaces.CrudService;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.CompletableFuture.delayedExecutor;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -99,23 +100,25 @@ public abstract class CrudServiceTest {
     protected void updateValueCorrectWithOneChangedParameter() {
         var response = service.addValue(secondRequest);
 
-        await()
-                .atMost(1500L, TimeUnit.MILLISECONDS)
-                .untilAsserted(() -> {
-                    var expectedResponse = updateExpectedResponse(response);
-                    var newValue = updateNewValue(expectedResponse);
-                    var updateResponse = service.updateValue(response.getId(), newValue);
+        runAsync(() -> updateValue(response),
+                delayedExecutor(1000, TimeUnit.MILLISECONDS)
+        ).join();
+    }
 
-                    assertThat(updateResponse)
-                            .isEqualTo(expectedResponse)
-                            .isNotEqualTo(response);
+    private void updateValue(@NonNull Response response) {
+        var expectedResponse = updateExpectedResponse(response);
+        var newValue = updateNewValue(expectedResponse);
+        var updateResponse = service.updateValue(response.getId(), newValue);
 
-                    assertThat(updateResponse.getCreateDate())
-                            .isEqualToIgnoringNanos(response.getCreateDate());
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse)
+                .isNotEqualTo(response);
 
-                    assertThat(updateResponse.getUpdateDate().getSecond())
-                            .isNotEqualTo(response.getUpdateDate().getSecond());
-                });
+        assertThat(updateResponse.getCreateDate())
+                .isEqualToIgnoringNanos(response.getCreateDate());
+
+        assertThat(updateResponse.getUpdateDate().getSecond())
+                .isNotEqualTo(response.getUpdateDate().getSecond());
     }
 
     @Test

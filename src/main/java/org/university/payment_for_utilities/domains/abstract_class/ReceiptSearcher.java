@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 
 @Getter
@@ -30,8 +31,9 @@ public abstract class ReceiptSearcher extends TableInfo {
         return receipt.isEmpty();
     }
 
-    protected static void initEmpty(@NonNull ReceiptSearcherBuilder<?, ?> builder) {
-        TableInfo.initEmpty(builder);
+    @Contract("_ -> param1")
+    protected static <T extends ReceiptSearcherBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
         builder.receipt(Receipt.empty());
+        return builder;
     }
 }

@@ -31,12 +31,11 @@ public class BankRequest extends TransliterationRequest {
 
     @Contract(" -> new")
     public static @NonNull BankRequest empty(){
-        var entity = (BankRequest) initEmpty(BankRequest.builder());
-
-        entity.setWebsite(Website.empty());
-        entity.setEdrpou(Edrpou.empty());
-        entity.setMfo("");
-
-        return entity;
+        return TransliterationRequest
+                .initEmpty(builder())
+                .website(Website.empty())
+                .edrpou(Edrpou.empty())
+                .mfo("")
+                .build();
     }
 }

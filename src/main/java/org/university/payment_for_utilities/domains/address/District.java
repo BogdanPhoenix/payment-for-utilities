@@ -42,8 +42,8 @@ public class District extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull District empty(){
-        var builder = District.builder();
-        TransliterationProperty.initEmpty(builder);
-        return builder.build();
+        return TransliterationProperty
+                .initEmpty(builder())
+                .build();
     }
 }

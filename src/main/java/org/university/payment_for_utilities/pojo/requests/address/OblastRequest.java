@@ -16,6 +16,8 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 public class OblastRequest extends TransliterationRequest {
     @Contract(" -> new")
     public static @NonNull OblastRequest empty(){
-        return (OblastRequest) initEmpty(OblastRequest.builder());
+        return TransliterationRequest
+                .initEmpty(builder())
+                .build();
     }
 }

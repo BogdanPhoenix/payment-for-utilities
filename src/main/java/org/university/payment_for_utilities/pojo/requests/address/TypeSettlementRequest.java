@@ -16,6 +16,8 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 public class TypeSettlementRequest extends TransliterationRequest {
     @Contract(" -> new")
     public static @NonNull TypeSettlementRequest empty(){
-        return (TypeSettlementRequest) initEmpty(TypeSettlementRequest.builder());
+        return TransliterationRequest
+                .initEmpty(builder())
+                .build();
     }
 }

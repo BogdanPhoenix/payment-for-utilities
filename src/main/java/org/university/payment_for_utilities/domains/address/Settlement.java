@@ -60,10 +60,8 @@ public class Settlement extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Settlement empty(){
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .type(TypeSettlement.empty())
                 .zipCode("")
                 .name(SettlementName.empty())

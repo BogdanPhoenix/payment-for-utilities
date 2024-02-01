@@ -67,10 +67,8 @@ public class Receipt extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull Receipt empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .contractEntity(ContractEntity.empty())
                 .bank(Bank.empty())
                 .billMonth(LocalDate.MIN)

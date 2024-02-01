@@ -16,6 +16,8 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 public class SettlementNameRequest extends TransliterationRequest {
     @Contract(" -> new")
     public static @NonNull SettlementNameRequest empty(){
-        return (SettlementNameRequest) initEmpty(SettlementNameRequest.builder());
+        return TransliterationRequest
+                .initEmpty(builder())
+                .build();
     }
 }

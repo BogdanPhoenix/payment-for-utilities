@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -40,10 +41,11 @@ public abstract class TableInfo implements Serializable {
      */
     public abstract boolean isEmpty();
 
-    protected static void initEmpty(@NonNull TableInfoBuilder<?, ?> builder) {
-        builder
-                .createDate(LocalDateTime.MIN)
+    @Contract("_ -> param1")
+    protected static <T extends TableInfoBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
+        builder.createDate(LocalDateTime.MIN)
                 .updateDate(LocalDateTime.MIN);
+        return builder;
     }
 
     @PrePersist

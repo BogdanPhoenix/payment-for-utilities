@@ -67,10 +67,8 @@ public class Company extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull Company empty(){
-        var builder = builder();
-        TransliterationProperty.initEmpty(builder);
-
-        return builder
+        return TransliterationProperty
+                .initEmpty(builder())
                 .address(AddressResidence.empty())
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())

@@ -56,10 +56,8 @@ public class BlockAccrualAmount extends ReceiptSearcher {
 
     @Contract(" -> new")
     public static @NonNull BlockAccrualAmount empty() {
-        var builder = builder();
-        ReceiptSearcher.initEmpty(builder);
-
-        return builder
+        return ReceiptSearcher
+                .initEmpty(builder())
                 .debtBeginMonth(EMPTY_BIG_DECIMAL)
                 .debtEndMonth(EMPTY_BIG_DECIMAL)
                 .fine(EMPTY_BIG_DECIMAL)

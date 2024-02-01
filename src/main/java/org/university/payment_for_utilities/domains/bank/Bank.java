@@ -67,10 +67,8 @@ public class Bank extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull Bank empty(){
-        var builder = builder();
-        TransliterationProperty.initEmpty(builder);
-
-        return builder
+        return TransliterationProperty
+                .initEmpty(builder())
                 .website(Website.empty())
                 .edrpou(Edrpou.empty())
                 .mfo("")

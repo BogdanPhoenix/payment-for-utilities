@@ -41,10 +41,8 @@ public class BankPhoneNum extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull BankPhoneNum empty(){
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .bank(Bank.empty())
                 .phoneNum(PhoneNum.empty())
                 .build();

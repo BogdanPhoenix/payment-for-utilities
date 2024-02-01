@@ -73,10 +73,8 @@ public class AddressResidence extends TableInfo {
 
     @Contract(" -> new")
     public static @NonNull AddressResidence empty(){
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
+        return TableInfo
+                .initEmpty(builder())
                 .settlement(Settlement.empty())
                 .uaNameStreet("")
                 .enNameStreet("")

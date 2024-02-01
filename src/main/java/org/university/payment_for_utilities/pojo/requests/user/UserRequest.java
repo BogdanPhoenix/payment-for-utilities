@@ -30,11 +30,15 @@ public class UserRequest extends Request {
 
     @Contract(" -> new")
     public static @NonNull UserRequest empty() {
-        return UserRequest
-                .builder()
-                .username("")
-                .phoneNum(PhoneNum.empty())
-                .role(Role.EMPTY)
+        return initEmpty(builder())
                 .build();
+    }
+
+    @Contract("_ -> param1")
+    protected static <T extends UserRequestBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
+        builder.username("")
+                .phoneNum(PhoneNum.empty())
+                .role(Role.EMPTY);
+        return builder;
     }
 }

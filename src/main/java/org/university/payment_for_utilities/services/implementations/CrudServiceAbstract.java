@@ -17,6 +17,7 @@ import org.university.payment_for_utilities.domains.abstract_class.TableInfo.Tab
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response.ResponseBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         nameClass = this.getClass().getSimpleName();
     }
 
-    protected static <R extends TableInfo> void deactivateChildrenCollection(List<R> collection, CrudService service){
+    protected static <R extends TableInfo> void deactivateChildrenCollection(Collection<R> collection, CrudService service){
         Optional.ofNullable(collection)
                 .ifPresent(collect ->
                         collect

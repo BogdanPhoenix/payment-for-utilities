@@ -31,8 +31,8 @@ public class TypeSettlement extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull TypeSettlement empty(){
-        var builder = TypeSettlement.builder();
-        TransliterationProperty.initEmpty(builder);
-        return builder.build();
+        return TransliterationProperty
+                .initEmpty(builder())
+                .build();
     }
 }

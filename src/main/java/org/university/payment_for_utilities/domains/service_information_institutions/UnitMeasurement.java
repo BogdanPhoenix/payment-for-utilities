@@ -31,8 +31,8 @@ public class UnitMeasurement extends TransliterationProperty {
 
     @Contract(" -> new")
     public static @NonNull UnitMeasurement empty(){
-        var builder = UnitMeasurement.builder();
-        TransliterationProperty.initEmpty(builder);
-        return builder.build();
+        return TransliterationProperty
+                .initEmpty(builder())
+                .build();
     }
 }
