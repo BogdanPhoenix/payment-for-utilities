@@ -16,6 +16,7 @@ import org.university.payment_for_utilities.enumarations.Role;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -77,12 +78,12 @@ public class RegisteredUser extends TableInfo implements UserDetails {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "registeredUser", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<ContractEntity> contractEntities;
+    private Set<ContractEntity> contractEntities;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "user", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<Token> tokens;
+    private Set<Token> tokens;
 
     @Override
     public boolean isEmpty() {

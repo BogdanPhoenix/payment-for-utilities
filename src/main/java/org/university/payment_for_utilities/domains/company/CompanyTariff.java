@@ -10,7 +10,7 @@ import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.EMPTY_BIG_DECIMAL;
@@ -50,7 +50,7 @@ public class CompanyTariff extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "companyTariff", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<ContractEntity> contractEntities;
+    private Set<ContractEntity> contractEntities;
 
     @Override
     public boolean isEmpty() {

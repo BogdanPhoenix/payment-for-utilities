@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 
 import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -48,7 +49,7 @@ public class Settlement extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "settlement", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<AddressResidence> addresses;
+    private Set<AddressResidence> addresses;
 
     @Override
     public boolean isEmpty() {

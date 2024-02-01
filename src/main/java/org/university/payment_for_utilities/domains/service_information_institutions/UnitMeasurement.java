@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -27,7 +27,7 @@ public class UnitMeasurement extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "unitMeasurement", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<TypeOffer> offers;
+    private Set<TypeOffer> offers;
 
     @Contract(" -> new")
     public static @NonNull UnitMeasurement empty(){

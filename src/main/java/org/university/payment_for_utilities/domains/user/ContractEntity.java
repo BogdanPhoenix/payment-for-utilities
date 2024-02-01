@@ -10,7 +10,7 @@ import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.CascadeType.DETACH;
@@ -44,7 +44,7 @@ public class ContractEntity extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "contractEntity", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<Receipt> receipts;
+    private Set<Receipt> receipts;
 
     @Override
     public boolean isEmpty() {

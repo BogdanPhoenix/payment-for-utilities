@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -37,7 +37,7 @@ public class TypeOffer extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "type", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<CompanyTariff> tariffs;
+    private Set<CompanyTariff> tariffs;
 
     @Override
     public boolean isEmpty() {

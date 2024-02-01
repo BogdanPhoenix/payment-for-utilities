@@ -11,7 +11,7 @@ import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.bank.Bank;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -46,17 +46,17 @@ public class Receipt extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "receipt", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<PaymentHistory> paymentHistories;
+    private Set<PaymentHistory> paymentHistories;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "receipt", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<BlockAccrualAmount> blockAccrualAmounts;
+    private Set<BlockAccrualAmount> blockAccrualAmounts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "receipt", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<BlockMeterReading> blockMeterReadings;
+    private Set<BlockMeterReading> blockMeterReadings;
 
     @Override
     public boolean isEmpty() {

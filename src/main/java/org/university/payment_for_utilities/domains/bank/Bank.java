@@ -12,7 +12,7 @@ import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -45,17 +45,17 @@ public class Bank extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "bank", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<BankPhoneNum> phones;
+    private Set<BankPhoneNum> phones;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "bank", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<Receipt> receipts;
+    private Set<Receipt> receipts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "banks", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<RegisteredUser> users;
+    private Set<RegisteredUser> users;
 
     @Override
     public boolean isEmpty() {

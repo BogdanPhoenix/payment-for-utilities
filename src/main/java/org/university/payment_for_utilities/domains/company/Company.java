@@ -11,7 +11,7 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -49,12 +49,12 @@ public class Company extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "company", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<CompanyPhoneNum> phones;
+    private Set<CompanyPhoneNum> phones;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "company", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<CompanyTariff> tariffs;
+    private Set<CompanyTariff> tariffs;
 
     @Override
     public boolean isEmpty() {
