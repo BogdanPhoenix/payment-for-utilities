@@ -11,5 +11,5 @@ public enum Permission {
     ADMIN_CREATE("admin:create"),
     ADMIN_DELETE("admin:delete");
 
-    private final String permission;
+    private final String value;
 }

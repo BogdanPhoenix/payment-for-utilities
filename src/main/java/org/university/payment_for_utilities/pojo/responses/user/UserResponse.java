@@ -14,9 +14,8 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 @MappedSuperclass
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class RegisterUserResponse extends Response {
-    private String username;
-    private String password;
+public class UserResponse extends Response {
     private Role role;
+    private String username;
     private PhoneNum phoneNum;
 }

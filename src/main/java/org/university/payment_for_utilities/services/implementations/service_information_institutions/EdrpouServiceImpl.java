@@ -29,7 +29,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
         var edrpouRequest = (EdrpouRequest) request;
         return Edrpou
                 .builder()
-                .edrpou(edrpouRequest.getEdrpou())
+                .value(edrpouRequest.getValue())
                 .build();
     }
 
@@ -40,7 +40,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
         initEntityBuilder(builder, response);
 
         return builder
-                .edrpou(edrpouResponse.getEdrpou())
+                .value(edrpouResponse.getValue())
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
         initResponseBuilder(builder, entity);
 
         return builder
-                .edrpou(entity.getEdrpou())
+                .value(entity.getValue())
                 .build();
     }
 
@@ -58,15 +58,15 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     protected void updateEntity(@NonNull Edrpou entity, @NonNull Request request) {
         var newValue = (EdrpouRequest) request;
 
-        if(!newValue.getEdrpou().isBlank()){
-            entity.setEdrpou(newValue.getEdrpou());
+        if(!newValue.getValue().isBlank()){
+            entity.setValue(newValue.getValue());
         }
     }
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var edrpouRequest = (EdrpouRequest) request;
-        validateEdrpou(edrpouRequest.getEdrpou());
+        validateEdrpou(edrpouRequest.getValue());
     }
 
     private void validateEdrpou(@NonNull String edrpou) throws InvalidInputDataException {
@@ -87,8 +87,8 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     protected Optional<Edrpou> findEntity(@NonNull Request request) {
         var edrpouRequest = (EdrpouRequest) request;
         return repository
-                .findByEdrpou(
-                        edrpouRequest.getEdrpou()
+                .findByValue(
+                        edrpouRequest.getValue()
                 );
     }
 }

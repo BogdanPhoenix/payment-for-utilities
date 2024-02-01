@@ -29,7 +29,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         var websiteRequest = (WebsiteRequest) request;
         return Website
                 .builder()
-                .website(websiteRequest.getWebsite())
+                .value(websiteRequest.getValue())
                 .build();
     }
 
@@ -40,7 +40,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         initEntityBuilder(builder, response);
 
         return builder
-                .website(websiteResponse.getWebsite())
+                .value(websiteResponse.getValue())
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         initResponseBuilder(builder, entity);
 
         return builder
-                .website(entity.getWebsite())
+                .value(entity.getValue())
                 .build();
     }
 
@@ -58,15 +58,15 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     protected void updateEntity(@NonNull Website entity, @NonNull Request request) {
         var newValue = (WebsiteRequest) request;
 
-        if(!newValue.getWebsite().isBlank()){
-            entity.setWebsite(newValue.getWebsite());
+        if(!newValue.getValue().isBlank()){
+            entity.setValue(newValue.getValue());
         }
     }
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var websiteRequest = (WebsiteRequest) request;
-        validateWebSite(websiteRequest.getWebsite());
+        validateWebSite(websiteRequest.getValue());
     }
 
     private void validateWebSite(@NonNull String webSite) throws InvalidInputDataException {
@@ -88,8 +88,8 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     protected Optional<Website> findEntity(@NonNull Request request) {
         var websiteRequest = (WebsiteRequest) request;
         return repository
-                .findByWebsite(
-                        websiteRequest.getWebsite()
+                .findByValue(
+                        websiteRequest.getValue()
                 );
     }
 }

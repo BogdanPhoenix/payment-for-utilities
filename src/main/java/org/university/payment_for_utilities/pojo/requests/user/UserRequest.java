@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.enumarations.Role;
+import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 
 @Getter
 @Setter
@@ -14,23 +15,26 @@ import org.university.payment_for_utilities.enumarations.Role;
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class RegisteredUserRequest extends UserRequest {
-    private String password;
+@EqualsAndHashCode(callSuper = false)
+public class UserRequest extends Request {
+    private String username;
+    private PhoneNum phoneNum;
+    private Role role;
 
     @Override
     public boolean isEmpty() {
-        return super.isEmpty() || password.isBlank();
+        return username.isBlank() ||
+                phoneNum.isEmpty() ||
+                role == Role.EMPTY;
     }
 
     @Contract(" -> new")
-    public static @NonNull RegisteredUserRequest empty() {
-        return RegisteredUserRequest
+    public static @NonNull UserRequest empty() {
+        return UserRequest
                 .builder()
                 .username("")
                 .phoneNum(PhoneNum.empty())
                 .role(Role.EMPTY)
-                .password("")
                 .build();
     }
 }

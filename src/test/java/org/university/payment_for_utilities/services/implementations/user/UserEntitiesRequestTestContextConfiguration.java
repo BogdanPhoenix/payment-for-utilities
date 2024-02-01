@@ -7,15 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.enumarations.Role;
-import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
-import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
-import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
+import org.university.payment_for_utilities.pojo.requests.user.*;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.company.CompanyEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
 
@@ -33,6 +33,8 @@ public class UserEntitiesRequestTestContextConfiguration {
     private RegisteredUserServiceImpl registerUserService;
     @Autowired
     private ContractEntityServiceImpl contractEntityService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     @Qualifier("companyPhoneNum")
@@ -46,6 +48,17 @@ public class UserEntitiesRequestTestContextConfiguration {
     @Autowired
     @Qualifier("createKyivTariff")
     private CompanyTariff kyivTariff;
+
+    @Lazy
+    @Bean(name = "changePasswordRequest")
+    public ChangePasswordRequest changePasswordRequest() {
+        return ChangePasswordRequest
+                .builder()
+                .currentPassword("qwerTy4iop$")
+                .newPassword("qWerty5iop$@")
+                .confirmationPassword("qWerty5iop$@")
+                .build();
+    }
 
     @Lazy
     @Bean(name = "rivneContract")
@@ -70,7 +83,6 @@ public class UserEntitiesRequestTestContextConfiguration {
     @Bean(name = "userIvanRequest")
     public InfoAboutUserRequest userIvanRequest(){
         var registered = createRegisteredUser(registeredUserIvanRequest());
-
         return InfoAboutUserRequest
                 .builder()
                 .registered(registered)
@@ -88,6 +100,16 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .password("qwerTy4iop$")
                 .role(Role.USER)
                 .phoneNum(ivanPhoneNumber)
+                .build();
+    }
+
+    @Lazy
+    @Bean(name = "authenticationUserIvanRequest")
+    public AuthenticationRequest authenticationUserIvanRequest() {
+        return AuthenticationRequest
+                .builder()
+                .username("test@gmail.com")
+                .password("qwerTy4iop$")
                 .build();
     }
 
@@ -136,7 +158,19 @@ public class UserEntitiesRequestTestContextConfiguration {
     }
 
     private RegisteredUser createRegisteredUser(RegisteredUserRequest request) {
-        return (RegisteredUser) createEntity(registerUserService, request);
+        registerUserService.registration(request);
+        var response = (UserResponse) registerUserService.getByUsername(request.getUsername());
+
+        return RegisteredUser
+                .builder()
+                .id(response.getId())
+                .username(response.getUsername())
+                .role(response.getRole())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNum(response.getPhoneNum())
+                .createDate(response.getCreateDate())
+                .updateDate(response.getUpdateDate())
+                .build();
     }
 
     private ContractEntity createContractEntity(ContractEntityRequest request) {

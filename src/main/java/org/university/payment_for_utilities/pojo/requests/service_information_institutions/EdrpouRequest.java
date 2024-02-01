@@ -15,18 +15,18 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class EdrpouRequest extends Request {
-    private String edrpou;
+    private String value;
 
     @Override
     public boolean isEmpty() {
-        return this.edrpou.isBlank();
+        return value.isBlank();
     }
 
     @Contract(" -> new")
     public static @NonNull EdrpouRequest empty(){
         return EdrpouRequest
                 .builder()
-                .edrpou("")
+                .value("")
                 .build();
     }
 }

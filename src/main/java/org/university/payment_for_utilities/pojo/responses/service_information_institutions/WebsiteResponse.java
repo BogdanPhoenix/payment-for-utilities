@@ -13,5 +13,5 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class WebsiteResponse extends Response {
-    private String website;
+    private String value;
 }

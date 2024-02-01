@@ -12,9 +12,10 @@ public abstract class WorkingWithPhoneNumAbstract<T extends TableInfo, J extends
         super(repository, tableName);
     }
 
+    // No additional validation methods are required. It is enough to check for an empty query
+    // during insertion and duplication during insertion and update of data.
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
-        // TODO No additional validation methods are required. It is enough to check for an empty query
-        //  during insertion and duplication during insertion and update of data.
+
     }
 }

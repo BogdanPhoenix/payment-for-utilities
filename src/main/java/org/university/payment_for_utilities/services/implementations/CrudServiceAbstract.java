@@ -106,7 +106,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return createResponse(result);
     }
 
-    protected void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+    private void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         var methodName = String.format(METHOD_NAME, nameClass, "addValue(Request request)");
         log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
@@ -130,7 +130,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return createResponse(result);
     }
 
-    protected void validateUpdate(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
+    private void validateUpdate(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         var methodName = String.format(METHOD_NAME, nameClass, "updateValue(Request request)");
         log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
@@ -146,13 +146,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         var methodName = String.format(METHOD_NAME, nameClass, "removeValue(Request request)");
         log.info(String.format(MESSAGE_INPUT_TO_METHOD, methodName));
 
-        var entity = findOldEntity(request)
-                .orElseThrow(() -> {
-                        var message = String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request);
-                        return throwNotFindEntityInDataBaseException(message);
-                    }
-                );
-
+        var entity = findOldEntity(request);
         removeEntity(entity);
 
         log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
@@ -193,7 +187,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                 .toList();
     }
 
-    protected T findById(@NonNull Long id) throws NotFindEntityInDataBaseException {
+    private T findById(@NonNull Long id) throws NotFindEntityInDataBaseException {
         return repository
                 .findById(id)
                 .filter(TableInfo::isCurrentData)
@@ -211,11 +205,12 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         deactivatedChildren(entity);
     }
 
+    //It is not required in all classes. I am a basic stub for all classes
     protected void deactivatedChildren(@NonNull T entity){
-        //TODO It is not required in all classes. I am a basic stub for all classes
+
     }
 
-    protected void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
+    private void validateRequestEmpty(Request request, String message) throws EmptyRequestException {
         if(!isRequestEmpty(request)){
             return;
         }
@@ -227,7 +222,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return request == null || request.isEmpty();
     }
 
-    protected void validateDuplicate(@NonNull Request request) throws DuplicateException {
+    private void validateDuplicate(@NonNull Request request) throws DuplicateException {
         if(!isDuplicate(request)){
             return;
         }
@@ -236,14 +231,19 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         throwRuntimeException(message, DuplicateException::new);
     }
 
-    protected boolean isDuplicate(@NonNull Request request){
+    private boolean isDuplicate(@NonNull Request request){
         return !request.isEmpty() && findEntity(request)
                 .isPresent();
     }
 
-    private Optional<T> findOldEntity(@NonNull Request request){
+    protected T findOldEntity(@NonNull Request request) throws NotFindEntityInDataBaseException {
         return findEntity(request)
-                .filter(TableInfo::isCurrentData);
+                .filter(TableInfo::isCurrentData)
+                .orElseThrow(() -> {
+                            var message = String.format("Could not find an entity in table \"%s\" for the specified query: %s.", tableName, request);
+                            return throwNotFindEntityInDataBaseException(message);
+                        }
+                );
     }
 
     protected void validateName(@NonNull String name) throws InvalidInputDataException{

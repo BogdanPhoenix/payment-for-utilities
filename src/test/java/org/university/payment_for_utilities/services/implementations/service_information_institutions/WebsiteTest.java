@@ -44,7 +44,7 @@ class WebsiteTest extends CrudServiceTest {
         return WebsiteResponse
                 .builder()
                 .id(response.getId())
-                .website("https://raiffeisen_new.ua/")
+                .value("https://raiffeisen_new.ua/")
                 .build();
     }
 
@@ -53,7 +53,7 @@ class WebsiteTest extends CrudServiceTest {
         var response = (WebsiteResponse) expectedResponse;
         return WebsiteRequest
                 .builder()
-                .website(response.getWebsite())
+                .value(response.getValue())
                 .build();
     }
 
@@ -62,7 +62,7 @@ class WebsiteTest extends CrudServiceTest {
     void testWedSiteThrowInvalidInputDataException(){
         var request = WebsiteRequest
                 .builder()
-                .website("privatbank.ua")
+                .value("privatbank.ua")
                 .build();
 
         addValueThrowInvalidInputData(request);

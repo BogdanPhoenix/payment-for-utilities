@@ -13,5 +13,5 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class EdrpouResponse extends Response {
-    private String edrpou;
+    private String value;
 }

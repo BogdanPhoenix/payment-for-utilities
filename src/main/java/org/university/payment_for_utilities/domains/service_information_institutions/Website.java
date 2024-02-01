@@ -26,7 +26,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Website extends TableInfo {
     @Column(name = "website", length = 500, nullable = false, unique = true)
     @NonNull
-    private String website;
+    private String value;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -40,7 +40,7 @@ public class Website extends TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return website.isBlank();
+        return value.isBlank();
     }
 
     @Contract(" -> new")
@@ -49,7 +49,7 @@ public class Website extends TableInfo {
         TableInfo.initEmpty(builder);
 
         return builder
-                .website("")
+                .value("")
                 .build();
     }
 }

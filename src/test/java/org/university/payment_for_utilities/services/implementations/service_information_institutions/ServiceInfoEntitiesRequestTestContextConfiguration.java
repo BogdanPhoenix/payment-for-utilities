@@ -119,7 +119,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public WebsiteRequest privateBankWebsiteRequest(){
         return WebsiteRequest
                 .builder()
-                .website("https://privatbank.ua/")
+                .value("https://privatbank.ua/")
                 .build();
     }
 
@@ -134,7 +134,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public WebsiteRequest raiffeisenBankWebsiteRequest(){
         return WebsiteRequest
                 .builder()
-                .website("https://raiffeisen.ua/")
+                .value("https://raiffeisen.ua/")
                 .build();
     }
 
@@ -149,7 +149,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest privateBankEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14360570")
+                .value("14360570")
                 .build();
     }
 
@@ -164,7 +164,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest raiffeisenBankEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14305909")
+                .value("14305909")
                 .build();
     }
 
@@ -179,7 +179,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest kyivEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14305919")
+                .value("14305919")
                 .build();
     }
 
@@ -194,7 +194,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest raiffeisenBankUpdateEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14380701")
+                .value("14380701")
                 .build();
     }
 

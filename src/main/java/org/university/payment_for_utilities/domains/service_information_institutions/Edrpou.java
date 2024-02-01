@@ -26,7 +26,7 @@ import static jakarta.persistence.CascadeType.*;
 public class Edrpou extends TableInfo {
     @Column(name = "edrpou", length = 8, nullable = false, unique = true)
     @NonNull
-    private String edrpou;
+    private String value;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -40,7 +40,7 @@ public class Edrpou extends TableInfo {
 
     @Override
     public boolean isEmpty() {
-        return edrpou.isBlank();
+        return value.isBlank();
     }
 
     @Contract(" -> new")
@@ -49,7 +49,7 @@ public class Edrpou extends TableInfo {
         TableInfo.initEmpty(builder);
 
         return builder
-                .edrpou("")
+                .value("")
                 .build();
     }
 }

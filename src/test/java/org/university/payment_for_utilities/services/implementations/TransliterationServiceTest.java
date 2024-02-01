@@ -31,9 +31,10 @@ public abstract class TransliterationServiceTest extends CrudServiceTest {
 
     protected void testUpdateValueThrowInvalidInputData(Request incorrectRequest) {
         var response = service.addValue(firstRequest);
+        var id = response.getId();
 
         assertThrows(InvalidInputDataException.class,
-                () -> service.updateValue(response.getId(), incorrectRequest)
+                () -> service.updateValue(id, incorrectRequest)
         );
     }
 

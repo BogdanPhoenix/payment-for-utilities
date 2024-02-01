@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
-import org.springframework.data.redis.core.RedisHash;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
