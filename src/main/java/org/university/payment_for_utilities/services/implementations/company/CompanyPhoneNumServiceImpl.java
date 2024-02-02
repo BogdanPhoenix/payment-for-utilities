@@ -51,17 +51,6 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     }
 
     @Override
-    protected Response createResponse(@NonNull CompanyPhoneNum entity) {
-        var builder = CompanyPhoneNumResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .company(entity.getCompany())
-                .phoneNum(entity.getPhoneNum())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull CompanyPhoneNum entity) {
         deactivateChild(entity.getPhoneNum(), phoneNumService);
     }

@@ -7,6 +7,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -42,6 +44,17 @@ public class InfoAboutUser extends TableInfo {
         return registered.isEmpty() ||
                 firstName.isBlank() ||
                 lastName.isBlank();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = InfoAboutUserResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .registered(this.registered)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .build();
     }
 
     @Contract(" -> new")

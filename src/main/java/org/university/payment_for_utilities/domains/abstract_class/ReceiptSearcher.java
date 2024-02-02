@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.ReceiptSearcherResponse;
 
 @Getter
 @Setter
@@ -34,6 +35,12 @@ public abstract class ReceiptSearcher extends TableInfo {
     @Contract("_ -> param1")
     protected static <T extends ReceiptSearcherBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
         builder.receipt(Receipt.empty());
+        return builder;
+    }
+
+    protected <T extends ReceiptSearcherResponse.ReceiptSearcherResponseBuilder<?, ?>> T responseInit(@NonNull T builder) {
+        super.responseInit(builder)
+                .receipt(this.receipt);
         return builder;
     }
 }

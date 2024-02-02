@@ -287,18 +287,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         }
 
         @Override
-        protected Response createResponse(RegisteredUser entity) {
-            var builder = UserResponse.builder();
-            initResponseBuilder(builder, entity);
-
-            return builder
-                    .username(entity.getUsername())
-                    .role(entity.getRole())
-                    .phoneNum(entity.getPhoneNum())
-                    .build();
-        }
-
-        @Override
         protected void deactivatedChildren(@NonNull RegisteredUser entity) {
             deactivateChild(entity.getInfoUser(), infoAboutUserService);
             deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
@@ -365,7 +353,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                     .build();
 
             var user = findAuthenticatedUser(request);
-            return createResponse(user);
+            return user.getResponse();
         }
 
         @Transactional

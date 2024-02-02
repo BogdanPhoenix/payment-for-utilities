@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -37,6 +39,16 @@ public class CompanyPhoneNum extends TableInfo {
     public boolean isEmpty() {
         return company.isEmpty() ||
                 phoneNum.isEmpty();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = CompanyPhoneNumResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .company(this.company)
+                .phoneNum(this.phoneNum)
+                .build();
     }
 
     @Contract(" -> new")

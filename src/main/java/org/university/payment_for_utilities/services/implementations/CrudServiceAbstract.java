@@ -85,15 +85,15 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     public List<Response> getAll(){
         return findAll()
                 .stream()
-                .map(this::createResponse)
+                .map(TableInfo::getResponse)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     @Override
     public Response getById(Long id) throws NotFindEntityInDataBaseException{
-        var entity = findById(id);
-        return createResponse(entity);
+        return findById(id)
+                .getResponse();
     }
 
     @Transactional
@@ -104,7 +104,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         var newEntity = createEntity(request);
         var result = repository.save(newEntity);
 
-        return createResponse(result);
+        return result.getResponse();
     }
 
     private void validateAdd(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
@@ -128,7 +128,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         entity.setUpdateDate(LocalDateTime.now());
         var result = repository.save(entity);
 
-        return createResponse(result);
+        return result.getResponse();
     }
 
     private void validateUpdate(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
@@ -151,7 +151,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         removeEntity(entity);
 
         log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
-        return createResponse(entity);
+        return entity.getResponse();
     }
 
     @Transactional
@@ -164,7 +164,7 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         removeEntity(entity);
 
         log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
-        return createResponse(entity);
+        return entity.getResponse();
     }
 
     @Transactional
@@ -265,7 +265,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
 
     protected abstract T createEntity(Request request);
     protected abstract T createEntity(Response response);
-    protected abstract Response createResponse(T entity);
     protected abstract void updateEntity(@NonNull T entity, @NonNull Request request);
     protected abstract void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException;
     protected abstract Optional<T> findEntity(@NonNull Request request);

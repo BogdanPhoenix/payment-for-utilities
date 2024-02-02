@@ -47,18 +47,6 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
     }
 
     @Override
-    protected Response createResponse(InfoAboutUser entity) {
-        var builder = InfoAboutUserResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .registered(entity.getRegistered())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .build();
-    }
-
-    @Override
     protected void updateEntity(@NonNull InfoAboutUser entity, @NonNull Request request) {
         var newValue = (InfoAboutUserRequest) request;
 

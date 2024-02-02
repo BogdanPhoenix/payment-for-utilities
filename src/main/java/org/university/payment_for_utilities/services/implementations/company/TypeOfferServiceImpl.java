@@ -51,15 +51,6 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
     }
 
     @Override
-    protected Response createResponse(@NonNull TypeOffer entity) {
-        var builder = TypeOfferResponse.builder();
-        super.initResponseBuilder(builder, entity);
-        return builder
-                .unitMeasurement(entity.getUnitMeasurement())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull TypeOffer entity) {
         deactivateChildrenCollection(entity.getTariffs(), companyTariffService);
     }

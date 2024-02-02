@@ -71,18 +71,6 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
     }
 
     @Override
-    protected Response createResponse(@NonNull Bank entity) {
-        var builder = BankResponse.builder();
-        super.initResponseBuilder(builder, entity);
-
-        return builder
-                .website(entity.getWebsite())
-                .edrpou(entity.getEdrpou())
-                .mfo(entity.getMfo())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull Bank entity) {
         edrpouService.removeValue(entity.getEdrpou().getId());
         websiteService.removeValue(entity.getWebsite().getId());

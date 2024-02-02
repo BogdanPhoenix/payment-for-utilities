@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.CounterSearcherResponse;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CounterSearcher extends ReceiptSearcher {
+public abstract class CounterSearcher extends ReceiptSearcher {
     public static final Float EMPTY_COUNTER = -1.0f;
 
     @Column(name = "prev_value_counter", nullable = false)
@@ -40,6 +41,13 @@ public class CounterSearcher extends ReceiptSearcher {
                 .initEmpty(builder)
                 .prevValueCounter(EMPTY_COUNTER)
                 .currentValueCounter(EMPTY_COUNTER);
+        return builder;
+    }
+
+    protected <T extends CounterSearcherResponse.CounterSearcherResponseBuilder<?, ?>> T responseInit(@NonNull T builder) {
+        super.responseInit(builder)
+                .prevValueCounter(this.prevValueCounter)
+                .currentValueCounter(this.currentValueCounter);
         return builder;
     }
 }

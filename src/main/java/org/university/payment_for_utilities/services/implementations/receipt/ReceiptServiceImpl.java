@@ -68,18 +68,6 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     }
 
     @Override
-    protected Response createResponse(Receipt entity) {
-        var builder = ReceiptResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .contractEntity(entity.getContractEntity())
-                .bank(entity.getBank())
-                .billMonth(entity.getBillMonth())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull Receipt entity) {
         deactivateChildrenCollection(entity.getPaymentHistories(), paymentHistoryService);
         deactivateChildrenCollection(entity.getBlockAccrualAmounts(), blockAccrualAmountService);

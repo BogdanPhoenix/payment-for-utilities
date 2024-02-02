@@ -45,16 +45,6 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     }
 
     @Override
-    protected Response createResponse(@NonNull Edrpou entity) {
-        var builder = EdrpouResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .value(entity.getValue())
-                .build();
-    }
-
-    @Override
     protected void updateEntity(@NonNull Edrpou entity, @NonNull Request request) {
         var newValue = (EdrpouRequest) request;
 

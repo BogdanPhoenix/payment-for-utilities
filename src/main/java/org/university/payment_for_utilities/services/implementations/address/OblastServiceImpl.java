@@ -9,7 +9,6 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 import org.university.payment_for_utilities.repositories.address.OblastRepository;
 import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.OblastService;
-import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
 
 @Service
 public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepository> implements OblastService {
@@ -29,13 +28,6 @@ public class OblastServiceImpl extends TransliterationService<Oblast, OblastRepo
     protected Oblast createEntity(Response response) {
         var builder = Oblast.builder();
         super.initTransliterationPropertyBuilder(builder, response);
-        return builder.build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull Oblast entity){
-        var builder = OblastResponse.builder();
-        super.initResponseBuilder(builder, entity);
         return builder.build();
     }
 }

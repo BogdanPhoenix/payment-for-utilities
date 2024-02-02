@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.TransliterationResponse;
 
 @Getter
 @Setter
@@ -37,6 +38,13 @@ public abstract class TransliterationProperty extends TableInfo {
                 .initEmpty(builder)
                 .uaName("")
                 .enName("");
+        return builder;
+    }
+
+    protected <T extends TransliterationResponse.TransliterationResponseBuilder<?, ?>> T responseInit(@NonNull T builder) {
+        super.responseInit(builder)
+                .uaName(this.uaName)
+                .enName(this.enName);
         return builder;
     }
 }

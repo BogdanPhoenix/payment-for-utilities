@@ -7,6 +7,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.ReceiptSearcher;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.receipt.BlockAccrualAmountResponse;
 
 import java.math.BigDecimal;
 
@@ -52,6 +54,19 @@ public class BlockAccrualAmount extends ReceiptSearcher {
                 fine.equals(EMPTY_BIG_DECIMAL) ||
                 lastCreditedPayment.equals(EMPTY_BIG_DECIMAL) ||
                 amountDue.equals(EMPTY_BIG_DECIMAL);
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = BlockAccrualAmountResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .debtBeginMonth(this.debtBeginMonth)
+                .debtEndMonth(this.debtEndMonth)
+                .fine(this.fine)
+                .lastCreditedPayment(this.lastCreditedPayment)
+                .amountDue(this.amountDue)
+                .build();
     }
 
     @Contract(" -> new")

@@ -51,17 +51,6 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     }
 
     @Override
-    protected Response createResponse(@NonNull BankPhoneNum entity) {
-        var builder = BankPhoneNumResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .bank(entity.getBank())
-                .phoneNum(entity.getPhoneNum())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull BankPhoneNum entity) {
         deactivateChild(entity.getPhoneNum(), phoneNumService);
     }

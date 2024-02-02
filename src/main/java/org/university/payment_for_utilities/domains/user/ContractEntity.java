@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 
 import java.util.Set;
 
@@ -51,6 +53,17 @@ public class ContractEntity extends TableInfo {
         return registeredUser.isEmpty() ||
                 companyTariff.isEmpty() ||
                 numContract.isBlank();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = ContractEntityResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .registeredUser(this.registeredUser)
+                .companyTariff(this.companyTariff)
+                .numContract(this.numContract)
+                .build();
     }
 
     @Contract(" -> new")

@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.bank.Bank;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -63,6 +65,17 @@ public class Receipt extends TableInfo {
         return contractEntity.isEmpty() ||
                 bank.isEmpty() ||
                 billMonth == LocalDate.MIN;
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = ReceiptResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .contractEntity(this.contractEntity)
+                .bank(this.bank)
+                .billMonth(this.billMonth)
+                .build();
     }
 
     @Contract(" -> new")

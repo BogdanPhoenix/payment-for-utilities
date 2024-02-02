@@ -7,6 +7,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
 
 import java.util.List;
 
@@ -44,6 +46,14 @@ public class District extends TransliterationProperty {
     public static @NonNull District empty(){
         return TransliterationProperty
                 .initEmpty(builder())
+                .build();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = DistrictResponse.builder();
+        return super
+                .responseInit(responseBuilder)
                 .build();
     }
 }

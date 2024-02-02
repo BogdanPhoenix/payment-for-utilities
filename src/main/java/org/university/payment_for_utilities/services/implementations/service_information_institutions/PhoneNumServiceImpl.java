@@ -46,16 +46,6 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
     }
 
     @Override
-    protected Response createResponse(@NonNull PhoneNum entity) {
-        var builder = PhoneNumResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .number(entity.getNumber())
-                .build();
-    }
-
-    @Override
     protected void updateEntity(@NonNull PhoneNum entity, @NonNull Request request) {
         var newValue = (PhoneNumRequest) request;
 

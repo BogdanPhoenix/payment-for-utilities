@@ -60,18 +60,6 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     }
 
     @Override
-    protected Response createResponse(@NonNull Settlement entity) {
-        var builder = SettlementResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .type(entity.getType())
-                .zipCode(entity.getZipCode())
-                .name(entity.getName())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull Settlement entity) {
         deactivateChildrenCollection(entity.getAddresses(), addressResidenceService);
     }

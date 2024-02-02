@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
 
 import java.util.List;
 
@@ -69,6 +71,20 @@ public class AddressResidence extends TableInfo {
                 uaNameStreet.isBlank() ||
                 enNameStreet.isBlank() ||
                 numHouse.isBlank();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = AddressResidenceResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .settlement(this.settlement)
+                .uaNameStreet(this.uaNameStreet)
+                .enNameStreet(this.enNameStreet)
+                .numHouse(this.numHouse)
+                .numEntrance(this.numEntrance)
+                .numApartment(this.numApartment)
+                .build();
     }
 
     @Contract(" -> new")

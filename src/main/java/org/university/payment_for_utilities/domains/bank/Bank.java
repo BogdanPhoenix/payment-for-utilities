@@ -11,6 +11,8 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 
 import java.util.Set;
 
@@ -63,6 +65,17 @@ public class Bank extends TransliterationProperty {
                 website.isEmpty() ||
                 edrpou.isEmpty() ||
                 mfo.isBlank();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = BankResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .edrpou(this.edrpou)
+                .website(this.website)
+                .mfo(this.mfo)
+                .build();
     }
 
     @Contract(" -> new")

@@ -46,16 +46,6 @@ public class PaymentHistoryServiceImpl extends CounterSearcherService<PaymentHis
     }
 
     @Override
-    protected Response createResponse(PaymentHistory entity) {
-        var builder = PaymentHistoryResponse.builder();
-        super.initCounterResponseBuilder(builder, entity);
-
-        return builder
-                .finalPaymentAmount(entity.getFinalPaymentAmount())
-                .build();
-    }
-
-    @Override
     protected void updateEntity(@NonNull PaymentHistory entity, @NonNull Request request) {
         super.updateEntity(entity, request);
         var newValue = (PaymentHistoryRequest) request;

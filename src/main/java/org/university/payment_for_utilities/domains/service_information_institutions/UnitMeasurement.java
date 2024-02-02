@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 
 import java.util.Set;
 
@@ -29,6 +31,14 @@ public class UnitMeasurement extends TransliterationProperty {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "unitMeasurement", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
     private Set<TypeOffer> offers;
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = UnitMeasurementResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .build();
+    }
 
     @Contract(" -> new")
     public static @NonNull UnitMeasurement empty(){

@@ -58,18 +58,6 @@ public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntit
     }
 
     @Override
-    protected Response createResponse(ContractEntity entity) {
-        var builder = ContractEntityResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .registeredUser(entity.getRegisteredUser())
-                .companyTariff(entity.getCompanyTariff())
-                .numContract(entity.getNumContract())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull ContractEntity entity) {
         deactivateChildrenCollection(entity.getReceipts(), receiptService);
     }

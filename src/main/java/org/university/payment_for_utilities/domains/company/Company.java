@@ -10,6 +10,8 @@ import org.university.payment_for_utilities.domains.abstract_class.Transliterati
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 
 import java.util.Set;
 
@@ -63,6 +65,18 @@ public class Company extends TransliterationProperty {
                 website.isEmpty() ||
                 edrpou.isEmpty() ||
                 currentAccount.isBlank();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = CompanyResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .address(this.address)
+                .edrpou(this.edrpou)
+                .website(this.website)
+                .currentAccount(this.currentAccount)
+                .build();
     }
 
     @Contract(" -> new")

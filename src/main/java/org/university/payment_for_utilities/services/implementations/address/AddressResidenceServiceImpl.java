@@ -66,21 +66,6 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     }
 
     @Override
-    protected Response createResponse(@NonNull AddressResidence entity) {
-        var builder = AddressResidenceResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .settlement(entity.getSettlement())
-                .uaNameStreet(entity.getUaNameStreet())
-                .enNameStreet(entity.getEnNameStreet())
-                .numHouse(entity.getNumHouse())
-                .numEntrance(entity.getNumEntrance())
-                .numApartment(entity.getNumApartment())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull AddressResidence entity) {
         deactivateChild(entity.getCompany(), companyService);
     }

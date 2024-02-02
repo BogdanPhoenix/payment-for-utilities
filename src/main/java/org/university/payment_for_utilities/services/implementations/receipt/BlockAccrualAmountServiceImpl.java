@@ -57,20 +57,6 @@ public class BlockAccrualAmountServiceImpl extends ReceiptSearcherAbstract<Block
     }
 
     @Override
-    protected Response createResponse(BlockAccrualAmount entity) {
-        var builder = BlockAccrualAmountResponse.builder();
-        super.initResponseBuilder(builder, entity);
-
-        return builder
-                .debtBeginMonth(entity.getDebtBeginMonth())
-                .debtEndMonth(entity.getDebtEndMonth())
-                .fine(entity.getFine())
-                .lastCreditedPayment(entity.getLastCreditedPayment())
-                .amountDue(entity.getAmountDue())
-                .build();
-    }
-
-    @Override
     protected void updateEntity(@NonNull BlockAccrualAmount entity, @NonNull Request request) {
         super.updateEntity(entity, request);
         var newValue = (BlockAccrualAmountRequest) request;

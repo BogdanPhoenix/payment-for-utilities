@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.District;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.address.DistrictResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.DistrictRepository;
 import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
@@ -29,13 +28,6 @@ public class DistrictServiceImpl extends TransliterationService<District, Distri
     protected District createEntity(@NonNull Response response){
         var builder = District.builder();
         super.initTransliterationPropertyBuilder(builder, response);
-        return builder.build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull District entity){
-        var builder = DistrictResponse.builder();
-        super.initResponseBuilder(builder, entity);
         return builder.build();
     }
 }

@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -58,6 +60,18 @@ public class CompanyTariff extends TableInfo {
                 type.isEmpty() ||
                 name.isBlank() ||
                 fixedCost.equals(EMPTY_BIG_DECIMAL);
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = CompanyTariffResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .company(this.company)
+                .type(this.type)
+                .name(this.name)
+                .fixedCost(this.fixedCost)
+                .build();
     }
 
     @Contract(" -> new")

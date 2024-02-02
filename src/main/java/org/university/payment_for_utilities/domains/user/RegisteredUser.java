@@ -13,6 +13,8 @@ import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.enumarations.Role;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
 import java.util.Collection;
 import java.util.List;
@@ -91,6 +93,17 @@ public class RegisteredUser extends TableInfo implements UserDetails {
                 password.isBlank() ||
                 phoneNum.isEmpty() ||
                 role == Role.EMPTY;
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = UserResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .username(this.username)
+                .role(this.role)
+                .phoneNum(this.phoneNum)
+                .build();
     }
 
     @Contract(" -> new")

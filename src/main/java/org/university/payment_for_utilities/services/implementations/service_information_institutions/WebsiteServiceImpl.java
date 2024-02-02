@@ -45,16 +45,6 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     }
 
     @Override
-    protected Response createResponse(@NonNull Website entity) {
-        var builder = WebsiteResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .value(entity.getValue())
-                .build();
-    }
-
-    @Override
     protected void updateEntity(@NonNull Website entity, @NonNull Request request) {
         var newValue = (WebsiteRequest) request;
 

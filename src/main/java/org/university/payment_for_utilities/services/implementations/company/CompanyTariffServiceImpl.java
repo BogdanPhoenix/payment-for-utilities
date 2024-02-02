@@ -61,19 +61,6 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
     }
 
     @Override
-    protected Response createResponse(CompanyTariff entity) {
-        var builder = CompanyTariffResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .company(entity.getCompany())
-                .type(entity.getType())
-                .name(entity.getName())
-                .fixedCost(entity.getFixedCost())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull CompanyTariff entity) {
         deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
     }

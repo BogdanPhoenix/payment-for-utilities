@@ -7,6 +7,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
 
 import java.util.List;
 import java.util.Set;
@@ -56,6 +58,17 @@ public class Settlement extends TableInfo {
         return type.isEmpty() ||
                 zipCode.isBlank() ||
                 name.isEmpty();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = SettlementResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .type(this.type)
+                .zipCode(this.zipCode)
+                .name(this.name)
+                .build();
     }
 
     @Contract(" -> new")

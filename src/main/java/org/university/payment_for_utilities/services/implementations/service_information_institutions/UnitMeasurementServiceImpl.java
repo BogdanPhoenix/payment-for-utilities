@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.UnitMeasurementRepository;
 import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
@@ -36,13 +35,6 @@ public class UnitMeasurementServiceImpl extends TransliterationService<UnitMeasu
     protected UnitMeasurement createEntity(Response response) {
         var builder = UnitMeasurement.builder();
         super.initTransliterationPropertyBuilder(builder, response);
-        return builder.build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull UnitMeasurement entity) {
-        var builder = UnitMeasurementResponse.builder();
-        super.initResponseBuilder(builder, entity);
         return builder.build();
     }
 

@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.company.Company;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -41,6 +43,15 @@ public class Website extends TableInfo {
     @Override
     public boolean isEmpty() {
         return value.isBlank();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = WebsiteResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .value(this.value)
+                .build();
     }
 
     @Contract(" -> new")

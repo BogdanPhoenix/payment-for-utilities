@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
 
 import java.util.Set;
 
@@ -43,6 +45,15 @@ public class TypeOffer extends TransliterationProperty {
     public boolean isEmpty() {
         return super.isEmpty() ||
                 unitMeasurement.isEmpty();
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = TypeOfferResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .unitMeasurement(this.unitMeasurement)
+                .build();
     }
 
     @Contract(" -> new")

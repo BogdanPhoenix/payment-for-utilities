@@ -74,19 +74,6 @@ public class CompanyServiceImpl extends TransliterationService<Company, CompanyR
     }
 
     @Override
-    protected Response createResponse(@NonNull Company entity) {
-        var builder = CompanyResponse.builder();
-        super.initResponseBuilder(builder, entity);
-
-        return builder
-                .address(entity.getAddress())
-                .edrpou(entity.getEdrpou())
-                .website(entity.getWebsite())
-                .currentAccount(entity.getCurrentAccount())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull Company entity) {
         deactivateChild(entity.getEdrpou(), edrpouService);
         deactivateChild(entity.getWebsite(), websiteService);

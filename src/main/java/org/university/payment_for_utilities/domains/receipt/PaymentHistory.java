@@ -7,6 +7,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.CounterSearcher;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.receipt.PaymentHistoryResponse;
 
 import java.math.BigDecimal;
 
@@ -32,6 +34,15 @@ public class PaymentHistory extends CounterSearcher {
     public boolean isEmpty() {
         return super.isEmpty() ||
                 finalPaymentAmount.equals(EMPTY_BIG_DECIMAL);
+    }
+
+    @Override
+    public Response getResponse() {
+        var responseBuilder = PaymentHistoryResponse.builder();
+        return super
+                .responseInit(responseBuilder)
+                .finalPaymentAmount(this.finalPaymentAmount)
+                .build();
     }
 
     @Contract(" -> new")
