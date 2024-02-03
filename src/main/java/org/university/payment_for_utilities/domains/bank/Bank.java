@@ -5,10 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.abstract_class.CommonInstitutionalData;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 
@@ -27,17 +25,7 @@ import static jakarta.persistence.CascadeType.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "banks")
-public class Bank extends TransliterationProperty {
-    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
-    @JoinColumn(name = "id_edrpou", nullable = false, unique = true)
-    @NonNull
-    private Edrpou edrpou;
-
-    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
-    @JoinColumn(name = "id_website", nullable = false, unique = true)
-    @NonNull
-    private Website website;
-
+public class Bank extends CommonInstitutionalData {
     @Column(name = "mfo", length = 6, nullable = false, unique = true)
     @NonNull
     private String mfo;
@@ -61,9 +49,7 @@ public class Bank extends TransliterationProperty {
     public BankResponse getResponse() {
         var responseBuilder = BankResponse.builder();
         return super
-                .responseTransliterationPropertyBuilder(responseBuilder)
-                .edrpou(this.edrpou.getResponse())
-                .website(this.website.getResponse())
+                .responseCommonInstitutionalDataBuilder(responseBuilder)
                 .mfo(this.mfo)
                 .build();
     }

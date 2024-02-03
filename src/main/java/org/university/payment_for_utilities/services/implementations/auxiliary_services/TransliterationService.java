@@ -1,7 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.auxiliary_services;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
@@ -12,7 +11,6 @@ import org.university.payment_for_utilities.services.implementations.CrudService
 
 import java.util.Optional;
 
-@Slf4j
 public abstract class TransliterationService<T extends TransliterationProperty, J extends TableSearcherRepository<T>> extends CrudServiceAbstract<T, J> {
     protected TransliterationService(J repository, String tableName) {
         super(repository, tableName);
