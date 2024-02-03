@@ -3,6 +3,10 @@ package org.university.payment_for_utilities.enumarations;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * A list representing different permissions for registered users in the system.
+ * Each permission has a specific value.
+ */
 @Getter
 @RequiredArgsConstructor
 public enum Permission {
