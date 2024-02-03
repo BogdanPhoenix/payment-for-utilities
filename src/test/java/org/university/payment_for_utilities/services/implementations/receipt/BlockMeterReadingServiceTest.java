@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockMeterReadingRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.BlockMeterReadingResponse;
+import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockMeterReadingService;
 
@@ -60,7 +60,7 @@ class BlockMeterReadingServiceTest extends CrudServiceTest {
         var response = (BlockMeterReadingResponse) expectedResponse;
         return BlockMeterReadingRequest
                 .builder()
-                .receipt(Receipt.empty())
+                .receipt(ReceiptResponse.empty())
                 .prevValueCounter(response.getPrevValueCounter())
                 .currentValueCounter(response.getCurrentValueCounter())
                 .build();

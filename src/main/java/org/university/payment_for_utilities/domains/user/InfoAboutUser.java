@@ -5,9 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
 
 import static jakarta.persistence.CascadeType.*;
@@ -40,30 +38,13 @@ public class InfoAboutUser extends TableInfo {
     private String lastName;
 
     @Override
-    public boolean isEmpty() {
-        return registered.isEmpty() ||
-                firstName.isBlank() ||
-                lastName.isBlank();
-    }
-
-    @Override
-    public Response getResponse() {
+    public InfoAboutUserResponse getResponse() {
         var responseBuilder = InfoAboutUserResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .registered(this.registered)
+                .responseBuilder(responseBuilder)
+                .registered(this.registered.getResponse())
                 .firstName(this.firstName)
                 .lastName(this.lastName)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull InfoAboutUser empty() {
-        return TableInfo
-                .initEmpty(builder())
-                .registered(RegisteredUser.empty())
-                .firstName("")
-                .lastName("")
                 .build();
     }
 }

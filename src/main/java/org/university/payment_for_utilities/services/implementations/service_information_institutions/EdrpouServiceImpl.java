@@ -6,8 +6,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
@@ -30,17 +28,6 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
         return Edrpou
                 .builder()
                 .value(edrpouRequest.getValue())
-                .build();
-    }
-
-    @Override
-    protected Edrpou createEntity(Response response) {
-        var edrpouResponse = (EdrpouResponse) response;
-        var builder = Edrpou.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .value(edrpouResponse.getValue())
                 .build();
     }
 

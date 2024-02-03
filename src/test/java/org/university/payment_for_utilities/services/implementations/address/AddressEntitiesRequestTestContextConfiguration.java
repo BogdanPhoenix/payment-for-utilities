@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
 import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.address.AddressResidence;
-import org.university.payment_for_utilities.domains.address.Settlement;
-import org.university.payment_for_utilities.domains.address.SettlementName;
-import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.*;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
+import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
+import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.address")
@@ -27,13 +25,13 @@ public class AddressEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "addressKyivResidence")
-    public AddressResidence addressKyivResidence(){
+    public AddressResidenceResponse addressKyivResidence(){
         return createAddress(addressKyivRequest());
     }
 
     @Lazy
     @Bean(name = "addressResidence")
-    public AddressResidence addressResidence(){
+    public AddressResidenceResponse addressResidence(){
         return createAddress(addressRivneRequest());
     }
 
@@ -177,19 +175,19 @@ public class AddressEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    private AddressResidence createAddress(AddressResidenceRequest request){
-        return (AddressResidence) createEntity(addressResidenceService, request);
+    private AddressResidenceResponse createAddress(AddressResidenceRequest request){
+        return (AddressResidenceResponse) addressResidenceService.addValue(request);
     }
 
-    private SettlementName createSettlementName(SettlementNameRequest request){
-        return (SettlementName) createEntity(nameService, request);
+    private SettlementNameResponse createSettlementName(SettlementNameRequest request){
+        return (SettlementNameResponse) nameService.addValue(request);
     }
 
-    private TypeSettlement createTypeSettlement(TypeSettlementRequest request){
-        return (TypeSettlement) createEntity(typeService, request);
+    private TypeSettlementResponse createTypeSettlement(TypeSettlementRequest request){
+        return (TypeSettlementResponse) typeService.addValue(request);
     }
 
-    private Settlement createSettlement(SettlementRequest request){
-        return (Settlement) createEntity(settlementService, request);
+    private SettlementResponse createSettlement(SettlementRequest request){
+        return (SettlementResponse) settlementService.addValue(request);
     }
 }

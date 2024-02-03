@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.address.SettlementName;
-import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
 
@@ -62,9 +62,9 @@ class SettlementServiceTest extends CrudServiceTest {
         var response = (SettlementResponse) expectedResponse;
         return SettlementRequest
                 .builder()
-                .type(TypeSettlement.empty())
+                .type(TypeSettlementResponse.empty())
                 .zipCode(response.getZipCode())
-                .name(SettlementName.empty())
+                .name(SettlementNameResponse.empty())
                 .build();
     }
 

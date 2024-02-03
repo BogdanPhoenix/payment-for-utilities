@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
+import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import org.university.payment_for_utilities.domains.receipt.Receipt;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public abstract class ReceiptSearcherRequest extends Request {
-    private Receipt receipt;
+    private ReceiptResponse receipt;
 
     @Override
     public boolean isEmpty() {
@@ -24,7 +25,7 @@ public abstract class ReceiptSearcherRequest extends Request {
 
     @Contract("_ -> param1")
     protected static <T extends ReceiptSearcherRequestBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
-        builder.receipt(Receipt.empty());
+        builder.receipt(ReceiptResponse.empty());
         return builder;
     }
 }

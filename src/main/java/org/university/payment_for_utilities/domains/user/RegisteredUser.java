@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
@@ -13,7 +12,6 @@ import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.enumarations.Role;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
 import java.util.Collection;
@@ -88,32 +86,13 @@ public class RegisteredUser extends TableInfo implements UserDetails {
     private Set<Token> tokens;
 
     @Override
-    public boolean isEmpty() {
-        return username.isBlank() ||
-                password.isBlank() ||
-                phoneNum.isEmpty() ||
-                role == Role.EMPTY;
-    }
-
-    @Override
-    public Response getResponse() {
+    public UserResponse getResponse() {
         var responseBuilder = UserResponse.builder();
         return super
-                .responseInit(responseBuilder)
+                .responseBuilder(responseBuilder)
                 .username(this.username)
                 .role(this.role)
-                .phoneNum(this.phoneNum)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull RegisteredUser empty() {
-        return TableInfo
-                .initEmpty(builder())
-                .role(Role.EMPTY)
-                .username("")
-                .password("")
-                .phoneNum(PhoneNum.empty())
+                .phoneNum(this.phoneNum.getResponse())
                 .build();
     }
 

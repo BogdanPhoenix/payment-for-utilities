@@ -6,9 +6,8 @@ import org.university.payment_for_utilities.domains.receipt.BlockAccrualAmount;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockAccrualAmountRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.receipt.BlockAccrualAmountResponse;
 import org.university.payment_for_utilities.repositories.receipt.BlockAccrualAmountRepository;
+import org.university.payment_for_utilities.repositories.receipt.ReceiptRepository;
 import org.university.payment_for_utilities.services.implementations.auxiliary_services.ReceiptSearcherAbstract;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockAccrualAmountService;
 
@@ -17,13 +16,18 @@ import static org.university.payment_for_utilities.services.implementations.tool
 
 @Service
 public class BlockAccrualAmountServiceImpl extends ReceiptSearcherAbstract<BlockAccrualAmount, BlockAccrualAmountRepository> implements BlockAccrualAmountService {
-    protected BlockAccrualAmountServiceImpl(BlockAccrualAmountRepository repository) {
-        super(repository, "Blocks accrual amount");
+    protected BlockAccrualAmountServiceImpl(
+            BlockAccrualAmountRepository repository,
+            ReceiptRepository receiptRepository
+    ) {
+        super(repository, "Blocks accrual amount", receiptRepository);
     }
 
     @Override
     protected BlockAccrualAmount createEntity(Request request) {
         var blockRequest = (BlockAccrualAmountRequest) request;
+
+        var receipt = getReceipt(blockRequest.getReceipt().getId());
         var debtBeginMonth = convertStringToBigDecimal(blockRequest.getDebtBeginMonth());
         var debtEndMonth = convertStringToBigDecimal(blockRequest.getDebtEndMonth());
         var fine = convertStringToBigDecimal(blockRequest.getFine());
@@ -32,27 +36,12 @@ public class BlockAccrualAmountServiceImpl extends ReceiptSearcherAbstract<Block
 
         return BlockAccrualAmount
                 .builder()
-                .receipt(blockRequest.getReceipt())
+                .receipt(receipt)
                 .debtBeginMonth(debtBeginMonth)
                 .debtEndMonth(debtEndMonth)
                 .fine(fine)
                 .lastCreditedPayment(lastCreditedPayment)
                 .amountDue(amountDue)
-                .build();
-    }
-
-    @Override
-    protected BlockAccrualAmount createEntity(Response response) {
-        var blockResponse = (BlockAccrualAmountResponse) response;
-        var builder = BlockAccrualAmount.builder();
-        super.initReceiptSearcherBuilder(builder, response);
-
-        return builder
-                .debtBeginMonth(blockResponse.getDebtBeginMonth())
-                .debtEndMonth(blockResponse.getDebtEndMonth())
-                .fine(blockResponse.getFine())
-                .lastCreditedPayment(blockResponse.getLastCreditedPayment())
-                .amountDue(blockResponse.getAmountDue())
                 .build();
     }
 

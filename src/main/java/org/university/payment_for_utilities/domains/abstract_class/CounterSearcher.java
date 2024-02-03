@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.CounterSearcherResponse;
 
 @Getter
@@ -29,23 +30,9 @@ public abstract class CounterSearcher extends ReceiptSearcher {
     @NonNull
     private Float currentValueCounter;
 
-    @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                prevValueCounter.equals(EMPTY_COUNTER) ||
-                currentValueCounter.equals(EMPTY_COUNTER);
-    }
-
-    protected static <T extends CounterSearcherBuilder<?, ?>> T initEmpty(@NonNull T builder) {
-        ReceiptSearcher
-                .initEmpty(builder)
-                .prevValueCounter(EMPTY_COUNTER)
-                .currentValueCounter(EMPTY_COUNTER);
-        return builder;
-    }
-
-    protected <T extends CounterSearcherResponse.CounterSearcherResponseBuilder<?, ?>> T responseInit(@NonNull T builder) {
-        super.responseInit(builder)
+    @Contract("_ -> new")
+    protected <T extends CounterSearcherResponse.CounterSearcherResponseBuilder<?, ?>> T responseCounterSearcherBuilder(@NonNull T builder) {
+        super.responseReceiptSearcherBuilder(builder)
                 .prevValueCounter(this.prevValueCounter)
                 .currentValueCounter(this.currentValueCounter);
         return builder;

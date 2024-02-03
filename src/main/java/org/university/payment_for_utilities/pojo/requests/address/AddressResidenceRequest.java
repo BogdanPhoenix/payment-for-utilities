@@ -4,8 +4,8 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class AddressResidenceRequest extends Request {
-    private Settlement settlement;
+    private SettlementResponse settlement;
     private String uaNameStreet;
     private String enNameStreet;
     private String numHouse;
@@ -35,7 +35,7 @@ public class AddressResidenceRequest extends Request {
     public static @NonNull AddressResidenceRequest empty(){
         return AddressResidenceRequest
                 .builder()
-                .settlement(Settlement.empty())
+                .settlement(SettlementResponse.empty())
                 .uaNameStreet("")
                 .enNameStreet("")
                 .numHouse("")

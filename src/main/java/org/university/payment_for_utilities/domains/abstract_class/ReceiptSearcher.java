@@ -27,20 +27,10 @@ public abstract class ReceiptSearcher extends TableInfo {
     @NonNull
     private Receipt receipt;
 
-    @Override
-    public boolean isEmpty() {
-        return receipt.isEmpty();
-    }
-
-    @Contract("_ -> param1")
-    protected static <T extends ReceiptSearcherBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
-        builder.receipt(Receipt.empty());
-        return builder;
-    }
-
-    protected <T extends ReceiptSearcherResponse.ReceiptSearcherResponseBuilder<?, ?>> T responseInit(@NonNull T builder) {
-        super.responseInit(builder)
-                .receipt(this.receipt);
+    @Contract("_ -> new")
+    protected <T extends ReceiptSearcherResponse.ReceiptSearcherResponseBuilder<?, ?>> @NonNull T responseReceiptSearcherBuilder(@NonNull T builder) {
+        super.responseBuilder(builder)
+                .receipt(this.receipt.getResponse());
         return builder;
     }
 }

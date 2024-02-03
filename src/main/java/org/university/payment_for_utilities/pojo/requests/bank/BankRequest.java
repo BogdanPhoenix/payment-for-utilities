@@ -4,9 +4,9 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 
 @Getter
 @Setter
@@ -17,8 +17,8 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public class BankRequest extends TransliterationRequest {
-    private Website website;
-    private Edrpou edrpou;
+    private WebsiteResponse website;
+    private EdrpouResponse edrpou;
     private String mfo;
 
     @Override
@@ -33,8 +33,8 @@ public class BankRequest extends TransliterationRequest {
     public static @NonNull BankRequest empty(){
         return TransliterationRequest
                 .initEmpty(builder())
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
+                .website(WebsiteResponse.empty())
+                .edrpou(EdrpouResponse.empty())
                 .mfo("")
                 .build();
     }

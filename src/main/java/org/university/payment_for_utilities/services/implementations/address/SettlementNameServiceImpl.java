@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.SettlementName;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.SettlementNameRepository;
 import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementNameService;
@@ -27,15 +26,9 @@ public class SettlementNameServiceImpl extends TransliterationService<Settlement
     @Override
     protected SettlementName createEntity(@NonNull Request request) {
         var builder = SettlementName.builder();
-        super.initTransliterationPropertyBuilder(builder, request);
-        return builder.build();
-    }
-
-    @Override
-    protected SettlementName createEntity(Response response) {
-        var builder = SettlementName.builder();
-        super.initTransliterationPropertyBuilder(builder, response);
-        return builder.build();
+        return super
+                .initTransliterationPropertyBuilder(builder, request)
+                .build();
     }
 
     @Override

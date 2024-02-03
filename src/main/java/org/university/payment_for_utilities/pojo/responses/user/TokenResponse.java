@@ -3,7 +3,6 @@ package org.university.payment_for_utilities.pojo.responses.user;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
@@ -15,5 +14,10 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 @EqualsAndHashCode(callSuper = true)
 public class TokenResponse extends Response {
     private String accessToken;
-    public RegisteredUser user;
+    private UserResponse user;
+
+    @Override
+    public boolean isEmpty() {
+        return accessToken.isBlank();
+    }
 }

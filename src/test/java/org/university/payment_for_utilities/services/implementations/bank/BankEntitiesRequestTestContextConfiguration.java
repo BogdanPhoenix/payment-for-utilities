@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
 import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.bank")
@@ -26,26 +24,26 @@ public class BankEntitiesRequestTestContextConfiguration {
     private BankServiceImpl bankService;
     @Autowired
     @Qualifier("privateBankWebsite")
-    private Website privateBankWebsite;
+    private WebsiteResponse privateBankWebsite;
     @Autowired
     @Qualifier("privateBankEdrpou")
-    private Edrpou privateBankEdrpou;
+    private EdrpouResponse privateBankEdrpou;
     @Autowired
     @Qualifier("raiffeisenBankWebsite")
-    private Website raiffeisenBankWebsite;
+    private WebsiteResponse raiffeisenBankWebsite;
     @Autowired
     @Qualifier("raiffeisenBankUpdateEdrpou")
-    private Edrpou raiffeisenBankEdrpou;
+    private EdrpouResponse raiffeisenBankEdrpou;
     @Autowired
     @Qualifier("bankPhoneNum")
-    private PhoneNum privateBankPhoneNum;
+    private PhoneNumResponse privateBankPhoneNum;
     @Autowired
     @Qualifier("companyPhoneNum")
-    private PhoneNum raiffeisenBankPhoneNum;
+    private PhoneNumResponse raiffeisenBankPhoneNum;
 
     @Lazy
     @Bean(name = "privateBank")
-    public Bank privateBank() {
+    public BankResponse privateBank() {
         return createBank(privateBankRequest());
     }
 
@@ -76,7 +74,7 @@ public class BankEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "raiffeisenBank")
-    public Bank raiffeisenBank() {
+    public BankResponse raiffeisenBank() {
         return createBank(raiffeisenBankRequest());
     }
 
@@ -105,7 +103,7 @@ public class BankEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    private Bank createBank(BankRequest request){
-        return (Bank) createEntity(bankService, request);
+    private BankResponse createBank(BankRequest request){
+        return (BankResponse) bankService.addValue(request);
     }
 }

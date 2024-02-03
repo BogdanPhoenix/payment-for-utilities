@@ -6,8 +6,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
@@ -30,17 +28,6 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         return Website
                 .builder()
                 .value(websiteRequest.getValue())
-                .build();
-    }
-
-    @Override
-    protected Website createEntity(Response response) {
-        var websiteResponse = (WebsiteResponse) response;
-        var builder = Website.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .value(websiteResponse.getValue())
                 .build();
     }
 

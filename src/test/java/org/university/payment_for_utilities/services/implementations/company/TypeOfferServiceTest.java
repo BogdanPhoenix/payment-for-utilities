@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.TypeOfferService;
 
@@ -63,7 +63,7 @@ class TypeOfferServiceTest extends CrudServiceTest {
         var response = (TypeOfferResponse) expectedResponse;
         return TypeOfferRequest
                 .builder()
-                .unitMeasurement(UnitMeasurement.empty())
+                .unitMeasurement(UnitMeasurementResponse.empty())
                 .uaName(response.getUaName())
                 .enName(response.getEnName())
                 .build();

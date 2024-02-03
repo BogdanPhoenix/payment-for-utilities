@@ -5,13 +5,11 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 
 import java.util.Set;
@@ -60,31 +58,13 @@ public class Bank extends TransliterationProperty {
     private Set<RegisteredUser> users;
 
     @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                website.isEmpty() ||
-                edrpou.isEmpty() ||
-                mfo.isBlank();
-    }
-
-    @Override
-    public Response getResponse() {
+    public BankResponse getResponse() {
         var responseBuilder = BankResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .edrpou(this.edrpou)
-                .website(this.website)
+                .responseTransliterationPropertyBuilder(responseBuilder)
+                .edrpou(this.edrpou.getResponse())
+                .website(this.website.getResponse())
                 .mfo(this.mfo)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull Bank empty(){
-        return TransliterationProperty
-                .initEmpty(builder())
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
-                .mfo("")
                 .build();
     }
 }

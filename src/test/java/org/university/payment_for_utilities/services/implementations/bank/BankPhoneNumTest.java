@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankPhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 
@@ -28,7 +28,7 @@ class BankPhoneNumTest extends CrudServiceTest {
     private BankPhoneNumRequest raiffeisenBankPhoneNumRequest;
     @Autowired
     @Qualifier("updateBankPhoneNum")
-    private PhoneNum updateBankPhoneNum;
+    private PhoneNumResponse updateBankPhoneNum;
 
     @Autowired
     public BankPhoneNumTest(BankPhoneNumService service) { super(service); }
@@ -57,7 +57,7 @@ class BankPhoneNumTest extends CrudServiceTest {
         var response = (BankPhoneNumResponse) expectedResponse;
         return BankPhoneNumRequest
                 .builder()
-                .bank(Bank.empty())
+                .bank(BankResponse.empty())
                 .phoneNum(response.getPhoneNum())
                 .build();
     }

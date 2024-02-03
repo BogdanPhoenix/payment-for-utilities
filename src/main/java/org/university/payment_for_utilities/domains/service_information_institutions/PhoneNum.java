@@ -5,12 +5,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 
 import static jakarta.persistence.CascadeType.*;
@@ -47,24 +45,11 @@ public class PhoneNum extends TableInfo {
     private RegisteredUser user;
 
     @Override
-    public boolean isEmpty() {
-        return number.isBlank();
-    }
-
-    @Override
-    public Response getResponse() {
+    public PhoneNumResponse getResponse() {
         var responseBuilder = PhoneNumResponse.builder();
         return super
-                .responseInit(responseBuilder)
+                .responseBuilder(responseBuilder)
                 .number(this.number)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull PhoneNum empty() {
-        return TableInfo
-                .initEmpty(builder())
-                .number("")
                 .build();
     }
 }

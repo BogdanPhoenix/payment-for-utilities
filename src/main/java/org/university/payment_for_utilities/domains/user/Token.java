@@ -7,7 +7,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.enumarations.TokenType;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.TokenResponse;
 
 @Entity
@@ -37,17 +36,12 @@ public class Token extends TableInfo {
     public RegisteredUser user;
 
     @Override
-    public boolean isEmpty() {
-        return accessToken.isBlank();
-    }
-
-    @Override
-    public Response getResponse() {
+    public TokenResponse getResponse() {
         var responseBuilder = TokenResponse.builder();
         return super
-                .responseInit(responseBuilder)
+                .responseBuilder(responseBuilder)
                 .accessToken(this.accessToken)
-                .user(this.user)
+                .user(this.user.getResponse())
                 .build();
     }
 }

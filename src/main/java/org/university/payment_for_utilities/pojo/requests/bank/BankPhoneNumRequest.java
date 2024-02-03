@@ -4,9 +4,9 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 
 @Getter
 @Setter
@@ -17,8 +17,8 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class BankPhoneNumRequest extends Request {
-    private Bank bank;
-    private PhoneNum phoneNum;
+    private BankResponse bank;
+    private PhoneNumResponse phoneNum;
 
     @Override
     public boolean isEmpty() {
@@ -30,8 +30,8 @@ public class BankPhoneNumRequest extends Request {
     public static @NonNull BankPhoneNumRequest empty(){
         return BankPhoneNumRequest
                 .builder()
-                .bank(Bank.empty())
-                .phoneNum(PhoneNum.empty())
+                .bank(BankResponse.empty())
+                .phoneNum(PhoneNumResponse.empty())
                 .build();
     }
 }

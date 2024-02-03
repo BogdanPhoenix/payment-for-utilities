@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.address.AddressResidence;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 
@@ -65,9 +65,9 @@ class CompanyServiceTest extends CrudServiceTest {
         var response = (CompanyResponse) expectedResponse;
         return CompanyRequest
                 .builder()
-                .address(AddressResidence.empty())
-                .edrpou(Edrpou.empty())
-                .website(Website.empty())
+                .address(AddressResidenceResponse.empty())
+                .edrpou(EdrpouResponse.empty())
+                .website(WebsiteResponse.empty())
                 .uaName(response.getUaName())
                 .enName(response.getEnName())
                 .currentAccount(response.getCurrentAccount())

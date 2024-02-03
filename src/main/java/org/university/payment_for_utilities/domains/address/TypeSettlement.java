@@ -5,9 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 
 import java.util.Set;
@@ -32,17 +30,10 @@ public class TypeSettlement extends TransliterationProperty {
     private Set<Settlement> settlements;
 
     @Override
-    public Response getResponse() {
+    public TypeSettlementResponse getResponse() {
         var responseBuilder = TypeSettlementResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull TypeSettlement empty(){
-        return TransliterationProperty
-                .initEmpty(builder())
+                .responseTransliterationPropertyBuilder(responseBuilder)
                 .build();
     }
 }

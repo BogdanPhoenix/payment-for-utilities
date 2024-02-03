@@ -5,11 +5,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 
 import java.time.LocalDate;
@@ -61,30 +59,13 @@ public class Receipt extends TableInfo {
     private Set<BlockMeterReading> blockMeterReadings;
 
     @Override
-    public boolean isEmpty() {
-        return contractEntity.isEmpty() ||
-                bank.isEmpty() ||
-                billMonth == LocalDate.MIN;
-    }
-
-    @Override
-    public Response getResponse() {
+    public ReceiptResponse getResponse() {
         var responseBuilder = ReceiptResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .contractEntity(this.contractEntity)
-                .bank(this.bank)
+                .responseBuilder(responseBuilder)
+                .contractEntity(this.contractEntity.getResponse())
+                .bank(this.bank.getResponse())
                 .billMonth(this.billMonth)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull Receipt empty() {
-        return TableInfo
-                .initEmpty(builder())
-                .contractEntity(ContractEntity.empty())
-                .bank(Bank.empty())
-                .billMonth(LocalDate.MIN)
                 .build();
     }
 }

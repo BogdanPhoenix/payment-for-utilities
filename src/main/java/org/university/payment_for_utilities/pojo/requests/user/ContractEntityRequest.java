@@ -4,9 +4,9 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.company.CompanyTariff;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
 @Getter
 @Setter
@@ -17,8 +17,8 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ContractEntityRequest extends Request {
-    private RegisteredUser registeredUser;
-    private CompanyTariff companyTariff;
+    private UserResponse registeredUser;
+    private CompanyTariffResponse companyTariff;
     private String numContract;
 
     @Override
@@ -32,8 +32,8 @@ public class ContractEntityRequest extends Request {
     public static @NonNull ContractEntityRequest empty() {
         return ContractEntityRequest
                 .builder()
-                .registeredUser(RegisteredUser.empty())
-                .companyTariff(CompanyTariff.empty())
+                .registeredUser(UserResponse.empty())
+                .companyTariff(CompanyTariffResponse.empty())
                 .numContract("")
                 .build();
     }

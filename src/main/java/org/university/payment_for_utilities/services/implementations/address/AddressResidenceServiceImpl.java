@@ -4,12 +4,12 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
+import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
+import org.university.payment_for_utilities.repositories.address.SettlementRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
@@ -25,49 +25,33 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     private static final String NUM_APARTMENT_TEMPLATE = "^\\d{0,5}$";
 
     private final CompanyService companyService;
+    private final SettlementRepository settlementRepository;
 
     @Autowired
     public AddressResidenceServiceImpl(
             AddressResidenceRepository repository,
-            CompanyService companyService
+            CompanyService companyService,
+            SettlementRepository settlementRepository
     ) {
         super(repository, "Addresses residence");
         this.companyService = companyService;
+        this.settlementRepository = settlementRepository;
     }
 
     @Override
     protected AddressResidence createEntity(Request request) {
-        var address = (AddressResidenceRequest) request;
+        var addressRequest = (AddressResidenceRequest) request;
+        var settlement = getSettlement(addressRequest.getSettlement().getId());
+
         return AddressResidence
                 .builder()
-                .settlement(address.getSettlement())
-                .uaNameStreet(address.getUaNameStreet())
-                .enNameStreet(address.getEnNameStreet())
-                .numHouse(address.getNumHouse())
-                .numEntrance(address.getNumEntrance())
-                .numApartment(address.getNumApartment())
+                .settlement(settlement)
+                .uaNameStreet(addressRequest.getUaNameStreet())
+                .enNameStreet(addressRequest.getEnNameStreet())
+                .numHouse(addressRequest.getNumHouse())
+                .numEntrance(addressRequest.getNumEntrance())
+                .numApartment(addressRequest.getNumApartment())
                 .build();
-    }
-
-    @Override
-    protected AddressResidence createEntity(@NonNull Response response) {
-        var addressResponse = (AddressResidenceResponse) response;
-        var builder = AddressResidence.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .settlement(addressResponse.getSettlement())
-                .uaNameStreet(addressResponse.getUaNameStreet())
-                .enNameStreet(addressResponse.getEnNameStreet())
-                .numHouse(addressResponse.getNumHouse())
-                .numEntrance(addressResponse.getNumEntrance())
-                .numApartment(addressResponse.getNumApartment())
-                .build();
-    }
-
-    @Override
-    protected void deactivatedChildren(@NonNull AddressResidence entity) {
-        deactivateChild(entity.getCompany(), companyService);
     }
 
     @Override
@@ -75,7 +59,8 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         var newValue = (AddressResidenceRequest) request;
 
         if(!newValue.getSettlement().isEmpty()){
-            entity.setSettlement(newValue.getSettlement());
+            var settlement = getSettlement(newValue.getSettlement().getId());
+            entity.setSettlement(settlement);
         }
         if(!newValue.getUaNameStreet().isBlank()){
             entity.setUaNameStreet(newValue.getUaNameStreet());
@@ -92,6 +77,11 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
         if(!newValue.getNumApartment().isBlank()){
             entity.setNumApartment(newValue.getNumApartment());
         }
+    }
+
+    @Override
+    protected void deactivatedChildren(@NonNull AddressResidence entity) {
+        deactivateChild(entity.getCompany(), companyService);
     }
 
     @Override
@@ -157,13 +147,20 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
 
     @Override
     protected Optional<AddressResidence> findEntity(@NonNull Request request) {
-        var address = (AddressResidenceRequest) request;
+        var addressRequest = (AddressResidenceRequest) request;
+        var settlement = getSettlement(addressRequest.getSettlement().getId());
+
         return repository
                 .findBySettlementAndEnNameStreetAndNumHouseAndNumEntrance(
-                        address.getSettlement(),
-                        address.getEnNameStreet(),
-                        address.getNumHouse(),
-                        address.getNumEntrance()
+                        settlement,
+                        addressRequest.getEnNameStreet(),
+                        addressRequest.getNumHouse(),
+                        addressRequest.getNumEntrance()
                 );
+    }
+
+    private @NonNull Settlement getSettlement(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(settlementRepository, id);
     }
 }

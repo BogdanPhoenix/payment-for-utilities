@@ -8,22 +8,20 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.address.AddressResidence;
-import org.university.payment_for_utilities.domains.company.Company;
-import org.university.payment_for_utilities.domains.company.CompanyTariff;
-import org.university.payment_for_utilities.domains.company.TypeOffer;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffRequest;
 import org.university.payment_for_utilities.pojo.requests.company.TypeOfferRequest;
+import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
+import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.services.implementations.address.AddressEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.company")
@@ -42,52 +40,52 @@ public class CompanyEntitiesRequestTestContextConfiguration {
 
     @Autowired
     @Qualifier("addressResidence")
-    private AddressResidence addressResidence;
+    private AddressResidenceResponse addressResidence;
     @Autowired
     @Qualifier("addressKyivResidence")
-    private AddressResidence addressKyivResidence;
+    private AddressResidenceResponse addressKyivResidence;
     @Autowired
     @Qualifier("privateBankEdrpou")
-    private Edrpou edrpou;
+    private EdrpouResponse edrpou;
     @Autowired
     @Qualifier("raiffeisenBankEdrpou")
-    private Edrpou raiffeisenBankEdrpou;
+    private EdrpouResponse raiffeisenBankEdrpou;
     @Autowired
     @Qualifier("privateBankWebsite")
-    private Website website;
+    private WebsiteResponse website;
     @Autowired
     @Qualifier("raiffeisenBankWebsite")
-    private Website raiffeisenBankWebsite;
+    private WebsiteResponse raiffeisenBankWebsite;
     @Autowired
     @Qualifier("unitKilowatt")
-    private UnitMeasurement unitKilowatt;
+    private UnitMeasurementResponse unitKilowatt;
     @Autowired
     @Qualifier("unitCubicMeter")
-    private UnitMeasurement unitCubicMeter;
+    private UnitMeasurementResponse unitCubicMeter;
     @Autowired
     @Qualifier("companyPhoneNum")
-    private PhoneNum companyPhoneNum;
+    private PhoneNumResponse companyPhoneNum;
     @Autowired
     @Qualifier("bankPhoneNum")
-    private PhoneNum bankPhoneNum;
+    private PhoneNumResponse bankPhoneNum;
 
     @Lazy
     @Bean(name = "createRivneTariff")
-    public CompanyTariff createRivneTariff() {
-        return (CompanyTariff) createEntity(companyTariffService, createRivneTariffRequest());
+    public CompanyTariffResponse createRivneTariff() {
+        return createCompanyTariff(createRivneTariffRequest());
     }
 
     @Lazy
     @Bean(name = "createKyivTariff")
-    public CompanyTariff createKyivTariff() {
-        return (CompanyTariff) createEntity(companyTariffService, createKyivTariffRequest());
+    public CompanyTariffResponse createKyivTariff() {
+        return createCompanyTariff(createKyivTariffRequest());
     }
 
     @Lazy
     @Bean(name = "createRivneTariffRequest")
     public CompanyTariffRequest createRivneTariffRequest() {
-        var company = (Company) createEntity(companyService, companyRivneOblenergoRequest());
-        var type = (TypeOffer) createEntity(typeOfferService, typeOfferGasRequest());
+        var company = createCompany(companyRivneOblenergoRequest());
+        var type = createTypeOffer(typeOfferGasRequest());
 
         return CompanyTariffRequest
                 .builder()
@@ -101,8 +99,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "createKyivTariffRequest")
     public CompanyTariffRequest createKyivTariffRequest() {
-        var company = (Company) createEntity(companyService, companyKyivOblenergoRequest());
-        var type = (TypeOffer) createEntity(typeOfferService, typeOfferElectricRequest());
+        var company = createCompany(companyKyivOblenergoRequest());
+        var type = createTypeOffer(typeOfferElectricRequest());
 
         return CompanyTariffRequest
                 .builder()
@@ -138,8 +136,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "typeOfferUpdate")
-    public TypeOffer typeOfferUpdate() {
-        return (TypeOffer) createEntity(typeOfferService, typeOfferUpdateRequest());
+    public TypeOfferResponse typeOfferUpdate() {
+        return (TypeOfferResponse) typeOfferService.addValue(typeOfferUpdateRequest());
     }
 
     @Lazy
@@ -205,7 +203,15 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    private Company createCompany(CompanyRequest request) {
-        return (Company) createEntity(companyService, request);
+    private CompanyResponse createCompany(CompanyRequest request) {
+        return (CompanyResponse) companyService.addValue(request);
+    }
+
+    private CompanyTariffResponse createCompanyTariff(CompanyTariffRequest request) {
+        return (CompanyTariffResponse) companyTariffService.addValue(request);
+    }
+
+    private TypeOfferResponse createTypeOffer(TypeOfferRequest request) {
+        return (TypeOfferResponse) typeOfferService.addValue(request);
     }
 }

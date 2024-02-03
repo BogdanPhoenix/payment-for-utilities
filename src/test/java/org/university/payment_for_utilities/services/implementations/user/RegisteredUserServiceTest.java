@@ -19,14 +19,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.exceptions.*;
 import org.university.payment_for_utilities.pojo.requests.user.AuthenticationRequest;
 import org.university.payment_for_utilities.pojo.requests.user.ChangePasswordRequest;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.user.AuthenticationResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.repositories.user.TokenRepository;
@@ -308,7 +307,7 @@ class RegisteredUserServiceTest {
     @DisplayName("Check for an exception when data was transmitted that does not match the authentication data.")
     void testChangePasswordThrowInvalidAuthenticationData() {
         var authenticated = new UsernamePasswordAuthenticationToken(
-                RegisteredUser.empty(),
+                UserResponse.empty(),
                 userIvanRequest.getPassword()
         );
         assertThrows(InvalidAuthenticationData.class,
@@ -368,7 +367,7 @@ class RegisteredUserServiceTest {
                 .builder()
                 .username(expectedResponse.getUsername())
                 .role(expectedResponse.getRole())
-                .phoneNum(PhoneNum.empty())
+                .phoneNum(PhoneNumResponse.empty())
                 .build();
 
         var updateResponse = service.updateData(userResponse.getId(), requestUpdate);

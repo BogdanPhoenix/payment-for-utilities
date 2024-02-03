@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
-import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.domains.user.Token;
 import org.university.payment_for_utilities.enumarations.Role;
@@ -27,6 +27,7 @@ import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.AuthenticationResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
+import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
 import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
 import org.university.payment_for_utilities.repositories.user.TokenRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
@@ -76,7 +77,8 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             AuthenticationManager authenticationManager,
             ContractEntityService contractEntityService,
             InfoAboutUserService infoAboutUserService,
-            PhoneNumService phoneNumService
+            PhoneNumService phoneNumService,
+            PhoneNumRepository phoneNumRepository
     ) {
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
@@ -87,11 +89,11 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 passwordEncoder,
                 contractEntityService,
                 infoAboutUserService,
-                phoneNumService
+                phoneNumService,
+                phoneNumRepository
         );
     }
 
-    @Transactional
     @Override
     public AuthenticationResponse registration(@NonNull RegisteredUserRequest request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         var responseRegistered = crudService.addValue(request);
@@ -239,13 +241,15 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         private final ContractEntityService contractEntityService;
         private final InfoAboutUserService infoAboutUserService;
         private final PhoneNumService phoneNumService;
+        private final PhoneNumRepository phoneNumRepository;
 
         protected RegisteredUserCrudService(
                 RegisteredUserRepository repository,
                 PasswordEncoder passwordEncoder,
                 ContractEntityService contractEntityService,
                 InfoAboutUserService infoAboutUserService,
-                PhoneNumService phoneNumService
+                PhoneNumService phoneNumService,
+                PhoneNumRepository phoneNumRepository
         ) {
             super(repository, "Registered users");
 
@@ -253,37 +257,35 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             this.contractEntityService = contractEntityService;
             this.infoAboutUserService = infoAboutUserService;
             this.phoneNumService = phoneNumService;
+            this.phoneNumRepository = phoneNumRepository;
         }
 
         @Override
         protected RegisteredUser createEntity(Request request) {
             var userRequest = (RegisteredUserRequest) request;
+            var phoneNum = getPhoneNum(userRequest.getPhoneNum().getId());
+
             return RegisteredUser
                     .builder()
                     .username(userRequest.getUsername())
                     .password(passwordEncoder.encode(userRequest.getPassword()))
                     .role(userRequest.getRole())
-                    .phoneNum(userRequest.getPhoneNum())
+                    .phoneNum(phoneNum)
                     .build();
         }
 
         protected RegisteredUser createEntity(Response response, String password) {
             var userResponse = (UserResponse) response;
             var builder = RegisteredUser.builder();
-            initEntityBuilder(builder, response);
+            var phoneNum = getPhoneNum(userResponse.getPhoneNum().getId());
 
-            return builder
+            return super
+                    .initEntityBuilder(builder, response)
                     .username(userResponse.getUsername())
                     .password(passwordEncoder.encode(password))
                     .role(userResponse.getRole())
-                    .phoneNum(userResponse.getPhoneNum())
+                    .phoneNum(phoneNum)
                     .build();
-        }
-
-        @Contract("_ -> new")
-        @Override
-        protected @NonNull RegisteredUser createEntity(Response response) {
-            return RegisteredUser.empty();
         }
 
         @Override
@@ -304,8 +306,14 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 entity.setRole(newValue.getRole());
             }
             if(!newValue.getPhoneNum().isEmpty()){
-                entity.setPhoneNum(newValue.getPhoneNum());
+                var phoneNum = getPhoneNum(newValue.getPhoneNum().getId());
+                entity.setPhoneNum(phoneNum);
             }
+        }
+
+        private @NonNull PhoneNum getPhoneNum(@NonNull Long id) {
+            return CrudServiceAbstract
+                    .getEntity(phoneNumRepository, id);
         }
 
         @Override

@@ -4,10 +4,10 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.address.AddressResidence;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
+import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 
 @Getter
 @Setter
@@ -18,9 +18,9 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Transli
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public class CompanyRequest extends TransliterationRequest {
-    private AddressResidence address;
-    private Edrpou edrpou;
-    private Website website;
+    private AddressResidenceResponse address;
+    private EdrpouResponse edrpou;
+    private WebsiteResponse website;
     private String currentAccount;
 
     @Override
@@ -36,9 +36,9 @@ public class CompanyRequest extends TransliterationRequest {
     public static @NonNull CompanyRequest empty(){
         return TransliterationRequest
                 .initEmpty(builder())
-                .address(AddressResidence.empty())
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
+                .address(AddressResidenceResponse.empty())
+                .website(WebsiteResponse.empty())
+                .edrpou(EdrpouResponse.empty())
                 .currentAccount("")
                 .build();
     }

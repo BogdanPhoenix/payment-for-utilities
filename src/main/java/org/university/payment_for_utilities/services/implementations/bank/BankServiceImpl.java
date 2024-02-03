@@ -4,12 +4,15 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.bank.Bank;
+import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
+import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
+import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
+import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
@@ -25,7 +28,9 @@ import static org.university.payment_for_utilities.services.implementations.tool
 public class BankServiceImpl extends TransliterationService<Bank, BankRepository> implements BankService {
     private static final String MFO_TEMPLATE = "^\\d{6}$";
     private final EdrpouService edrpouService;
+    private final EdrpouRepository edrpouRepository;
     private final WebsiteService websiteService;
+    private final WebsiteRepository websiteRepository;
     private final BankPhoneNumService bankPhoneNumService;
     private final ReceiptService receiptService;
 
@@ -33,13 +38,17 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
     public BankServiceImpl(
             BankRepository repository,
             EdrpouService edrpouService,
+            EdrpouRepository edrpouRepository,
             WebsiteService websiteService,
+            WebsiteRepository websiteRepository,
             BankPhoneNumService bankPhoneNumService,
             ReceiptService receiptService
     ) {
         super(repository, "Banks");
         this.edrpouService = edrpouService;
+        this.edrpouRepository = edrpouRepository;
         this.websiteService = websiteService;
+        this.websiteRepository = websiteRepository;
         this.bankPhoneNumService = bankPhoneNumService;
         this.receiptService = receiptService;
     }
@@ -47,26 +56,15 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
     @Override
     protected Bank createEntity(Request request) {
         var builder = Bank.builder();
-        super.initTransliterationPropertyBuilder(builder, request);
         var bankRequest = (BankRequest) request;
+        var website = getWebsite(bankRequest.getWebsite().getId());
+        var edrpou = getEdrpou(bankRequest.getEdrpou().getId());
 
-        return builder
-                .website(bankRequest.getWebsite())
-                .edrpou(bankRequest.getEdrpou())
+        return super
+                .initTransliterationPropertyBuilder(builder, request)
+                .website(website)
+                .edrpou(edrpou)
                 .mfo(bankRequest.getMfo())
-                .build();
-    }
-
-    @Override
-    protected Bank createEntity(Response response) {
-        var bankResponse = (BankResponse) response;
-        var builder = Bank.builder();
-        super.initTransliterationPropertyBuilder(builder, response);
-
-        return builder
-                .website(bankResponse.getWebsite())
-                .edrpou(bankResponse.getEdrpou())
-                .mfo(bankResponse.getMfo())
                 .build();
     }
 
@@ -84,14 +82,26 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
         var newValue = (BankRequest) request;
 
         if(!newValue.getWebsite().isEmpty()){
-            entity.setWebsite(newValue.getWebsite());
+            var website = getWebsite(newValue.getWebsite().getId());
+            entity.setWebsite(website);
         }
         if(!newValue.getEdrpou().isEmpty()){
-            entity.setEdrpou(newValue.getEdrpou());
+            var edrpou = getEdrpou(newValue.getEdrpou().getId());
+            entity.setEdrpou(edrpou);
         }
         if(!newValue.getMfo().isBlank()){
             entity.setMfo(newValue.getMfo());
         }
+    }
+
+    private @NonNull Website getWebsite(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(websiteRepository, id);
+    }
+
+    private @NonNull Edrpou getEdrpou(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(edrpouRepository, id);
     }
 
     @Override

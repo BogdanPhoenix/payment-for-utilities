@@ -5,14 +5,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.CounterSearcher;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.PaymentHistoryResponse;
 
 import java.math.BigDecimal;
-
-import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.EMPTY_BIG_DECIMAL;
 
 @Entity
 @Getter
@@ -31,25 +27,11 @@ public class PaymentHistory extends CounterSearcher {
     private BigDecimal finalPaymentAmount;
 
     @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                finalPaymentAmount.equals(EMPTY_BIG_DECIMAL);
-    }
-
-    @Override
-    public Response getResponse() {
+    public PaymentHistoryResponse getResponse() {
         var responseBuilder = PaymentHistoryResponse.builder();
         return super
-                .responseInit(responseBuilder)
+                .responseCounterSearcherBuilder(responseBuilder)
                 .finalPaymentAmount(this.finalPaymentAmount)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull PaymentHistory empty() {
-        return CounterSearcher
-                .initEmpty(builder())
-                .finalPaymentAmount(EMPTY_BIG_DECIMAL)
                 .build();
     }
 }

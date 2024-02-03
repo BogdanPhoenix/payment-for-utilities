@@ -4,9 +4,9 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 
 import java.time.LocalDate;
 
@@ -19,8 +19,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ReceiptRequest extends Request {
-    private ContractEntity contractEntity;
-    private Bank bank;
+    private ContractEntityResponse contractEntity;
+    private BankResponse bank;
     private LocalDate billMonth;
 
     @Override
@@ -34,8 +34,8 @@ public class ReceiptRequest extends Request {
     public static @NonNull ReceiptRequest empty() {
         return ReceiptRequest
                 .builder()
-                .contractEntity(ContractEntity.empty())
-                .bank(Bank.empty())
+                .contractEntity(ContractEntityResponse.empty())
+                .bank(BankResponse.empty())
                 .billMonth(LocalDate.MIN)
                 .build();
     }

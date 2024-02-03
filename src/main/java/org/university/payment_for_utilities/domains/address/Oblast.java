@@ -5,9 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
 
 import java.util.List;
@@ -38,17 +36,10 @@ public class Oblast extends TransliterationProperty {
     private List<District> districts;
 
     @Override
-    public Response getResponse() {
+    public OblastResponse getResponse() {
         var responseBuilder = OblastResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull Oblast empty(){
-        return TransliterationProperty
-                .initEmpty(builder())
+                .responseTransliterationPropertyBuilder(responseBuilder)
                 .build();
     }
 }

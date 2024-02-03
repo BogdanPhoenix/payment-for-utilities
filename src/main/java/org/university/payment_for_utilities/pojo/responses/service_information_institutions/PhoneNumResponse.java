@@ -3,6 +3,7 @@ package org.university.payment_for_utilities.pojo.responses.service_information_
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
@@ -14,4 +15,17 @@ import org.university.payment_for_utilities.pojo.responses.abstract_class.Respon
 @EqualsAndHashCode(callSuper = true)
 public class PhoneNumResponse extends Response {
     private String number;
+
+    @Override
+    public boolean isEmpty() {
+        return number.isBlank();
+    }
+
+    @Contract(" -> new")
+    public static @NonNull PhoneNumResponse empty() {
+        return Response
+                .initEmpty(builder())
+                .number("")
+                .build();
+    }
 }

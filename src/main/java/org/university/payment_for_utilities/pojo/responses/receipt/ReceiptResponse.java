@@ -3,9 +3,10 @@ package org.university.payment_for_utilities.pojo.responses.receipt;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.user.ContractEntity;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 
 import java.time.LocalDate;
 
@@ -17,7 +18,24 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ReceiptResponse extends Response {
-    private ContractEntity contractEntity;
-    private Bank bank;
+    private ContractEntityResponse contractEntity;
+    private BankResponse bank;
     private LocalDate billMonth;
+
+    @Override
+    public boolean isEmpty() {
+        return contractEntity.isEmpty() ||
+                bank.isEmpty() ||
+                billMonth == LocalDate.MIN;
+    }
+
+    @Contract(" -> new")
+    public static @NonNull ReceiptResponse empty() {
+        return Response
+                .initEmpty(builder())
+                .contractEntity(ContractEntityResponse.empty())
+                .bank(BankResponse.empty())
+                .billMonth(LocalDate.MIN)
+                .build();
+    }
 }

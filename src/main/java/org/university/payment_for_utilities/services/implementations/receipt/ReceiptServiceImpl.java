@@ -3,13 +3,15 @@ package org.university.payment_for_utilities.services.implementations.receipt;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
+import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
+import org.university.payment_for_utilities.repositories.bank.BankRepository;
 import org.university.payment_for_utilities.repositories.receipt.ReceiptRepository;
+import org.university.payment_for_utilities.repositories.user.ContractEntityRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockAccrualAmountService;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockMeterReadingService;
@@ -29,41 +31,38 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     private final PaymentHistoryService paymentHistoryService;
     private final BlockAccrualAmountService blockAccrualAmountService;
     private final BlockMeterReadingService blockMeterReadingService;
+    private final ContractEntityRepository contractEntityRepository;
+    private final BankRepository bankRepository;
 
     @Autowired
     public ReceiptServiceImpl(
             ReceiptRepository repository,
             PaymentHistoryService paymentHistoryService,
             BlockAccrualAmountService blockAccrualAmountService,
-            BlockMeterReadingService blockMeterReadingService
+            BlockMeterReadingService blockMeterReadingService,
+            ContractEntityRepository contractEntityRepository,
+            BankRepository bankRepository
     ) {
         super(repository, "Receipts");
+
         this.paymentHistoryService = paymentHistoryService;
         this.blockAccrualAmountService = blockAccrualAmountService;
         this.blockMeterReadingService = blockMeterReadingService;
+        this.contractEntityRepository = contractEntityRepository;
+        this.bankRepository = bankRepository;
     }
 
     @Override
     protected Receipt createEntity(Request request) {
         var receiptRequest = (ReceiptRequest) request;
+        var contractEntity = getContractEntity(receiptRequest.getContractEntity().getId());
+        var bank = getBank(receiptRequest.getBank().getId());
+
         return Receipt
                 .builder()
-                .contractEntity(receiptRequest.getContractEntity())
-                .bank(receiptRequest.getBank())
+                .contractEntity(contractEntity)
+                .bank(bank)
                 .billMonth(receiptRequest.getBillMonth())
-                .build();
-    }
-
-    @Override
-    protected Receipt createEntity(Response response) {
-        var receiptResponse = (ReceiptResponse) response;
-        var builder = Receipt.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .contractEntity(receiptResponse.getContractEntity())
-                .bank(receiptResponse.getBank())
-                .billMonth(receiptResponse.getBillMonth())
                 .build();
     }
 
@@ -79,10 +78,12 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
         var newValue = (ReceiptRequest) request;
 
         if(!newValue.getContractEntity().isEmpty()){
-            entity.setContractEntity(newValue.getContractEntity());
+            var contractEntity = getContractEntity(newValue.getContractEntity().getId());
+            entity.setContractEntity(contractEntity);
         }
         if(!newValue.getBank().isEmpty()){
-            entity.setBank(newValue.getBank());
+            var bank = getBank(newValue.getBank().getId());
+            entity.setBank(bank);
         }
         if(!newValue.getBillMonth().equals(LocalDate.MIN)){
             entity.setBillMonth(newValue.getBillMonth());
@@ -113,11 +114,24 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     @Override
     protected Optional<Receipt> findEntity(@NonNull Request request) {
         var receiptRequest = (ReceiptRequest) request;
+        var contractEntity = getContractEntity(receiptRequest.getContractEntity().getId());
+        var bank = getBank(receiptRequest.getBank().getId());
+
         return repository
                 .findByContractEntityAndBankAndBillMonth(
-                        receiptRequest.getContractEntity(),
-                        receiptRequest.getBank(),
+                        contractEntity,
+                        bank,
                         receiptRequest.getBillMonth()
                 );
+    }
+
+    private @NonNull ContractEntity getContractEntity(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(contractEntityRepository, id);
+    }
+
+    private @NonNull Bank getBank(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(bankRepository, id);
     }
 }

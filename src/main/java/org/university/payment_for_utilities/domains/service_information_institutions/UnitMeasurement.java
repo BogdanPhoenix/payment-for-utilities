@@ -5,10 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.company.TypeOffer;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
 
 import java.util.Set;
@@ -33,17 +31,10 @@ public class UnitMeasurement extends TransliterationProperty {
     private Set<TypeOffer> offers;
 
     @Override
-    public Response getResponse() {
+    public UnitMeasurementResponse getResponse() {
         var responseBuilder = UnitMeasurementResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull UnitMeasurement empty(){
-        return TransliterationProperty
-                .initEmpty(builder())
+                .responseTransliterationPropertyBuilder(responseBuilder)
                 .build();
     }
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.TransliterationResponse;
 
 @Getter
@@ -27,22 +28,9 @@ public abstract class TransliterationProperty extends TableInfo {
     @NonNull
     protected String enName;
 
-    @Override
-    public boolean isEmpty() {
-        return uaName.isBlank() ||
-                enName.isBlank();
-    }
-
-    protected static <T extends TransliterationPropertyBuilder<?, ?>> T initEmpty(@NonNull T builder){
-        TableInfo
-                .initEmpty(builder)
-                .uaName("")
-                .enName("");
-        return builder;
-    }
-
-    protected <T extends TransliterationResponse.TransliterationResponseBuilder<?, ?>> T responseInit(@NonNull T builder) {
-        super.responseInit(builder)
+    @Contract("_ -> new")
+    protected <T extends TransliterationResponse.TransliterationResponseBuilder<?, ?>> T responseTransliterationPropertyBuilder(@NonNull T builder) {
+        super.responseBuilder(builder)
                 .uaName(this.uaName)
                 .enName(this.enName);
         return builder;

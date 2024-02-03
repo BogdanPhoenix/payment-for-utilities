@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 
@@ -66,8 +66,8 @@ class BankServiceTest extends CrudServiceTest {
                 .builder()
                 .uaName("")
                 .enName(response.getEnName())
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
+                .website(WebsiteResponse.empty())
+                .edrpou(EdrpouResponse.empty())
                 .mfo(response.getMfo())
                 .build();
     }

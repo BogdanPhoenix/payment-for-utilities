@@ -4,8 +4,8 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class InfoAboutUserRequest extends Request {
-    private RegisteredUser registered;
+    private UserResponse registered;
     private String firstName;
     private String lastName;
 
@@ -31,7 +31,7 @@ public class InfoAboutUserRequest extends Request {
     public static @NonNull InfoAboutUserRequest empty() {
         return InfoAboutUserRequest
                 .builder()
-                .registered(RegisteredUser.empty())
+                .registered(UserResponse.empty())
                 .firstName("")
                 .lastName("")
                 .build();

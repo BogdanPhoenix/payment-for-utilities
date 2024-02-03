@@ -5,10 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
 
 import static jakarta.persistence.CascadeType.*;
@@ -36,27 +34,12 @@ public class CompanyPhoneNum extends TableInfo {
     private PhoneNum phoneNum;
 
     @Override
-    public boolean isEmpty() {
-        return company.isEmpty() ||
-                phoneNum.isEmpty();
-    }
-
-    @Override
-    public Response getResponse() {
+    public CompanyPhoneNumResponse getResponse() {
         var responseBuilder = CompanyPhoneNumResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .company(this.company)
-                .phoneNum(this.phoneNum)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull CompanyPhoneNum empty(){
-        return TableInfo
-                .initEmpty(builder())
-                .company(Company.empty())
-                .phoneNum(PhoneNum.empty())
+                .responseBuilder(responseBuilder)
+                .company(this.company.getResponse())
+                .phoneNum(this.phoneNum.getResponse())
                 .build();
     }
 }

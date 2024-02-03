@@ -5,12 +5,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 
 import java.util.Set;
@@ -59,34 +57,14 @@ public class Company extends TransliterationProperty {
     private Set<CompanyTariff> tariffs;
 
     @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                address.isEmpty() ||
-                website.isEmpty() ||
-                edrpou.isEmpty() ||
-                currentAccount.isBlank();
-    }
-
-    @Override
-    public Response getResponse() {
+    public CompanyResponse getResponse() {
         var responseBuilder = CompanyResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .address(this.address)
-                .edrpou(this.edrpou)
-                .website(this.website)
+                .responseTransliterationPropertyBuilder(responseBuilder)
+                .address(this.address.getResponse())
+                .edrpou(this.edrpou.getResponse())
+                .website(this.website.getResponse())
                 .currentAccount(this.currentAccount)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull Company empty(){
-        return TransliterationProperty
-                .initEmpty(builder())
-                .address(AddressResidence.empty())
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
-                .currentAccount("")
                 .build();
     }
 }

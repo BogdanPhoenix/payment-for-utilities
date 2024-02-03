@@ -5,9 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
 
 import java.util.List;
@@ -54,30 +52,13 @@ public class Settlement extends TableInfo {
     private Set<AddressResidence> addresses;
 
     @Override
-    public boolean isEmpty() {
-        return type.isEmpty() ||
-                zipCode.isBlank() ||
-                name.isEmpty();
-    }
-
-    @Override
-    public Response getResponse() {
+    public SettlementResponse getResponse() {
         var responseBuilder = SettlementResponse.builder();
         return super
-                .responseInit(responseBuilder)
-                .type(this.type)
+                .responseBuilder(responseBuilder)
+                .type(this.type.getResponse())
                 .zipCode(this.zipCode)
-                .name(this.name)
-                .build();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull Settlement empty(){
-        return TableInfo
-                .initEmpty(builder())
-                .type(TypeSettlement.empty())
-                .zipCode("")
-                .name(SettlementName.empty())
+                .name(this.name.getResponse())
                 .build();
     }
 }

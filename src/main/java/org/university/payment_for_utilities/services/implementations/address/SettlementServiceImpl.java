@@ -4,14 +4,16 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.address.Settlement;
+import org.university.payment_for_utilities.domains.address.SettlementName;
+import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.address.SettlementRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
+import org.university.payment_for_utilities.repositories.address.SettlementNameRepository;
 import org.university.payment_for_utilities.repositories.address.SettlementRepository;
+import org.university.payment_for_utilities.repositories.address.TypeSettlementRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 import org.university.payment_for_utilities.services.interfaces.address.SettlementService;
@@ -25,37 +27,34 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     private static final String INDEX_TEMPLATE = "^\\d{5}$";
     private final AddressResidenceService addressResidenceService;
 
+    private final TypeSettlementRepository typeSettlementRepository;
+    private final SettlementNameRepository settlementNameRepository;
+
     @Autowired
     public SettlementServiceImpl(
             SettlementRepository repository,
-            AddressResidenceService addressResidenceService
+            AddressResidenceService addressResidenceService,
+            TypeSettlementRepository typeSettlementRepository,
+            SettlementNameRepository settlementNameRepository
     ) {
         super(repository, "Settlements");
         this.addressResidenceService = addressResidenceService;
+        this.typeSettlementRepository = typeSettlementRepository;
+        this.settlementNameRepository = settlementNameRepository;
     }
 
 
     @Override
     protected Settlement createEntity(Request request) {
         var settlementRequest = (SettlementRequest) request;
+        var type = getTypeSettlement(settlementRequest.getType().getId());
+        var name = getSettlementName(settlementRequest.getName().getId());
+
         return Settlement
                 .builder()
-                .type(settlementRequest.getType())
+                .type(type)
                 .zipCode(settlementRequest.getZipCode())
-                .name(settlementRequest.getName())
-                .build();
-    }
-
-    @Override
-    protected Settlement createEntity(Response response) {
-        var settlementResponse = (SettlementResponse) response;
-        var builder = Settlement.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .type(settlementResponse.getType())
-                .zipCode(settlementResponse.getZipCode())
-                .name(settlementResponse.getName())
+                .name(name)
                 .build();
     }
 
@@ -69,14 +68,26 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
         var newValue = (SettlementRequest) request;
 
         if(!newValue.getType().isEmpty()){
-            entity.setType(newValue.getType());
+            var type = getTypeSettlement(newValue.getType().getId());
+            entity.setType(type);
         }
         if(!newValue.getZipCode().isBlank()){
             entity.setZipCode(newValue.getZipCode());
         }
         if(!newValue.getName().isEmpty()){
-            entity.setName(newValue.getName());
+            var name = getSettlementName(newValue.getName().getId());
+            entity.setName(name);
         }
+    }
+
+    private @NonNull TypeSettlement getTypeSettlement(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(typeSettlementRepository, id);
+    }
+
+    private @NonNull SettlementName getSettlementName(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(settlementNameRepository, id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -7,19 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.company.CompanyTariff;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.domains.user.ContractEntity;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.requests.user.*;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.company.CompanyEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.user")
@@ -33,21 +30,19 @@ public class UserEntitiesRequestTestContextConfiguration {
     private RegisteredUserServiceImpl registerUserService;
     @Autowired
     private ContractEntityServiceImpl contractEntityService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     @Qualifier("companyPhoneNum")
-    private PhoneNum ivanPhoneNumber;
+    private PhoneNumResponse ivanPhoneNumber;
     @Autowired
     @Qualifier("bankPhoneNum")
-    private PhoneNum olegPhoneNumber;
+    private PhoneNumResponse olegPhoneNumber;
     @Autowired
     @Qualifier("createRivneTariff")
-    private CompanyTariff rivneTariff;
+    private CompanyTariffResponse rivneTariff;
     @Autowired
     @Qualifier("createKyivTariff")
-    private CompanyTariff kyivTariff;
+    private CompanyTariffResponse kyivTariff;
 
     @Lazy
     @Bean(name = "changePasswordRequest")
@@ -62,7 +57,7 @@ public class UserEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "rivneContract")
-    public ContractEntity rivneContract() {
+    public ContractEntityResponse rivneContract() {
         return createContractEntity(createRivneContractRequest());
     }
 
@@ -115,7 +110,7 @@ public class UserEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "kyivContract")
-    public ContractEntity kyivContract() {
+    public ContractEntityResponse kyivContract() {
         return createContractEntity(createKyivContractRequest());
     }
 
@@ -157,23 +152,12 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    private RegisteredUser createRegisteredUser(RegisteredUserRequest request) {
+    private @NonNull UserResponse createRegisteredUser(RegisteredUserRequest request) {
         registerUserService.registration(request);
-        var response = (UserResponse) registerUserService.getByUsername(request.getUsername());
-
-        return RegisteredUser
-                .builder()
-                .id(response.getId())
-                .username(response.getUsername())
-                .role(response.getRole())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .phoneNum(response.getPhoneNum())
-                .createDate(response.getCreateDate())
-                .updateDate(response.getUpdateDate())
-                .build();
+        return (UserResponse) registerUserService.getByUsername(request.getUsername());
     }
 
-    private ContractEntity createContractEntity(ContractEntityRequest request) {
-        return (ContractEntity) createEntity(contractEntityService, request);
+    private ContractEntityResponse createContractEntity(ContractEntityRequest request) {
+        return (ContractEntityResponse) contractEntityService.addValue(request);
     }
 }

@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 import java.io.Serializable;
@@ -35,15 +34,9 @@ public abstract class TableInfo implements Serializable {
     @Column(name = "current_data")
     protected boolean enabled;
 
-    /**
-     * Checks if the entity is empty.
-     *
-     * @return true if the entity does not contain at least one empty attribute, otherwise false.
-     */
-    public abstract boolean isEmpty();
     public abstract Response getResponse();
 
-    protected <T extends Response.ResponseBuilder<?, ?>> T responseInit(@NonNull T builder){
+    protected <T extends Response.ResponseBuilder<?, ?>> T responseBuilder(@NonNull T builder){
         builder.id(this.id)
                 .createDate(this.createDate)
                 .updateDate(this.updateDate);
@@ -55,12 +48,5 @@ public abstract class TableInfo implements Serializable {
         this.setEnabled(true);
         this.setCreateDate(LocalDateTime.now());
         this.setUpdateDate(LocalDateTime.now());
-    }
-
-    @Contract("_ -> param1")
-    protected static <T extends TableInfoBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
-        builder.createDate(LocalDateTime.MIN)
-                .updateDate(LocalDateTime.MIN);
-        return builder;
     }
 }

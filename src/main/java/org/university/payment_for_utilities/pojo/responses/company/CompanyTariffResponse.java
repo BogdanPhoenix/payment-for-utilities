@@ -3,11 +3,12 @@ package org.university.payment_for_utilities.pojo.responses.company;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.university.payment_for_utilities.domains.company.Company;
-import org.university.payment_for_utilities.domains.company.TypeOffer;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 import java.math.BigDecimal;
+
+import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.EMPTY_BIG_DECIMAL;
 
 @Getter
 @Setter
@@ -17,8 +18,27 @@ import java.math.BigDecimal;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CompanyTariffResponse extends Response {
-    private Company company;
-    private TypeOffer type;
+    private CompanyResponse company;
+    private TypeOfferResponse type;
     private String name;
     private BigDecimal fixedCost;
+
+    @Override
+    public boolean isEmpty() {
+        return company.isEmpty() ||
+                type.isEmpty() ||
+                name.isBlank() ||
+                fixedCost.equals(EMPTY_BIG_DECIMAL);
+    }
+
+    @Contract(" -> new")
+    public static @NonNull CompanyTariffResponse empty(){
+        return Response
+                .initEmpty(builder())
+                .company(CompanyResponse.empty())
+                .type(TypeOfferResponse.empty())
+                .name("")
+                .fixedCost(EMPTY_BIG_DECIMAL)
+                .build();
+    }
 }

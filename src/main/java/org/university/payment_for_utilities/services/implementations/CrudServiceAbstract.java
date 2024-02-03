@@ -14,7 +14,6 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.services.interfaces.CrudService;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo.TableInfoBuilder;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response.ResponseBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -67,17 +66,29 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                 );
     }
 
-    protected void initEntityBuilder(@NonNull TableInfoBuilder<?,?> builder, @NonNull Response response) {
+    protected static <E extends TableInfo> E getEntity(@NonNull JpaRepository<E, Long> repository, @NonNull Long id) {
+        return repository
+                .findById(id)
+                .filter(TableInfo::isEnabled)
+                .orElseThrow(() -> {
+                    var tableName = cutRepository(repository);
+                    var message = String.format("Unable to find an entity in the \"%s\" table using the specified identifier: %d.", tableName, id);
+                    return throwNotFindEntityInDataBaseException(message);
+                });
+    }
+
+    private static @NonNull String cutRepository(@NonNull JpaRepository<?, Long> repository) {
+        var repositoryName = repository.getClass().getSimpleName();
+        int endIndex = repositoryName.lastIndexOf("Repository");
+        return repositoryName.substring(0, endIndex);
+    }
+
+    protected <B extends TableInfoBuilder<?, ?>> B initEntityBuilder(@NonNull B builder, @NonNull Response response) {
         builder.id(response.getId())
                 .createDate(response.getCreateDate())
                 .updateDate(response.getUpdateDate())
                 .enabled(true);
-    }
-
-    protected void initResponseBuilder(@NonNull ResponseBuilder<?, ?> builder, @NonNull T entity) {
-        builder.id(entity.getId())
-                .createDate(entity.getCreateDate())
-                .updateDate(entity.getUpdateDate());
+        return builder;
     }
 
     @Transactional(readOnly = true)
@@ -264,7 +275,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
     }
 
     protected abstract T createEntity(Request request);
-    protected abstract T createEntity(Response response);
     protected abstract void updateEntity(@NonNull T entity, @NonNull Request request);
     protected abstract void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException;
     protected abstract Optional<T> findEntity(@NonNull Request request);

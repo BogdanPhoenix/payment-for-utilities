@@ -3,13 +3,15 @@ package org.university.payment_for_utilities.services.implementations.user;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
+import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
+import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
 import org.university.payment_for_utilities.repositories.user.ContractEntityRepository;
+import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptService;
 import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
@@ -23,37 +25,34 @@ public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntit
     private static final String NUM_CONTRACT_TEMPLATE = "^\\d{11}$";
 
     private final ReceiptService receiptService;
+    private final RegisteredUserRepository registeredUserRepository;
+    private final CompanyTariffRepository companyTariffRepository;
 
     @Autowired
     public ContractEntityServiceImpl(
             ContractEntityRepository repository,
-            ReceiptService receiptService
+            ReceiptService receiptService,
+            RegisteredUserRepository registeredUserRepository,
+            CompanyTariffRepository companyTariffRepository
     ) {
         super(repository, "Contract entities");
+
         this.receiptService = receiptService;
+        this.registeredUserRepository = registeredUserRepository;
+        this.companyTariffRepository = companyTariffRepository;
     }
 
     @Override
     protected ContractEntity createEntity(Request request) {
         var contractRequest = (ContractEntityRequest) request;
+        var registeredUser = getRegisteredUser(contractRequest.getRegisteredUser().getId());
+        var companyTariff = getCompanyTariff(contractRequest.getCompanyTariff().getId());
+
         return ContractEntity
                 .builder()
-                .registeredUser(contractRequest.getRegisteredUser())
-                .companyTariff(contractRequest.getCompanyTariff())
+                .registeredUser(registeredUser)
+                .companyTariff(companyTariff)
                 .numContract(contractRequest.getNumContract())
-                .build();
-    }
-
-    @Override
-    protected ContractEntity createEntity(Response response) {
-        var contractResponse = (ContractEntityResponse) response;
-        var builder = ContractEntity.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .registeredUser(contractResponse.getRegisteredUser())
-                .companyTariff(contractResponse.getCompanyTariff())
-                .numContract(contractResponse.getNumContract())
                 .build();
     }
 
@@ -67,14 +66,26 @@ public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntit
         var newValue = (ContractEntityRequest) request;
 
         if(!newValue.getRegisteredUser().isEmpty()){
-            entity.setRegisteredUser(newValue.getRegisteredUser());
+            var registeredUser = getRegisteredUser(newValue.getRegisteredUser().getId());
+            entity.setRegisteredUser(registeredUser);
         }
         if(!newValue.getCompanyTariff().isEmpty()){
-            entity.setCompanyTariff(newValue.getCompanyTariff());
+            var companyTariff = getCompanyTariff(newValue.getCompanyTariff().getId());
+            entity.setCompanyTariff(companyTariff);
         }
         if(!newValue.getNumContract().isBlank()){
             entity.setNumContract(newValue.getNumContract());
         }
+    }
+
+    private @NonNull RegisteredUser getRegisteredUser(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(registeredUserRepository, id);
+    }
+
+    private @NonNull CompanyTariff getCompanyTariff(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(companyTariffRepository, id);
     }
 
     @Override
