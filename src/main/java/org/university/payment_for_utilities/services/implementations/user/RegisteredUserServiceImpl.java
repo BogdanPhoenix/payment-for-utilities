@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.domains.user.Token;
@@ -38,6 +39,7 @@ import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUs
 import org.university.payment_for_utilities.services.interfaces.user.RegisteredUserService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
@@ -90,7 +92,8 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 contractEntityService,
                 infoAboutUserService,
                 phoneNumService,
-                phoneNumRepository
+                phoneNumRepository,
+                tokenRepository
         );
     }
 
@@ -242,6 +245,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         private final InfoAboutUserService infoAboutUserService;
         private final PhoneNumService phoneNumService;
         private final PhoneNumRepository phoneNumRepository;
+        private final TokenRepository tokenRepository;
 
         protected RegisteredUserCrudService(
                 RegisteredUserRepository repository,
@@ -249,7 +253,8 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 ContractEntityService contractEntityService,
                 InfoAboutUserService infoAboutUserService,
                 PhoneNumService phoneNumService,
-                PhoneNumRepository phoneNumRepository
+                PhoneNumRepository phoneNumRepository,
+                TokenRepository tokenRepository
         ) {
             super(repository, "Registered users");
 
@@ -258,6 +263,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             this.infoAboutUserService = infoAboutUserService;
             this.phoneNumService = phoneNumService;
             this.phoneNumRepository = phoneNumRepository;
+            this.tokenRepository = tokenRepository;
         }
 
         @Override
@@ -291,8 +297,25 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         @Override
         protected void deactivatedChildren(@NonNull RegisteredUser entity) {
             deactivateChild(entity.getInfoUser(), infoAboutUserService);
-            deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
             deactivateChild(entity.getPhoneNum(), phoneNumService);
+            deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
+            deactivateToken(entity);
+        }
+
+        private void deactivateToken(@NonNull RegisteredUser entity) {
+            entity.getTokens()
+                    .forEach(this::removeToken);
+        }
+
+        private void removeToken(@NonNull Token token) {
+            var entity = tokenRepository
+                    .findById(token.getId())
+                    .filter(TableInfo::isEnabled)
+                    .orElseThrow();
+
+            entity.setEnabled(false);
+            entity.setUpdateDate(LocalDateTime.now());
+            tokenRepository.save(entity);
         }
 
         @Override

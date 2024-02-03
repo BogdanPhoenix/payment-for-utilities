@@ -2,11 +2,13 @@ package org.university.payment_for_utilities.services.interfaces.user;
 
 import lombok.NonNull;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.exceptions.*;
 import org.university.payment_for_utilities.pojo.requests.user.ChangePasswordRequest;
 import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
+@Transactional
 public interface RegisteredUserService extends AuthenticationService {
     @NonNull Response getByUsername(@NonNull String username) throws NotFindEntityInDataBaseException;
 

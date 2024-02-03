@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
@@ -91,7 +90,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return builder;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<Response> getAll(){
         return findAll()
@@ -100,14 +98,12 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Response getById(Long id) throws NotFindEntityInDataBaseException{
         return findById(id)
                 .getResponse();
     }
 
-    @Transactional
     @Override
     public Response addValue(@NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException {
         validateAdd(request);
@@ -129,7 +125,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
     }
 
-    @Transactional
     @Override
     public Response updateValue(@NonNull Long id, @NonNull Request request) throws EmptyRequestException, InvalidInputDataException, DuplicateException, NotFindEntityInDataBaseException {
         var entity = findById(id);
@@ -152,7 +147,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         log.info(String.format(MESSAGE_SUCCESS_VALIDATION, methodName));
     }
 
-    @Transactional
     @Override
     public Response removeValue(@NonNull Request request) throws NotFindEntityInDataBaseException {
         var methodName = String.format(METHOD_NAME, nameClass, "removeValue(Request request)");
@@ -165,7 +159,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return entity.getResponse();
     }
 
-    @Transactional
     @Override
     public Response removeValue(Long id) throws NotFindEntityInDataBaseException {
         var methodName = String.format(METHOD_NAME, nameClass, "removeValue(Long id)");
@@ -178,7 +171,6 @@ public abstract class CrudServiceAbstract<T extends TableInfo, J extends JpaRepo
         return entity.getResponse();
     }
 
-    @Transactional
     @Override
     public Long removeAll() {
         var methodName = String.format(METHOD_NAME, nameClass, "removeAll()");

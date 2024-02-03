@@ -1,6 +1,7 @@
 package org.university.payment_for_utilities.services.interfaces;
 
 import lombok.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.exceptions.DuplicateException;
@@ -10,6 +11,7 @@ import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseEx
 
 import java.util.List;
 
+@Transactional
 public interface CrudService {
     /**
      * Provides the entire contents of the table.
