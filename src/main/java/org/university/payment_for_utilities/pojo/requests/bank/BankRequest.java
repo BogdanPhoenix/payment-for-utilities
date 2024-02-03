@@ -15,7 +15,7 @@ import org.university.payment_for_utilities.pojo.responses.service_information_i
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class BankRequest extends TransliterationRequest {
     private WebsiteResponse website;
     private EdrpouResponse edrpou;

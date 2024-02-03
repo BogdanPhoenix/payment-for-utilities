@@ -13,6 +13,7 @@ import org.university.payment_for_utilities.repositories.company.CompanyReposito
 import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
 import org.university.payment_for_utilities.repositories.company.TypeOfferRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.TransliterationService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
 import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
 
@@ -22,7 +23,7 @@ import static org.university.payment_for_utilities.services.implementations.tool
 import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.validateFinance;
 
 @Service
-public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
+public class CompanyTariffServiceImpl extends TransliterationService<CompanyTariff, CompanyTariffRepository> implements CompanyTariffService {
     private final ContractEntityService contractEntityService;
     private final CompanyRepository companyRepository;
     private final TypeOfferRepository typeOfferRepository;
@@ -43,16 +44,16 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
 
     @Override
     protected CompanyTariff createEntity(Request request) {
+        var builder = CompanyTariff.builder();
         var companyTariffRequest = (CompanyTariffRequest) request;
         var company = getCompany(companyTariffRequest.getCompany().getId());
         var type = getType(companyTariffRequest.getType().getId());
         var fixedCost = convertStringToBigDecimal(companyTariffRequest.getFixedCost());
 
-        return CompanyTariff
-                .builder()
+        return super
+                .initTransliterationPropertyBuilder(builder, request)
                 .company(company)
                 .type(type)
-                .name(companyTariffRequest.getName())
                 .fixedCost(fixedCost)
                 .build();
     }
@@ -64,6 +65,7 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
 
     @Override
     protected void updateEntity(@NonNull CompanyTariff entity, @NonNull Request request) {
+        super.updateEntity(entity, request);
         var newValue = (CompanyTariffRequest) request;
 
         if(!newValue.getCompany().isEmpty()){
@@ -74,9 +76,6 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
             var type = getType(newValue.getType().getId());
             entity.setType(type);
         }
-        if(!newValue.getName().isBlank()){
-            entity.setName(newValue.getName());
-        }
         if(!newValue.getFixedCost().isBlank()){
             var fixedCost = convertStringToBigDecimal(newValue.getFixedCost());
             entity.setFixedCost(fixedCost);
@@ -85,9 +84,9 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
+        super.validationProcedureRequest(request);
         var companyTariffRequest = (CompanyTariffRequest) request;
 
-        validateName(companyTariffRequest.getName());
         validateFinance("fixed cost", companyTariffRequest.getFixedCost());
     }
 
@@ -97,9 +96,9 @@ public class CompanyTariffServiceImpl extends CrudServiceAbstract<CompanyTariff,
         var company = getCompany(companyTariffRequest.getCompany().getId());
 
         return repository
-                .findByCompanyAndName(
+                .findByCompanyAndEnName(
                         company,
-                        companyTariffRequest.getName()
+                        companyTariffRequest.getEnName()
                 );
     }
 

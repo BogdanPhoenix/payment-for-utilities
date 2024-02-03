@@ -54,7 +54,8 @@ class CompanyTariffServiceTest extends CrudServiceTest {
                 .id(response.getId())
                 .company(createKyivTariffRequest.getCompany())
                 .type(typeOfferUpdate)
-                .name("Денний")
+                .uaName("Денний")
+                .enName("Day")
                 .fixedCost(new BigDecimal(fixedCost))
                 .build();
     }
@@ -66,7 +67,8 @@ class CompanyTariffServiceTest extends CrudServiceTest {
                 .builder()
                 .company(CompanyResponse.empty())
                 .type(response.getType())
-                .name(response.getName())
+                .uaName(response.getUaName())
+                .enName(response.getEnName())
                 .fixedCost("")
                 .build();
     }
@@ -75,7 +77,7 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     @DisplayName("Check for an exception when the user passed data in the wrong format to the \"name\" attribute.")
     void testValidateNameThrow(){
         var request = (CompanyTariffRequest) firstRequest;
-        request.setName("fatal@_@data");
+        request.setEnName("fatal@_@data");
         addValueThrowInvalidInputData(request);
     }
 

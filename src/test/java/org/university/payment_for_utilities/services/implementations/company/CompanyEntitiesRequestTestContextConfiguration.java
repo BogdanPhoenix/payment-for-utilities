@@ -91,7 +91,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .builder()
                 .company(company)
                 .type(type)
-                .name("Денний")
+                .uaName("Денний")
+                .enName("Day")
                 .fixedCost("13.5")
                 .build();
     }
@@ -106,7 +107,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
                 .builder()
                 .company(company)
                 .type(type)
-                .name("Нічний")
+                .uaName("Нічний")
+                .enName("Night")
                 .fixedCost("1.68")
                 .build();
 

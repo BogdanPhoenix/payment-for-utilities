@@ -16,7 +16,7 @@ import org.university.payment_for_utilities.pojo.responses.service_information_i
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class CompanyRequest extends TransliterationRequest {
     private AddressResidenceResponse address;
     private EdrpouResponse edrpou;
