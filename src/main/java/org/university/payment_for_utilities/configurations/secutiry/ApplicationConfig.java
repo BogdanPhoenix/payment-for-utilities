@@ -1,5 +1,6 @@
 package org.university.payment_for_utilities.configurations.secutiry;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -49,5 +50,10 @@ public class ApplicationConfig {
     @Bean
     public AuthenticationManager authenticationManager(@NonNull AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public Dotenv dotenv() {
+        return Dotenv.configure().load();
     }
 }

@@ -10,8 +10,6 @@ import org.university.payment_for_utilities.pojo.requests.user.AuthenticationReq
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.responses.user.AuthenticationResponse;
 
-import java.io.IOException;
-
 @Transactional
 public interface AuthenticationService {
     /**
@@ -42,10 +40,10 @@ public interface AuthenticationService {
      *
      * @param request  the HttpServletRequest containing the Authorization header with the refresh token.
      * @param response the HttpServletResponse to write the new authentication response.
-     * @throws IOException if an I/O error occurs while writing the authentication response.
+     * @throws TokenRefreshException if an input/output error occurs while updating the user's token.
      */
     void refreshToken(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response
-    ) throws IOException;
+    ) throws TokenRefreshException;
 }

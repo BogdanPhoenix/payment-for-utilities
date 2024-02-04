@@ -16,6 +16,7 @@ public class Handler extends ResponseEntityExceptionHandler {
             NullPointerException.class,
             EmptyRequestException.class,
             IllegalStateException.class,
+            TokenRefreshException.class,
             InvalidInputDataException.class,
             InvalidAuthenticationData.class,
             NotFindEntityInDataBaseException.class

@@ -125,6 +125,18 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     public void refreshToken(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response
+    ) throws TokenRefreshException {
+        try {
+            updateToken(request, response);
+        } catch (IOException e) {
+            var message = String.format("The following error occurred while updating the token: %s.", e.getMessage());
+            throw new TokenRefreshException(message);
+        }
+    }
+
+    private void updateToken(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response
     ) throws IOException {
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 

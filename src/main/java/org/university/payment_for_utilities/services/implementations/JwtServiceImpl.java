@@ -4,6 +4,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
@@ -22,10 +23,8 @@ public class JwtServiceImpl implements JwtService {
     private final long jwtExpiration;
     private final long refreshExpiration;
 
-
-    public JwtServiceImpl() {
-        var dotenv = Dotenv.configure().load();
-
+    @Autowired
+    public JwtServiceImpl(Dotenv dotenv) {
         this.secretKey = dotenv.get("SECURITY_KEY");
         this.jwtExpiration = Long.parseLong(dotenv.get("EXPIRATION"));
         this.refreshExpiration = Long.parseLong(dotenv.get("REFRESH_TOKEN_EXPIRATION"));
