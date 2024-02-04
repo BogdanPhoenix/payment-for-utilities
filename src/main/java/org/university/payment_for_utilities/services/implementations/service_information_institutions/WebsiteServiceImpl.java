@@ -6,8 +6,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.WebsiteService;
@@ -29,28 +27,7 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
         var websiteRequest = (WebsiteRequest) request;
         return Website
                 .builder()
-                .website(websiteRequest.getWebsite())
-                .build();
-    }
-
-    @Override
-    protected Website createEntity(Response response) {
-        var websiteResponse = (WebsiteResponse) response;
-        var builder = Website.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .website(websiteResponse.getWebsite())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull Website entity) {
-        var builder = WebsiteResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .website(entity.getWebsite())
+                .value(websiteRequest.getValue())
                 .build();
     }
 
@@ -58,15 +35,15 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     protected void updateEntity(@NonNull Website entity, @NonNull Request request) {
         var newValue = (WebsiteRequest) request;
 
-        if(!newValue.getWebsite().isBlank()){
-            entity.setWebsite(newValue.getWebsite());
+        if(!newValue.getValue().isBlank()){
+            entity.setValue(newValue.getValue());
         }
     }
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var websiteRequest = (WebsiteRequest) request;
-        validateWebSite(websiteRequest.getWebsite());
+        validateWebSite(websiteRequest.getValue());
     }
 
     private void validateWebSite(@NonNull String webSite) throws InvalidInputDataException {
@@ -88,8 +65,8 @@ public class WebsiteServiceImpl extends CrudServiceAbstract<Website, WebsiteRepo
     protected Optional<Website> findEntity(@NonNull Request request) {
         var websiteRequest = (WebsiteRequest) request;
         return repository
-                .findByWebsite(
-                        websiteRequest.getWebsite()
+                .findByValue(
+                        websiteRequest.getValue()
                 );
     }
 }

@@ -3,6 +3,7 @@ package org.university.payment_for_utilities.pojo.requests.abstract_class;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.jetbrains.annotations.Contract;
 
 /**
  * An abstract class representing the query structure that must necessarily contain the name of the entity in Ukrainian and English that can be used to interact with the system.
@@ -25,10 +26,10 @@ public abstract class TransliterationRequest extends Request {
                 this.enName.isBlank();
     }
 
-    protected static TransliterationRequest initEmpty(@NonNull TransliterationRequestBuilder<?, ?> builder) {
-        return builder
-                .uaName("")
-                .enName("")
-                .build();
+    @Contract("_ -> param1")
+    protected static <T extends TransliterationRequestBuilder<?, ?>> @NonNull T initEmpty(@NonNull T builder) {
+        builder.uaName("")
+                .enName("");
+        return builder;
     }
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface EdrpouRepository extends JpaRepository<Edrpou, Long> {
-    Optional<Edrpou> findByEdrpou(String edrpou);
+    Optional<Edrpou> findByValue(String value);
 }

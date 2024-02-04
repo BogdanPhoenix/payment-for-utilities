@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
 
@@ -54,7 +54,7 @@ public class ContractEntityServiceTest extends CrudServiceTest {
         var response = (ContractEntityResponse) expectedResponse;
         return ContractEntityRequest
                 .builder()
-                .registeredUser(RegisteredUser.empty())
+                .registeredUser(UserResponse.empty())
                 .companyTariff(response.getCompanyTariff())
                 .numContract(response.getNumContract())
                 .build();

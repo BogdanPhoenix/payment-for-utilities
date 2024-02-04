@@ -1,5 +1,6 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -7,19 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.company.CompanyTariff;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.domains.user.ContractEntity;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.enumarations.Role;
-import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
-import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
-import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
+import org.university.payment_for_utilities.pojo.requests.user.*;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.company.CompanyEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.service_information_institutions.ServiceInfoEntitiesRequestTestContextConfiguration;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.user")
@@ -36,20 +33,31 @@ public class UserEntitiesRequestTestContextConfiguration {
 
     @Autowired
     @Qualifier("companyPhoneNum")
-    private PhoneNum ivanPhoneNumber;
+    private PhoneNumResponse ivanPhoneNumber;
     @Autowired
     @Qualifier("bankPhoneNum")
-    private PhoneNum olegPhoneNumber;
+    private PhoneNumResponse olegPhoneNumber;
     @Autowired
     @Qualifier("createRivneTariff")
-    private CompanyTariff rivneTariff;
+    private CompanyTariffResponse rivneTariff;
     @Autowired
     @Qualifier("createKyivTariff")
-    private CompanyTariff kyivTariff;
+    private CompanyTariffResponse kyivTariff;
+
+    @Lazy
+    @Bean(name = "changePasswordRequest")
+    public ChangePasswordRequest changePasswordRequest() {
+        return ChangePasswordRequest
+                .builder()
+                .currentPassword("qwerTy4iop$")
+                .newPassword("qWerty5iop$@")
+                .confirmationPassword("qWerty5iop$@")
+                .build();
+    }
 
     @Lazy
     @Bean(name = "rivneContract")
-    public ContractEntity rivneContract() {
+    public ContractEntityResponse rivneContract() {
         return createContractEntity(createRivneContractRequest());
     }
 
@@ -70,11 +78,9 @@ public class UserEntitiesRequestTestContextConfiguration {
     @Bean(name = "userIvanRequest")
     public InfoAboutUserRequest userIvanRequest(){
         var registered = createRegisteredUser(registeredUserIvanRequest());
-
         return InfoAboutUserRequest
                 .builder()
                 .registered(registered)
-                .role(Role.USER)
                 .firstName("Ivan")
                 .lastName("Ivanov")
                 .build();
@@ -85,15 +91,26 @@ public class UserEntitiesRequestTestContextConfiguration {
     public RegisteredUserRequest registeredUserIvanRequest(){
         return RegisteredUserRequest
                 .builder()
-                .userEmail("test@gmail.com")
-                .passwordUser("qwerTy4iop$")
+                .username("test@gmail.com")
+                .password("qwerTy4iop$")
+                .role(Role.USER)
                 .phoneNum(ivanPhoneNumber)
                 .build();
     }
 
     @Lazy
+    @Bean(name = "authenticationUserIvanRequest")
+    public AuthenticationRequest authenticationUserIvanRequest() {
+        return AuthenticationRequest
+                .builder()
+                .username("test@gmail.com")
+                .password("qwerTy4iop$")
+                .build();
+    }
+
+    @Lazy
     @Bean(name = "kyivContract")
-    public ContractEntity kyivContract() {
+    public ContractEntityResponse kyivContract() {
         return createContractEntity(createKyivContractRequest());
     }
 
@@ -118,7 +135,6 @@ public class UserEntitiesRequestTestContextConfiguration {
         return InfoAboutUserRequest
                 .builder()
                 .registered(registered)
-                .role(Role.ADMIN)
                 .firstName("Oleg")
                 .lastName("Nick")
                 .build();
@@ -129,17 +145,19 @@ public class UserEntitiesRequestTestContextConfiguration {
     public RegisteredUserRequest registeredUserOlegRequest(){
         return RegisteredUserRequest
                 .builder()
-                .userEmail("oleg@ukr.net")
-                .passwordUser("qWerty5iop$@")
+                .username("oleg@ukr.net")
+                .password("qWerty5iop$@")
+                .role(Role.ADMIN)
                 .phoneNum(olegPhoneNumber)
                 .build();
     }
 
-    private RegisteredUser createRegisteredUser(RegisteredUserRequest request) {
-        return (RegisteredUser) createEntity(registerUserService, request);
+    private @NonNull UserResponse createRegisteredUser(RegisteredUserRequest request) {
+        registerUserService.registration(request);
+        return (UserResponse) registerUserService.getByUsername(request.getUsername());
     }
 
-    private ContractEntity createContractEntity(ContractEntityRequest request) {
-        return (ContractEntity) createEntity(contractEntityService, request);
+    private ContractEntityResponse createContractEntity(ContractEntityRequest request) {
+        return (ContractEntityResponse) contractEntityService.addValue(request);
     }
 }

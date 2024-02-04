@@ -11,21 +11,22 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class WebsiteRequest extends Request {
-    private String website;
+    private String value;
 
     @Override
     public boolean isEmpty() {
-        return this.website.isBlank();
+        return value.isBlank();
     }
 
     @Contract(" -> new")
     public static @NonNull WebsiteRequest empty(){
         return WebsiteRequest
                 .builder()
-                .website("")
+                .value("")
                 .build();
     }
 }

@@ -5,34 +5,35 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
+import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "types_settlement")
 public class TypeSettlement extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "type", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<Settlement> settlements;
+    private Set<Settlement> settlements;
 
-    @Contract(" -> new")
-    public static @NonNull TypeSettlement empty(){
-        var builder = TypeSettlement.builder();
-        TransliterationProperty.initEmpty(builder);
-        return builder.build();
+    @Override
+    public TypeSettlementResponse getResponse() {
+        var responseBuilder = TypeSettlementResponse.builder();
+        return super
+                .responseTransliterationPropertyBuilder(responseBuilder)
+                .build();
     }
 }

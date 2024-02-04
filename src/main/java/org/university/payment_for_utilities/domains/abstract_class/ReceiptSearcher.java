@@ -7,17 +7,19 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.ReceiptSearcherResponse;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public abstract class ReceiptSearcher extends TableInfo {
     @ManyToOne
@@ -25,13 +27,10 @@ public abstract class ReceiptSearcher extends TableInfo {
     @NonNull
     private Receipt receipt;
 
-    @Override
-    public boolean isEmpty() {
-        return receipt.isEmpty();
-    }
-
-    protected static void initEmpty(@NonNull ReceiptSearcherBuilder<?, ?> builder) {
-        TableInfo.initEmpty(builder);
-        builder.receipt(Receipt.empty());
+    @Contract("_ -> new")
+    protected <T extends ReceiptSearcherResponse.ReceiptSearcherResponseBuilder<?, ?>> @NonNull T responseReceiptSearcherBuilder(@NonNull T builder) {
+        super.responseBuilder(builder)
+                .receipt(this.receipt.getResponse());
+        return builder;
     }
 }

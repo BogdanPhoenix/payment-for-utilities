@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -31,24 +32,20 @@ public abstract class TableInfo implements Serializable {
     private LocalDateTime updateDate;
 
     @Column(name = "current_data")
-    protected boolean currentData;
+    protected boolean enabled;
 
-    /**
-     * Checks if the entity is empty.
-     *
-     * @return true if the entity does not contain at least one empty attribute, otherwise false.
-     */
-    public abstract boolean isEmpty();
+    public abstract Response getResponse();
 
-    protected static void initEmpty(@NonNull TableInfoBuilder<?, ?> builder) {
-        builder
-                .createDate(LocalDateTime.MIN)
-                .updateDate(LocalDateTime.MIN);
+    protected <T extends Response.ResponseBuilder<?, ?>> T responseBuilder(@NonNull T builder){
+        builder.id(this.id)
+                .createDate(this.createDate)
+                .updateDate(this.updateDate);
+        return builder;
     }
 
     @PrePersist
     public void onPrePersist(){
-        this.setCurrentData(true);
+        this.setEnabled(true);
         this.setCreateDate(LocalDateTime.now());
         this.setUpdateDate(LocalDateTime.now());
     }

@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.address.AddressResidenceService;
 
@@ -62,7 +62,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
         var response = (AddressResidenceResponse) expectedResponse;
         return AddressResidenceRequest
                 .builder()
-                .settlement(Settlement.empty())
+                .settlement(SettlementResponse.empty())
                 .uaNameStreet("")
                 .enNameStreet("")
                 .numHouse(response.getNumHouse())

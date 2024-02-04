@@ -12,6 +12,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class PhoneNumRequest extends Request {
     private String number;

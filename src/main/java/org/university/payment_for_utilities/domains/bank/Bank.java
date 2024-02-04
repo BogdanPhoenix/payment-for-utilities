@@ -5,39 +5,27 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
+import org.university.payment_for_utilities.domains.abstract_class.CommonInstitutionalData;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "banks")
-public class Bank extends TransliterationProperty {
-    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
-    @JoinColumn(name = "id_edrpou", nullable = false, unique = true)
-    @NonNull
-    private Edrpou edrpou;
-
-    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
-    @JoinColumn(name = "id_website", nullable = false, unique = true)
-    @NonNull
-    private Website website;
-
+public class Bank extends CommonInstitutionalData {
     @Column(name = "mfo", length = 6, nullable = false, unique = true)
     @NonNull
     private String mfo;
@@ -45,35 +33,24 @@ public class Bank extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "bank", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<BankPhoneNum> phones;
+    private Set<BankPhoneNum> phones;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "bank", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<Receipt> receipts;
+    private Set<Receipt> receipts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "banks", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<RegisteredUser> users;
+    private Set<RegisteredUser> users;
 
     @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                website.isEmpty() ||
-                edrpou.isEmpty() ||
-                mfo.isBlank();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull Bank empty(){
-        var builder = builder();
-        TransliterationProperty.initEmpty(builder);
-
-        return builder
-                .website(Website.empty())
-                .edrpou(Edrpou.empty())
-                .mfo("")
+    public BankResponse getResponse() {
+        var responseBuilder = BankResponse.builder();
+        return super
+                .responseCommonInstitutionalDataBuilder(responseBuilder)
+                .mfo(this.mfo)
                 .build();
     }
 }

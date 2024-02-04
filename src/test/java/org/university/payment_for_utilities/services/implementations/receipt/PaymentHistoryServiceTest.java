@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.PaymentHistoryResponse;
+import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.receipt.PaymentHistoryService;
 
@@ -64,7 +64,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
         var response = (PaymentHistoryResponse) expectedResponse;
         return PaymentHistoryRequest
                 .builder()
-                .receipt(Receipt.empty())
+                .receipt(ReceiptResponse.empty())
                 .prevValueCounter(EMPTY_COUNTER)
                 .currentValueCounter(response.getCurrentValueCounter())
                 .finalPaymentAmount(response.getFinalPaymentAmount().toString())

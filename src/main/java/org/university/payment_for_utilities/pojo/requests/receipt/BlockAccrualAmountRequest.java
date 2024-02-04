@@ -4,15 +4,15 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.ReceiptSearcherRequest;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class BlockAccrualAmountRequest extends ReceiptSearcherRequest {
     private String debtBeginMonth;
@@ -33,9 +33,8 @@ public class BlockAccrualAmountRequest extends ReceiptSearcherRequest {
 
     @Contract(" -> new")
     public static @NonNull BlockAccrualAmountRequest empty() {
-        return BlockAccrualAmountRequest
-                .builder()
-                .receipt(Receipt.empty())
+        return ReceiptSearcherRequest
+                .initEmpty(builder())
                 .debtBeginMonth("")
                 .debtEndMonth("")
                 .fine("")

@@ -3,17 +3,15 @@ package org.university.payment_for_utilities.services.implementations.service_in
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.*;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.service_information_institutions.Edrpou;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
-import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
-import org.university.payment_for_utilities.domains.service_information_institutions.Website;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.UnitMeasurementRequest;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.WebsiteRequest;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.WebsiteResponse;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.service_information_institutions")
@@ -30,7 +28,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "companyPhoneNum")
-    public PhoneNum companyPhoneNum(){
+    public PhoneNumResponse companyPhoneNum(){
         var request = companyPhoneNumRequest();
         return createPhoneNum(request);
     }
@@ -46,7 +44,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "bankPhoneNum")
-    public PhoneNum bankPhoneNum(){
+    public PhoneNumResponse bankPhoneNum(){
         var request = bankPhoneNumRequest();
         return createPhoneNum(request);
     }
@@ -62,7 +60,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "updateBankPhoneNum")
-    public PhoneNum updateBankPhoneNum(){
+    public PhoneNumResponse updateBankPhoneNum(){
         var request = updateBankPhoneNumRequest();
         return createPhoneNum(request);
     }
@@ -78,13 +76,13 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "unitKilowatt")
-    public UnitMeasurement unitKilowatt(){
+    public UnitMeasurementResponse unitKilowatt(){
         return createUnitMeasurement(unitKilowattRequest());
     }
 
     @Lazy
     @Bean(name = "unitCubicMeter")
-    public UnitMeasurement unitCubicMeter(){
+    public UnitMeasurementResponse unitCubicMeter(){
         return createUnitMeasurement(unitCubicMeterRequest());
     }
 
@@ -110,7 +108,7 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
 
     @Lazy
     @Bean(name = "privateBankWebsite")
-    public Website privateBankWebsite(){
+    public WebsiteResponse privateBankWebsite(){
         return createWebsite(privateBankWebsiteRequest());
     }
 
@@ -119,13 +117,13 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public WebsiteRequest privateBankWebsiteRequest(){
         return WebsiteRequest
                 .builder()
-                .website("https://privatbank.ua/")
+                .value("https://privatbank.ua/")
                 .build();
     }
 
     @Lazy
     @Bean(name = "raiffeisenBankWebsite")
-    public Website raiffeisenBankWebsite(){
+    public WebsiteResponse raiffeisenBankWebsite(){
         return createWebsite(raiffeisenBankWebsiteRequest());
     }
 
@@ -134,13 +132,13 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public WebsiteRequest raiffeisenBankWebsiteRequest(){
         return WebsiteRequest
                 .builder()
-                .website("https://raiffeisen.ua/")
+                .value("https://raiffeisen.ua/")
                 .build();
     }
 
     @Lazy
     @Bean(name = "privateBankEdrpou")
-    public Edrpou privateBankEdrpou(){
+    public EdrpouResponse privateBankEdrpou(){
         return createEdrpou(privateBankEdrpouRequest());
     }
 
@@ -149,13 +147,13 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest privateBankEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14360570")
+                .value("14360570")
                 .build();
     }
 
     @Lazy
     @Bean(name = "raiffeisenBankEdrpou")
-    public Edrpou raiffeisenBankEdrpou(){
+    public EdrpouResponse raiffeisenBankEdrpou(){
         return createEdrpou(raiffeisenBankEdrpouRequest());
     }
 
@@ -164,13 +162,13 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest raiffeisenBankEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14305909")
+                .value("14305909")
                 .build();
     }
 
     @Lazy
     @Bean(name = "kyivEdrpou")
-    public Edrpou kyivEdrpou(){
+    public EdrpouResponse kyivEdrpou(){
         return createEdrpou(kyivEdrpouRequest());
     }
 
@@ -179,13 +177,13 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest kyivEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14305919")
+                .value("14305919")
                 .build();
     }
 
     @Lazy
     @Bean(name = "raiffeisenBankUpdateEdrpou")
-    public Edrpou raiffeisenBankUpdateEdrpou(){
+    public EdrpouResponse raiffeisenBankUpdateEdrpou(){
         return createEdrpou(raiffeisenBankUpdateEdrpouRequest());
     }
 
@@ -194,23 +192,23 @@ public class ServiceInfoEntitiesRequestTestContextConfiguration {
     public EdrpouRequest raiffeisenBankUpdateEdrpouRequest(){
         return EdrpouRequest
                 .builder()
-                .edrpou("14380701")
+                .value("14380701")
                 .build();
     }
 
-    private PhoneNum createPhoneNum(PhoneNumRequest request){
-        return (PhoneNum) createEntity(phoneNumService, request);
+    private PhoneNumResponse createPhoneNum(PhoneNumRequest request){
+        return (PhoneNumResponse) phoneNumService.addValue(request);
     }
 
-    private UnitMeasurement createUnitMeasurement(UnitMeasurementRequest request){
-        return (UnitMeasurement) createEntity(unitMeasurementService, request);
+    private UnitMeasurementResponse createUnitMeasurement(UnitMeasurementRequest request){
+        return (UnitMeasurementResponse) unitMeasurementService.addValue(request);
     }
 
-    private Website createWebsite(WebsiteRequest request){
-        return (Website) createEntity(websiteService, request);
+    private WebsiteResponse createWebsite(WebsiteRequest request){
+        return (WebsiteResponse) websiteService.addValue(request);
     }
 
-    private Edrpou createEdrpou(EdrpouRequest request){
-        return (Edrpou) createEntity(edrpouService, request);
+    private EdrpouResponse createEdrpou(EdrpouRequest request){
+        return (EdrpouResponse) edrpouService.addValue(request);
     }
 }

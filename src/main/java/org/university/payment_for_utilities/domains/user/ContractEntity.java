@@ -5,25 +5,24 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.CompanyTariff;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.DETACH;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "contract_entities")
 public class ContractEntity extends TableInfo {
@@ -44,24 +43,16 @@ public class ContractEntity extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "contractEntity", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<Receipt> receipts;
+    private Set<Receipt> receipts;
 
     @Override
-    public boolean isEmpty() {
-        return registeredUser.isEmpty() ||
-                companyTariff.isEmpty() ||
-                numContract.isBlank();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull ContractEntity empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
-                .registeredUser(RegisteredUser.empty())
-                .companyTariff(CompanyTariff.empty())
-                .numContract("")
+    public ContractEntityResponse getResponse() {
+        var responseBuilder = ContractEntityResponse.builder();
+        return super
+                .responseBuilder(responseBuilder)
+                .registeredUser(this.registeredUser.getResponse())
+                .companyTariff(this.companyTariff.getResponse())
+                .numContract(this.numContract)
                 .build();
     }
 }

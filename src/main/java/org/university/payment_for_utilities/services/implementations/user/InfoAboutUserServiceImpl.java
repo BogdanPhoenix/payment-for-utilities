@@ -4,13 +4,12 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.university.payment_for_utilities.domains.user.InfoAboutUser;
-import org.university.payment_for_utilities.enumarations.Role;
+import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
 import org.university.payment_for_utilities.repositories.user.InfoAboutUserRepository;
+import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUserService;
 
@@ -18,47 +17,27 @@ import java.util.Optional;
 
 @Service
 public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser, InfoAboutUserRepository> implements InfoAboutUserService {
+    private final RegisteredUserRepository registeredUserRepository;
+
     @Autowired
-    public InfoAboutUserServiceImpl(InfoAboutUserRepository repository) {
+    public InfoAboutUserServiceImpl(
+            InfoAboutUserRepository repository,
+            RegisteredUserRepository registeredUserRepository
+    ) {
         super(repository, "Info about users");
+        this.registeredUserRepository = registeredUserRepository;
     }
 
     @Override
     protected InfoAboutUser createEntity(Request request) {
         var infoRequest = (InfoAboutUserRequest) request;
+        var registeredUser = getRegisteredUser(infoRequest.getRegistered().getId());
+
         return InfoAboutUser
                 .builder()
-                .registered(infoRequest.getRegistered())
-                .role(infoRequest.getRole())
+                .registered(registeredUser)
                 .firstName(infoRequest.getFirstName())
                 .lastName(infoRequest.getLastName())
-                .build();
-    }
-
-    @Override
-    protected InfoAboutUser createEntity(Response response) {
-        var infoResponse = (InfoAboutUserResponse) response;
-        var builder = InfoAboutUser.builder();
-        initEntityBuilder(builder, infoResponse);
-
-        return builder
-                .registered(infoResponse.getRegistered())
-                .role(infoResponse.getRole())
-                .firstName(infoResponse.getFirstName())
-                .lastName(infoResponse.getLastName())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(InfoAboutUser entity) {
-        var builder = InfoAboutUserResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .registered(entity.getRegistered())
-                .role(entity.getRole())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
                 .build();
     }
 
@@ -67,10 +46,8 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
         var newValue = (InfoAboutUserRequest) request;
 
         if(!newValue.getRegistered().isEmpty()){
-            entity.setRegistered(newValue.getRegistered());
-        }
-        if(newValue.getRole() != Role.EMPTY){
-            entity.setRole(newValue.getRole());
+            var registeredUser = getRegisteredUser(newValue.getRegistered().getId());
+            entity.setRegistered(registeredUser);
         }
         if(!newValue.getFirstName().isBlank()){
             entity.setFirstName(newValue.getFirstName());
@@ -78,6 +55,11 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
         if(!newValue.getLastName().isBlank()){
             entity.setLastName(newValue.getLastName());
         }
+    }
+
+    private @NonNull RegisteredUser getRegisteredUser(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(registeredUserRepository, id);
     }
 
     @Override

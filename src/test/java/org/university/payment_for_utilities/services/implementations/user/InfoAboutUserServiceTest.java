@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
-import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUserService;
 
@@ -51,7 +50,6 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
                 .builder()
                 .id(response.getId())
                 .registered(userOlegRequest.getRegistered())
-                .role(Role.BANK_ADMIN)
                 .firstName("Petro")
                 .lastName("Petro")
                 .build();
@@ -62,8 +60,7 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
         var response = (InfoAboutUserResponse) expectedResponse;
         return InfoAboutUserRequest
                 .builder()
-                .registered(RegisteredUser.empty())
-                .role(response.getRole())
+                .registered(UserResponse.empty())
                 .firstName(response.getFirstName())
                 .lastName(response.getLastName())
                 .build();

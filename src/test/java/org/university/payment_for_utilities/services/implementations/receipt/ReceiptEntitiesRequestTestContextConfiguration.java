@@ -7,20 +7,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
-import org.university.payment_for_utilities.configurations.DataBaseConfiguration;
-import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.receipt.Receipt;
-import org.university.payment_for_utilities.domains.user.ContractEntity;
+import org.university.payment_for_utilities.configurations.database.DataBaseConfiguration;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockAccrualAmountRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockMeterReadingRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
+import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
+import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 import org.university.payment_for_utilities.services.implementations.bank.BankEntitiesRequestTestContextConfiguration;
 import org.university.payment_for_utilities.services.implementations.user.UserEntitiesRequestTestContextConfiguration;
 
 import java.time.LocalDate;
-
-import static org.university.payment_for_utilities.AdditionalTestingTools.createEntity;
 
 @TestConfiguration
 @ComponentScan(basePackages = "org.university.payment_for_utilities.services.implementations.receipt")
@@ -35,16 +33,16 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
 
     @Autowired
     @Qualifier("privateBank")
-    private Bank privateBank;
+    private BankResponse privateBank;
     @Autowired
     @Qualifier("raiffeisenBank")
-    private Bank raiffeisenBank;
+    private BankResponse raiffeisenBank;
     @Autowired
     @Qualifier("rivneContract")
-    private ContractEntity rivneContract;
+    private ContractEntityResponse rivneContract;
     @Autowired
     @Qualifier("kyivContract")
-    private ContractEntity kyivContract;
+    private ContractEntityResponse kyivContract;
 
     @Lazy
     @Bean(name = "rivneAccrualAmountRequest")
@@ -154,7 +152,7 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
                 .build();
     }
 
-    private Receipt createReceipt(ReceiptRequest request) {
-        return (Receipt) createEntity(receiptService, request);
+    private ReceiptResponse createReceipt(ReceiptRequest request) {
+        return (ReceiptResponse) receiptService.addValue(request);
     }
 }

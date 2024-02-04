@@ -5,35 +5,43 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
+import org.university.payment_for_utilities.enumarations.Role;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "registered_users")
-public class RegisteredUser extends TableInfo {
+public class RegisteredUser extends TableInfo implements UserDetails {
     @Column(name = "user_email", nullable = false, unique = true)
     @NonNull
-    private String userEmail;
+    private String username;
 
     @Column(name = "password_user", length = 1000, nullable = false)
     @NonNull
-    private String passwordUser;
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
     @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
@@ -70,24 +78,43 @@ public class RegisteredUser extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "registeredUser", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<ContractEntity> contractEntities;
+    private Set<ContractEntity> contractEntities;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", cascade = {MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
+    private Set<Token> tokens;
 
     @Override
-    public boolean isEmpty() {
-        return userEmail.isBlank() ||
-                passwordUser.isBlank() ||
-                phoneNum.isEmpty();
+    public UserResponse getResponse() {
+        var responseBuilder = UserResponse.builder();
+        return super
+                .responseBuilder(responseBuilder)
+                .username(this.username)
+                .role(this.role)
+                .phoneNum(this.phoneNum.getResponse())
+                .build();
     }
 
-    @Contract(" -> new")
-    public static @NonNull RegisteredUser empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
+    //Security
 
-        return builder
-                .userEmail("")
-                .passwordUser("")
-                .phoneNum(PhoneNum.empty())
-                .build();
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }

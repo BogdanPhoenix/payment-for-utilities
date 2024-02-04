@@ -6,8 +6,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.EdrpouRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.EdrpouResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.EdrpouService;
@@ -29,28 +27,7 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
         var edrpouRequest = (EdrpouRequest) request;
         return Edrpou
                 .builder()
-                .edrpou(edrpouRequest.getEdrpou())
-                .build();
-    }
-
-    @Override
-    protected Edrpou createEntity(Response response) {
-        var edrpouResponse = (EdrpouResponse) response;
-        var builder = Edrpou.builder();
-        initEntityBuilder(builder, response);
-
-        return builder
-                .edrpou(edrpouResponse.getEdrpou())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull Edrpou entity) {
-        var builder = EdrpouResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .edrpou(entity.getEdrpou())
+                .value(edrpouRequest.getValue())
                 .build();
     }
 
@@ -58,15 +35,15 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     protected void updateEntity(@NonNull Edrpou entity, @NonNull Request request) {
         var newValue = (EdrpouRequest) request;
 
-        if(!newValue.getEdrpou().isBlank()){
-            entity.setEdrpou(newValue.getEdrpou());
+        if(!newValue.getValue().isBlank()){
+            entity.setValue(newValue.getValue());
         }
     }
 
     @Override
     protected void validationProcedureRequest(@NonNull Request request) throws InvalidInputDataException {
         var edrpouRequest = (EdrpouRequest) request;
-        validateEdrpou(edrpouRequest.getEdrpou());
+        validateEdrpou(edrpouRequest.getValue());
     }
 
     private void validateEdrpou(@NonNull String edrpou) throws InvalidInputDataException {
@@ -87,8 +64,8 @@ public class EdrpouServiceImpl extends CrudServiceAbstract<Edrpou, EdrpouReposit
     protected Optional<Edrpou> findEntity(@NonNull Request request) {
         var edrpouRequest = (EdrpouRequest) request;
         return repository
-                .findByEdrpou(
-                        edrpouRequest.getEdrpou()
+                .findByValue(
+                        edrpouRequest.getValue()
                 );
     }
 }

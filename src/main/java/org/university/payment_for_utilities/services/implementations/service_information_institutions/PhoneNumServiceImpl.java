@@ -7,8 +7,6 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.service_information_institutions.PhoneNumRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
@@ -31,27 +29,6 @@ public class PhoneNumServiceImpl extends CrudServiceAbstract<PhoneNum, PhoneNumR
         return PhoneNum
                 .builder()
                 .number(phoneNumRequest.getNumber())
-                .build();
-    }
-
-    @Override
-    protected PhoneNum createEntity(Response response) {
-        var phoneNumResponse = (PhoneNumResponse) response;
-        var builder = PhoneNum.builder();
-        initEntityBuilder(builder, phoneNumResponse);
-
-        return builder
-                .number(phoneNumResponse.getNumber())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull PhoneNum entity) {
-        var builder = PhoneNumResponse.builder();
-        initResponseBuilder(builder, entity);
-
-        return builder
-                .number(entity.getNumber())
                 .build();
     }
 

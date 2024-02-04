@@ -3,18 +3,21 @@ package org.university.payment_for_utilities.pojo.responses.user;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class RegisterUserResponse extends Response {
-    private String userEmail;
-    private String passwordUser;
-    private PhoneNum phoneNum;
+public class TokenResponse extends Response {
+    private String accessToken;
+    private UserResponse user;
+
+    @Override
+    public boolean isEmpty() {
+        return accessToken.isBlank();
+    }
 }

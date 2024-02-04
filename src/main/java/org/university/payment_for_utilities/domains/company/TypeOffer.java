@@ -5,23 +5,23 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
 import org.university.payment_for_utilities.domains.service_information_institutions.UnitMeasurement;
+import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
 
-import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "types_offers",
         uniqueConstraints = {
@@ -37,21 +37,14 @@ public class TypeOffer extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "type", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private List<CompanyTariff> tariffs;
+    private Set<CompanyTariff> tariffs;
 
     @Override
-    public boolean isEmpty() {
-        return super.isEmpty() ||
-                unitMeasurement.isEmpty();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull TypeOffer empty(){
-        var builder = TypeOffer.builder();
-        TransliterationProperty.initEmpty(builder);
-
-        return builder
-                .unitMeasurement(UnitMeasurement.empty())
+    public TypeOfferResponse getResponse() {
+        var responseBuilder = TypeOfferResponse.builder();
+        return super
+                .responseTransliterationPropertyBuilder(responseBuilder)
+                .unitMeasurement(this.unitMeasurement.getResponse())
                 .build();
     }
 }

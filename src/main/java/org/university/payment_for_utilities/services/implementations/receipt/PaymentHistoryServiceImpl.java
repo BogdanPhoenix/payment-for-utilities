@@ -6,10 +6,9 @@ import org.university.payment_for_utilities.domains.receipt.PaymentHistory;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.PaymentHistoryRequest;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.receipt.PaymentHistoryResponse;
 import org.university.payment_for_utilities.repositories.receipt.PaymentHistoryRepository;
-import org.university.payment_for_utilities.services.implementations.CounterSearcherService;
+import org.university.payment_for_utilities.repositories.receipt.ReceiptRepository;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.CounterSearcherService;
 import org.university.payment_for_utilities.services.interfaces.receipt.PaymentHistoryService;
 
 import static org.university.payment_for_utilities.services.implementations.tools.FinanceTools.convertStringToBigDecimal;
@@ -17,41 +16,25 @@ import static org.university.payment_for_utilities.services.implementations.tool
 
 @Service
 public class PaymentHistoryServiceImpl extends CounterSearcherService<PaymentHistory, PaymentHistoryRepository> implements PaymentHistoryService {
-    protected PaymentHistoryServiceImpl(PaymentHistoryRepository repository) {
-        super(repository, "Payment history");
+    protected PaymentHistoryServiceImpl(
+            PaymentHistoryRepository repository,
+            ReceiptRepository receiptRepository
+    ) {
+        super(repository, "Payment history", receiptRepository);
     }
 
     @Override
     protected PaymentHistory createEntity(Request request) {
         var historyRequest = (PaymentHistoryRequest) request;
         var payment = convertStringToBigDecimal(historyRequest.getFinalPaymentAmount());
+        var receipt = getReceipt(historyRequest.getReceipt().getId());
+
         return PaymentHistory
                 .builder()
-                .receipt(historyRequest.getReceipt())
+                .receipt(receipt)
                 .prevValueCounter(historyRequest.getPrevValueCounter())
                 .currentValueCounter(historyRequest.getCurrentValueCounter())
                 .finalPaymentAmount(payment)
-                .build();
-    }
-
-    @Override
-    protected PaymentHistory createEntity(Response response) {
-        var historyResponse = (PaymentHistoryResponse) response;
-        var builder = PaymentHistory.builder();
-        super.initCounterSearcherBuilder(builder, response);
-
-        return builder
-                .finalPaymentAmount(historyResponse.getFinalPaymentAmount())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(PaymentHistory entity) {
-        var builder = PaymentHistoryResponse.builder();
-        super.initCounterResponseBuilder(builder, entity);
-
-        return builder
-                .finalPaymentAmount(entity.getFinalPaymentAmount())
                 .build();
     }
 

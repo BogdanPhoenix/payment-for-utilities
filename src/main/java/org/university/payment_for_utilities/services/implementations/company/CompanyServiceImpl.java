@@ -3,14 +3,17 @@ package org.university.payment_for_utilities.services.implementations.company;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
-import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
+import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
+import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.CommonInstitutionalDataService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyService;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
@@ -22,74 +25,54 @@ import java.util.Optional;
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
 
 @Service
-public class CompanyServiceImpl extends TransliterationService<Company, CompanyRepository> implements CompanyService {
+public class CompanyServiceImpl extends CommonInstitutionalDataService<Company, CompanyRepository> implements CompanyService {
     private static final String CURRENT_ACCOUNT_TEMPLATE = "^\\d{14}$";
 
-    private final EdrpouService edrpouService;
-    private final WebsiteService websiteService;
     private final CompanyPhoneNumService companyPhoneNumService;
     private final CompanyTariffService companyTariffService;
+    private final AddressResidenceRepository addressResidenceRepository;
 
     @Autowired
     public CompanyServiceImpl(
             CompanyRepository repository,
             EdrpouService edrpouService,
+            EdrpouRepository edrpouRepository,
             WebsiteService websiteService,
+            WebsiteRepository websiteRepository,
             CompanyPhoneNumService companyPhoneNumService,
-            CompanyTariffService companyTariffService
+            CompanyTariffService companyTariffService,
+            AddressResidenceRepository addressResidenceRepository
     ) {
-        super(repository, "Companies");
-        this.edrpouService = edrpouService;
-        this.websiteService = websiteService;
+        super(
+                repository,
+                "Companies",
+                edrpouService,
+                edrpouRepository,
+                websiteService,
+                websiteRepository
+        );
+
         this.companyPhoneNumService = companyPhoneNumService;
         this.companyTariffService = companyTariffService;
+        this.addressResidenceRepository = addressResidenceRepository;
     }
 
     @Override
     protected Company createEntity(Request request) {
         var builder = Company.builder();
-        super.initTransliterationPropertyBuilder(builder, request);
         var companyRequest = (CompanyRequest) request;
+        var address = getAddress(companyRequest.getAddress().getId());
 
-        return builder
-                .address(companyRequest.getAddress())
-                .edrpou(companyRequest.getEdrpou())
-                .website(companyRequest.getWebsite())
+        return super
+                .initCommonInstitutionalDataBuilder(builder, companyRequest)
+                .address(address)
                 .currentAccount(companyRequest.getCurrentAccount())
                 .build();
     }
 
     @Override
-    protected Company createEntity(Response response) {
-        var builder = Company.builder();
-        var companyResponse = (CompanyResponse) response;
-        super.initTransliterationPropertyBuilder(builder, response);
-
-        return builder
-                .address(companyResponse.getAddress())
-                .edrpou(companyResponse.getEdrpou())
-                .website(companyResponse.getWebsite())
-                .currentAccount(companyResponse.getCurrentAccount())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull Company entity) {
-        var builder = CompanyResponse.builder();
-        super.initResponseBuilder(builder, entity);
-
-        return builder
-                .address(entity.getAddress())
-                .edrpou(entity.getEdrpou())
-                .website(entity.getWebsite())
-                .currentAccount(entity.getCurrentAccount())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull Company entity) {
-        deactivateChild(entity.getEdrpou(), edrpouService);
-        deactivateChild(entity.getWebsite(), websiteService);
+        super.deactivatedChildren(entity);
         deactivateChildrenCollection(entity.getPhones(), companyPhoneNumService);
         deactivateChildrenCollection(entity.getTariffs(), companyTariffService);
     }
@@ -100,17 +83,17 @@ public class CompanyServiceImpl extends TransliterationService<Company, CompanyR
         var newValue = (CompanyRequest) request;
 
         if(!newValue.getAddress().isEmpty()){
-            entity.setAddress(newValue.getAddress());
-        }
-        if(!newValue.getEdrpou().isEmpty()){
-            entity.setEdrpou(newValue.getEdrpou());
-        }
-        if(!newValue.getWebsite().isEmpty()){
-            entity.setWebsite(newValue.getWebsite());
+            var address = getAddress(newValue.getAddress().getId());
+            entity.setAddress(address);
         }
         if(!newValue.getCurrentAccount().isBlank()){
             entity.setCurrentAccount(newValue.getCurrentAccount());
         }
+    }
+
+    private @NonNull AddressResidence getAddress(@NonNull Long id) {
+        return CrudServiceAbstract
+                .getEntity(addressResidenceRepository, id);
     }
 
     @Override

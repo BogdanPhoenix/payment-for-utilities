@@ -4,21 +4,22 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.address.SettlementName;
-import org.university.payment_for_utilities.domains.address.TypeSettlement;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
+import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
 
 @Getter
 @Setter
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class SettlementRequest extends Request {
-    private TypeSettlement type;
+    private TypeSettlementResponse type;
     private String zipCode;
-    private SettlementName name;
+    private SettlementNameResponse name;
 
     @Override
     public boolean isEmpty() {
@@ -31,9 +32,9 @@ public class SettlementRequest extends Request {
     public static @NonNull SettlementRequest empty(){
         return SettlementRequest
                 .builder()
-                .type(TypeSettlement.empty())
+                .type(TypeSettlementResponse.empty())
                 .zipCode("")
-                .name(SettlementName.empty())
+                .name(SettlementNameResponse.empty())
                 .build();
     }
 }

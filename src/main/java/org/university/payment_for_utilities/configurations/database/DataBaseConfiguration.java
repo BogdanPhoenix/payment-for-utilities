@@ -1,4 +1,4 @@
-package org.university.payment_for_utilities.configurations;
+package org.university.payment_for_utilities.configurations.database;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.jdbc.DataSourceBuilder;

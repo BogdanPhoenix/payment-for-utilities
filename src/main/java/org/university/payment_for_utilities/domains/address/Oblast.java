@@ -5,8 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TransliterationProperty;
+import org.university.payment_for_utilities.pojo.responses.address.OblastResponse;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ import static jakarta.persistence.CascadeType.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "oblasts")
 public class Oblast extends TransliterationProperty {
@@ -35,10 +35,11 @@ public class Oblast extends TransliterationProperty {
     )
     private List<District> districts;
 
-    @Contract(" -> new")
-    public static @NonNull Oblast empty(){
-        var builder = Oblast.builder();
-        TransliterationProperty.initEmpty(builder);
-        return builder.build();
+    @Override
+    public OblastResponse getResponse() {
+        var responseBuilder = OblastResponse.builder();
+        return super
+                .responseTransliterationPropertyBuilder(responseBuilder)
+                .build();
     }
 }

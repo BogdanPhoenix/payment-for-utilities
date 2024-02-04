@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        transaction:
+          jta:
+            platform: org.jboss.narayana.jta
+        format_sql: true
+        hbm2ddl:
+          auto: create-drop
+    show-sql: false
+
+  thymeleaf:
+    enabled: true
+    cache: false
+
+  freemarker:
+    expose-request-attributes: true
+
+logging:
+  file:
+    name: ./logs/payment_for_utilities.log

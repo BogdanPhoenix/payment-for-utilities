@@ -5,23 +5,23 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "phone_numbers")
 public class PhoneNum extends TableInfo {
@@ -45,17 +45,11 @@ public class PhoneNum extends TableInfo {
     private RegisteredUser user;
 
     @Override
-    public boolean isEmpty() {
-        return number.isBlank();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull PhoneNum empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
-                .number("")
+    public PhoneNumResponse getResponse() {
+        var responseBuilder = PhoneNumResponse.builder();
+        return super
+                .responseBuilder(responseBuilder)
+                .number(this.number)
                 .build();
     }
 }

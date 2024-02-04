@@ -7,10 +7,10 @@ import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.bank.BankRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
-import org.university.payment_for_utilities.services.implementations.TransliterationService;
+import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
+import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
+import org.university.payment_for_utilities.services.implementations.auxiliary_services.CommonInstitutionalDataService;
 import org.university.payment_for_utilities.services.interfaces.bank.BankPhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.bank.BankService;
 import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptService;
@@ -22,10 +22,8 @@ import java.util.Optional;
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
 
 @Service
-public class BankServiceImpl extends TransliterationService<Bank, BankRepository> implements BankService {
+public class BankServiceImpl extends CommonInstitutionalDataService<Bank, BankRepository> implements BankService {
     private static final String MFO_TEMPLATE = "^\\d{6}$";
-    private final EdrpouService edrpouService;
-    private final WebsiteService websiteService;
     private final BankPhoneNumService bankPhoneNumService;
     private final ReceiptService receiptService;
 
@@ -33,13 +31,21 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
     public BankServiceImpl(
             BankRepository repository,
             EdrpouService edrpouService,
+            EdrpouRepository edrpouRepository,
             WebsiteService websiteService,
+            WebsiteRepository websiteRepository,
             BankPhoneNumService bankPhoneNumService,
             ReceiptService receiptService
     ) {
-        super(repository, "Banks");
-        this.edrpouService = edrpouService;
-        this.websiteService = websiteService;
+        super(
+                repository,
+                "Banks",
+                edrpouService,
+                edrpouRepository,
+                websiteService,
+                websiteRepository
+        );
+
         this.bankPhoneNumService = bankPhoneNumService;
         this.receiptService = receiptService;
     }
@@ -47,45 +53,17 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
     @Override
     protected Bank createEntity(Request request) {
         var builder = Bank.builder();
-        super.initTransliterationPropertyBuilder(builder, request);
         var bankRequest = (BankRequest) request;
 
-        return builder
-                .website(bankRequest.getWebsite())
-                .edrpou(bankRequest.getEdrpou())
+        return super
+                .initCommonInstitutionalDataBuilder(builder, bankRequest)
                 .mfo(bankRequest.getMfo())
                 .build();
     }
 
     @Override
-    protected Bank createEntity(Response response) {
-        var bankResponse = (BankResponse) response;
-        var builder = Bank.builder();
-        super.initTransliterationPropertyBuilder(builder, response);
-
-        return builder
-                .website(bankResponse.getWebsite())
-                .edrpou(bankResponse.getEdrpou())
-                .mfo(bankResponse.getMfo())
-                .build();
-    }
-
-    @Override
-    protected Response createResponse(@NonNull Bank entity) {
-        var builder = BankResponse.builder();
-        super.initResponseBuilder(builder, entity);
-
-        return builder
-                .website(entity.getWebsite())
-                .edrpou(entity.getEdrpou())
-                .mfo(entity.getMfo())
-                .build();
-    }
-
-    @Override
     protected void deactivatedChildren(@NonNull Bank entity) {
-        edrpouService.removeValue(entity.getEdrpou().getId());
-        websiteService.removeValue(entity.getWebsite().getId());
+        super.deactivatedChildren(entity);
         deactivateChildrenCollection(entity.getPhones(), bankPhoneNumService);
         deactivateChildrenCollection(entity.getReceipts(), receiptService);
     }
@@ -95,12 +73,6 @@ public class BankServiceImpl extends TransliterationService<Bank, BankRepository
         super.updateEntity(entity, request);
         var newValue = (BankRequest) request;
 
-        if(!newValue.getWebsite().isEmpty()){
-            entity.setWebsite(newValue.getWebsite());
-        }
-        if(!newValue.getEdrpou().isEmpty()){
-            entity.setEdrpou(newValue.getEdrpou());
-        }
         if(!newValue.getMfo().isBlank()){
             entity.setMfo(newValue.getMfo());
         }

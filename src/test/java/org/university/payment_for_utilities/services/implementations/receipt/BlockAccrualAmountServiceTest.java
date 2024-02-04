@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.BlockAccrualAmountRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.receipt.BlockAccrualAmountResponse;
+import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.receipt.BlockAccrualAmountService;
 
@@ -67,7 +67,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
         var response = (BlockAccrualAmountResponse) expectedResponse;
         return BlockAccrualAmountRequest
                 .builder()
-                .receipt(Receipt.empty())
+                .receipt(ReceiptResponse.empty())
                 .debtBeginMonth(response.getDebtBeginMonth().toString())
                 .debtEndMonth(response.getDebtEndMonth().toString())
                 .fine(response.getFine().toString())

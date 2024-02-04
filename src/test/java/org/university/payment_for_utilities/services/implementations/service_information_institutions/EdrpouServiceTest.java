@@ -48,7 +48,7 @@ class EdrpouServiceTest extends CrudServiceTest {
         return EdrpouResponse
                 .builder()
                 .id(response.getId())
-                .edrpou("75231456")
+                .value("75231456")
                 .build();
     }
 
@@ -57,7 +57,7 @@ class EdrpouServiceTest extends CrudServiceTest {
         var response = (EdrpouResponse) expectedResponse;
         return EdrpouRequest
                 .builder()
-                .edrpou(response.getEdrpou())
+                .value(response.getValue())
                 .build();
     }
 
@@ -68,7 +68,7 @@ class EdrpouServiceTest extends CrudServiceTest {
     void testWedEdrpouThrowInvalidInputDataException(String edrpou){
         var request = EdrpouRequest
                 .builder()
-                .edrpou(edrpou)
+                .value(edrpou)
                 .build();
 
         addValueThrowInvalidInputData(request);

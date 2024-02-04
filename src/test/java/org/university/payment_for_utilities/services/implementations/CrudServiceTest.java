@@ -14,7 +14,10 @@ import org.university.payment_for_utilities.exceptions.NotFindEntityInDataBaseEx
 import org.university.payment_for_utilities.services.interfaces.CrudService;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.CompletableFuture.delayedExecutor;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,7 +55,7 @@ public abstract class CrudServiceTest {
 
     @Test
     @DisplayName("Check if you can retrieve an entity from a table by its identifier.")
-    void testGetByIdCorrect(){
+    protected void testGetByIdCorrect(){
         var response = service.addValue(firstRequest);
         var responseById = service.getById(response.getId());
 
@@ -69,7 +72,7 @@ public abstract class CrudServiceTest {
 
     @Test
     @DisplayName("Check for adding data to the database.")
-    void testAddValueCorrect(){
+    protected void testAddValueCorrect(){
         var response = service.addValue(firstRequest);
         assertThat(response.getId())
                 .isNotNull();
@@ -93,13 +96,40 @@ public abstract class CrudServiceTest {
     }
 
     @Test
+    @DisplayName("Check if an existing entity is successfully updated in the database table.")
+    protected void updateValueCorrectWithOneChangedParameter() {
+        var response = service.addValue(secondRequest);
+
+        runAsync(() -> updateValue(response),
+                delayedExecutor(1000, TimeUnit.MILLISECONDS)
+        ).join();
+    }
+
+    private void updateValue(@NonNull Response response) {
+        var expectedResponse = updateExpectedResponse(response);
+        var newValue = updateNewValue(expectedResponse);
+        var updateResponse = service.updateValue(response.getId(), newValue);
+
+        assertThat(updateResponse)
+                .isEqualTo(expectedResponse)
+                .isNotEqualTo(response);
+
+        assertThat(updateResponse.getCreateDate())
+                .isEqualToIgnoringNanos(response.getCreateDate());
+
+        assertThat(updateResponse.getUpdateDate().getSecond())
+                .isNotEqualTo(response.getUpdateDate().getSecond());
+    }
+
+    @Test
     @DisplayName("Checks for exceptions when the update request passes a new area name that already exists in the database table.")
     void testUpdateValueThrowDuplicate(){
         service.addValue(firstRequest);
         var response = service.addValue(secondRequest);
+        var user_id = response.getId();
 
         assertThrows(DuplicateException.class,
-                () -> service.updateValue(response.getId(), firstRequest)
+                () -> service.updateValue(user_id, firstRequest)
         );
     }
 
@@ -112,8 +142,8 @@ public abstract class CrudServiceTest {
     }
 
     @Test
-    @DisplayName("Checking the correct deletion of data from the table using the entity identifier.")
-    public void testRemoveValueByIdCorrect(){
+    @DisplayName("Checking the correctness of data deactivation in a table using the entity identifier.")
+    protected void testRemoveValueByIdCorrect(){
         var responseAdd = service.addValue(firstRequest);
         var responseRemove = service.removeValue(responseAdd.getId());
 
@@ -123,7 +153,7 @@ public abstract class CrudServiceTest {
 
     @Test
     @DisplayName("Checking the correctness of deleting data from a table using a request.")
-    public void testRemoveValueByRequestCorrect(){
+    protected void testRemoveValueByRequestCorrect(){
         var responseAdd = service.addValue(firstRequest);
         var responseRemove = service.removeValue(firstRequest);
 
@@ -170,28 +200,6 @@ public abstract class CrudServiceTest {
     void testRequestIsNotEmpty(){
         assertFalse(firstRequest.isEmpty());
         assertFalse(secondRequest.isEmpty());
-    }
-
-    @Test
-    @DisplayName("Check if an existing entity is successfully updated in the database table.")
-    protected void updateValueCorrectWithOneChangedParameter() throws InterruptedException {
-        var response = service.addValue(secondRequest);
-        Thread.sleep(1500L);
-
-        var expectedResponse = updateExpectedResponse(response);
-        var newValue = updateNewValue(expectedResponse);
-
-        var updateResponse = service.updateValue(response.getId(), newValue);
-
-        assertThat(updateResponse)
-                .isEqualTo(expectedResponse)
-                .isNotEqualTo(response);
-
-        assertThat(updateResponse.getCreateDate())
-                .isEqualToIgnoringNanos(response.getCreateDate());
-
-        assertThat(updateResponse.getUpdateDate().getSecond())
-                .isNotEqualTo(response.getUpdateDate().getSecond());
     }
 
     @Test

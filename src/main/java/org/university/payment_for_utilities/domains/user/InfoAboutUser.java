@@ -5,21 +5,20 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
-import org.university.payment_for_utilities.enumarations.Role;
+import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
 
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "info_about_users",
     uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name"} )
@@ -30,9 +29,6 @@ public class InfoAboutUser extends TableInfo {
     @NonNull
     private RegisteredUser registered;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Column(name = "first_name", nullable = false)
     @NonNull
     private String firstName;
@@ -42,23 +38,13 @@ public class InfoAboutUser extends TableInfo {
     private String lastName;
 
     @Override
-    public boolean isEmpty() {
-        return registered.isEmpty() ||
-                firstName.isBlank() ||
-                lastName.isBlank() ||
-                role == Role.EMPTY;
-    }
-
-    @Contract(" -> new")
-    public static @NonNull InfoAboutUser empty() {
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
-                .registered(RegisteredUser.empty())
-                .role(Role.EMPTY)
-                .firstName("")
-                .lastName("")
+    public InfoAboutUserResponse getResponse() {
+        var responseBuilder = InfoAboutUserResponse.builder();
+        return super
+                .responseBuilder(responseBuilder)
+                .registered(this.registered.getResponse())
+                .firstName(this.firstName)
+                .lastName(this.lastName)
                 .build();
     }
 }

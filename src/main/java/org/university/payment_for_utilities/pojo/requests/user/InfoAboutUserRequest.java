@@ -4,20 +4,19 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
-import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
 @Getter
 @Setter
 @ToString
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class InfoAboutUserRequest extends Request {
-    private RegisteredUser registered;
-    private Role role;
+    private UserResponse registered;
     private String firstName;
     private String lastName;
 
@@ -25,16 +24,14 @@ public class InfoAboutUserRequest extends Request {
     public boolean isEmpty() {
         return registered.isEmpty() ||
                 firstName.isBlank() ||
-                lastName.isBlank() ||
-                role == Role.EMPTY;
+                lastName.isBlank();
     }
 
     @Contract(" -> new")
     public static @NonNull InfoAboutUserRequest empty() {
         return InfoAboutUserRequest
                 .builder()
-                .registered(RegisteredUser.empty())
-                .role(Role.EMPTY)
+                .registered(UserResponse.empty())
                 .firstName("")
                 .lastName("")
                 .build();

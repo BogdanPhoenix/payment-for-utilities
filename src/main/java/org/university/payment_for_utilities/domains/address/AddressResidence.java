@@ -5,10 +5,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.pojo.responses.address.AddressResidenceResponse;
 
 import java.util.List;
 
@@ -17,12 +17,12 @@ import static jakarta.persistence.CascadeType.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "addresses_residence",
     uniqueConstraints = {
@@ -64,25 +64,16 @@ public class AddressResidence extends TableInfo {
     private List<RegisteredUser> users;
 
     @Override
-    public boolean isEmpty() {
-        return settlement.isEmpty() ||
-                uaNameStreet.isBlank() ||
-                enNameStreet.isBlank() ||
-                numHouse.isBlank();
-    }
-
-    @Contract(" -> new")
-    public static @NonNull AddressResidence empty(){
-        var builder = builder();
-        TableInfo.initEmpty(builder);
-
-        return builder
-                .settlement(Settlement.empty())
-                .uaNameStreet("")
-                .enNameStreet("")
-                .numHouse("")
-                .numEntrance("")
-                .numApartment("")
+    public AddressResidenceResponse getResponse() {
+        var responseBuilder = AddressResidenceResponse.builder();
+        return super
+                .responseBuilder(responseBuilder)
+                .settlement(this.settlement.getResponse())
+                .uaNameStreet(this.uaNameStreet)
+                .enNameStreet(this.enNameStreet)
+                .numHouse(this.numHouse)
+                .numEntrance(this.numEntrance)
+                .numApartment(this.numApartment)
                 .build();
     }
 }

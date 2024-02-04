@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.company.Company;
-import org.university.payment_for_utilities.domains.company.TypeOffer;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
+import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
 import org.university.payment_for_utilities.services.interfaces.company.CompanyTariffService;
 
@@ -32,7 +32,7 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     private CompanyTariffRequest createKyivTariffRequest;
     @Autowired
     @Qualifier("typeOfferUpdate")
-    private TypeOffer typeOfferUpdate;
+    private TypeOfferResponse typeOfferUpdate;
 
     @Autowired
     public CompanyTariffServiceTest(CompanyTariffService service) { super(service); }
@@ -54,7 +54,8 @@ class CompanyTariffServiceTest extends CrudServiceTest {
                 .id(response.getId())
                 .company(createKyivTariffRequest.getCompany())
                 .type(typeOfferUpdate)
-                .name("Денний")
+                .uaName("Денний")
+                .enName("Day")
                 .fixedCost(new BigDecimal(fixedCost))
                 .build();
     }
@@ -64,9 +65,10 @@ class CompanyTariffServiceTest extends CrudServiceTest {
         var response = (CompanyTariffResponse) expectedResponse;
         return CompanyTariffRequest
                 .builder()
-                .company(Company.empty())
+                .company(CompanyResponse.empty())
                 .type(response.getType())
-                .name(response.getName())
+                .uaName(response.getUaName())
+                .enName(response.getEnName())
                 .fixedCost("")
                 .build();
     }
@@ -75,7 +77,7 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     @DisplayName("Check for an exception when the user passed data in the wrong format to the \"name\" attribute.")
     void testValidateNameThrow(){
         var request = (CompanyTariffRequest) firstRequest;
-        request.setName("fatal@_@data");
+        request.setEnName("fatal@_@data");
         addValueThrowInvalidInputData(request);
     }
 
