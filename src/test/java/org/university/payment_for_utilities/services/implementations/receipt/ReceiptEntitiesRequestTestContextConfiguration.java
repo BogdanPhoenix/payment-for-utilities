@@ -51,7 +51,7 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
 
         return BlockAccrualAmountRequest
                 .builder()
-                .receipt(receipt)
+                .receipt(receipt.getId())
                 .debtBeginMonth("124")
                 .debtEndMonth("10")
                 .fine("50.05")
@@ -67,7 +67,7 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
 
         return BlockMeterReadingRequest
                 .builder()
-                .receipt(receipt)
+                .receipt(receipt.getId())
                 .prevValueCounter(4231.5f)
                 .currentValueCounter(4321f)
                 .build();
@@ -80,7 +80,7 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
 
         return PaymentHistoryRequest
                 .builder()
-                .receipt(receipt)
+                .receipt(receipt.getId())
                 .prevValueCounter(1f)
                 .currentValueCounter(34f)
                 .finalPaymentAmount("420.32")
@@ -92,20 +92,26 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     public ReceiptRequest rivneReceiptRequest() {
         return ReceiptRequest
                 .builder()
-                .contractEntity(rivneContract)
-                .bank(privateBank)
+                .contractEntity(rivneContract.getId())
+                .bank(privateBank.getId())
                 .billMonth(LocalDate.now())
                 .build();
     }
 
     @Lazy
+    @Bean(name = "kyivReceiptResponse")
+    public ReceiptResponse kyivReceiptResponse() {
+        return createReceipt(kyivReceiptRequest());
+    }
+
+    @Lazy
     @Bean(name = "kyivAccrualAmountRequest")
     public BlockAccrualAmountRequest kyivAccrualAmountRequest() {
-        var receipt = createReceipt(kyivReceiptRequest());
+        var receipt = kyivReceiptResponse();
 
         return BlockAccrualAmountRequest
                 .builder()
-                .receipt(receipt)
+                .receipt(receipt.getId())
                 .debtBeginMonth("452")
                 .debtEndMonth("120")
                 .fine("120.05")
@@ -117,11 +123,11 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "kyivBlockMeter")
     public BlockMeterReadingRequest kyivBlockMeter() {
-        var receipt = createReceipt(kyivReceiptRequest());
+        var receipt = kyivReceiptResponse();
 
         return BlockMeterReadingRequest
                 .builder()
-                .receipt(receipt)
+                .receipt(receipt.getId())
                 .prevValueCounter(41.9f)
                 .currentValueCounter(60.1f)
                 .build();
@@ -130,11 +136,11 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "kyivPaymentHistoryRequest")
     public PaymentHistoryRequest kyivPaymentHistoryRequest() {
-        var receipt = createReceipt(kyivReceiptRequest());
+        var receipt = kyivReceiptResponse();
 
         return PaymentHistoryRequest
                 .builder()
-                .receipt(receipt)
+                .receipt(receipt.getId())
                 .prevValueCounter(1243f)
                 .currentValueCounter(1450f)
                 .finalPaymentAmount("520.5")
@@ -146,8 +152,8 @@ public class ReceiptEntitiesRequestTestContextConfiguration {
     public ReceiptRequest kyivReceiptRequest() {
         return ReceiptRequest
                 .builder()
-                .contractEntity(kyivContract)
-                .bank(raiffeisenBank)
+                .contractEntity(kyivContract.getId())
+                .bank(raiffeisenBank.getId())
                 .billMonth(LocalDate.now())
                 .build();
     }

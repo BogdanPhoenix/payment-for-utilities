@@ -25,7 +25,6 @@ import org.university.payment_for_utilities.pojo.requests.user.AuthenticationReq
 import org.university.payment_for_utilities.pojo.requests.user.ChangePasswordRequest;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.user.AuthenticationResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.repositories.user.TokenRepository;
@@ -367,7 +366,7 @@ class RegisteredUserServiceTest {
                 .builder()
                 .username(expectedResponse.getUsername())
                 .role(expectedResponse.getRole())
-                .phoneNum(PhoneNumResponse.empty())
+                .phoneNum(0L)
                 .build();
 
         var updateResponse = service.updateData(userResponse.getId(), requestUpdate);

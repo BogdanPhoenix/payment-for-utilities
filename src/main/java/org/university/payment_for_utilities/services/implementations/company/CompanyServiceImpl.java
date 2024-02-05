@@ -8,6 +8,7 @@ import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
@@ -61,7 +62,7 @@ public class CompanyServiceImpl extends CommonInstitutionalDataService<Company, 
     protected Company createEntity(Request request) {
         var builder = Company.builder();
         var companyRequest = (CompanyRequest) request;
-        var address = getAddress(companyRequest.getAddress().getId());
+        var address = getAddress(companyRequest.getAddress());
 
         return super
                 .initCommonInstitutionalDataBuilder(builder, companyRequest)
@@ -82,8 +83,8 @@ public class CompanyServiceImpl extends CommonInstitutionalDataService<Company, 
         super.updateEntity(entity, request);
         var newValue = (CompanyRequest) request;
 
-        if(!newValue.getAddress().isEmpty()){
-            var address = getAddress(newValue.getAddress().getId());
+        if(!newValue.getAddress().equals(Response.EMPTY_PARENT_ENTITY)){
+            var address = getAddress(newValue.getAddress());
             entity.setAddress(address);
         }
         if(!newValue.getCurrentAccount().isBlank()){

@@ -8,6 +8,7 @@ import org.university.payment_for_utilities.domains.address.Settlement;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.address.AddressResidenceRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.AddressResidenceRepository;
 import org.university.payment_for_utilities.repositories.address.SettlementRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
@@ -41,7 +42,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     @Override
     protected AddressResidence createEntity(Request request) {
         var addressRequest = (AddressResidenceRequest) request;
-        var settlement = getSettlement(addressRequest.getSettlement().getId());
+        var settlement = getSettlement(addressRequest.getSettlement());
 
         return AddressResidence
                 .builder()
@@ -58,8 +59,8 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     protected void updateEntity(@NonNull AddressResidence entity, @NonNull Request request) {
         var newValue = (AddressResidenceRequest) request;
 
-        if(!newValue.getSettlement().isEmpty()){
-            var settlement = getSettlement(newValue.getSettlement().getId());
+        if(!newValue.getSettlement().equals(Response.EMPTY_PARENT_ENTITY)){
+            var settlement = getSettlement(newValue.getSettlement());
             entity.setSettlement(settlement);
         }
         if(!newValue.getUaNameStreet().isBlank()){
@@ -148,7 +149,7 @@ public class AddressResidenceServiceImpl extends CrudServiceAbstract<AddressResi
     @Override
     protected Optional<AddressResidence> findEntity(@NonNull Request request) {
         var addressRequest = (AddressResidenceRequest) request;
-        var settlement = getSettlement(addressRequest.getSettlement().getId());
+        var settlement = getSettlement(addressRequest.getSettlement());
 
         return repository
                 .findBySettlementAndEnNameStreetAndNumHouseAndNumEntrance(

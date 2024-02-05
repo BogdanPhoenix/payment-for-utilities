@@ -68,8 +68,8 @@ public class UserEntitiesRequestTestContextConfiguration {
 
         return ContractEntityRequest
                 .builder()
-                .registeredUser(registered)
-                .companyTariff(rivneTariff)
+                .registeredUser(registered.getId())
+                .companyTariff(rivneTariff.getId())
                 .numContract("14231402132")
                 .build();
     }
@@ -80,7 +80,7 @@ public class UserEntitiesRequestTestContextConfiguration {
         var registered = createRegisteredUser(registeredUserIvanRequest());
         return InfoAboutUserRequest
                 .builder()
-                .registered(registered)
+                .registered(registered.getId())
                 .firstName("Ivan")
                 .lastName("Ivanov")
                 .build();
@@ -94,7 +94,7 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .username("test@gmail.com")
                 .password("qwerTy4iop$")
                 .role(Role.USER)
-                .phoneNum(ivanPhoneNumber)
+                .phoneNum(ivanPhoneNumber.getId())
                 .build();
     }
 
@@ -117,12 +117,12 @@ public class UserEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "createKyivContractRequest")
     public ContractEntityRequest createKyivContractRequest() {
-        var registered = createRegisteredUser(registeredUserOlegRequest());
+        var registered = registeredUserOlegResponse();
 
         return ContractEntityRequest
                 .builder()
-                .registeredUser(registered)
-                .companyTariff(kyivTariff)
+                .registeredUser(registered.getId())
+                .companyTariff(kyivTariff.getId())
                 .numContract("54231024692")
                 .build();
     }
@@ -130,14 +130,20 @@ public class UserEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "userOlegRequest")
     public InfoAboutUserRequest userOlegRequest(){
-        var registered = createRegisteredUser(registeredUserOlegRequest());
+        var registered = registeredUserOlegResponse();
 
         return InfoAboutUserRequest
                 .builder()
-                .registered(registered)
+                .registered(registered.getId())
                 .firstName("Oleg")
                 .lastName("Nick")
                 .build();
+    }
+
+    @Lazy
+    @Bean(name = "registeredUserOlegResponse")
+    public UserResponse registeredUserOlegResponse() {
+        return createRegisteredUser(registeredUserOlegRequest());
     }
 
     @Lazy
@@ -148,7 +154,7 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .username("oleg@ukr.net")
                 .password("qWerty5iop$@")
                 .role(Role.ADMIN)
-                .phoneNum(olegPhoneNumber)
+                .phoneNum(olegPhoneNumber.getId())
                 .build();
     }
 

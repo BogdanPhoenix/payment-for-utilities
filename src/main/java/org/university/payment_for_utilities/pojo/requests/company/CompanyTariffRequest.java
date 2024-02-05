@@ -5,8 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
-import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
-import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -17,15 +16,15 @@ import org.university.payment_for_utilities.pojo.responses.company.TypeOfferResp
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CompanyTariffRequest extends TransliterationRequest {
-    private CompanyResponse company;
-    private TypeOfferResponse type;
+    private Long company;
+    private Long type;
     private String fixedCost;
 
     @Override
     public boolean isEmpty() {
         return super.isEmpty() ||
-                company.isEmpty() ||
-                type.isEmpty() ||
+                company.equals(Response.EMPTY_PARENT_ENTITY) ||
+                type.equals(Response.EMPTY_PARENT_ENTITY) ||
                 fixedCost.isBlank();
     }
 
@@ -33,8 +32,8 @@ public class CompanyTariffRequest extends TransliterationRequest {
     public static @NonNull CompanyTariffRequest empty() {
         return TransliterationRequest
                 .initEmpty(builder())
-                .company(CompanyResponse.empty())
-                .type(TypeOfferResponse.empty())
+                .company(Response.EMPTY_PARENT_ENTITY)
+                .type(Response.EMPTY_PARENT_ENTITY)
                 .fixedCost("")
                 .build();
     }

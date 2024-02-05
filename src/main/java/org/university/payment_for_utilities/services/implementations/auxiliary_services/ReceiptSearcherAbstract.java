@@ -5,6 +5,7 @@ import org.university.payment_for_utilities.domains.abstract_class.ReceiptSearch
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.ReceiptSearcherRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.ReceiptSearcherRepository;
 import org.university.payment_for_utilities.repositories.receipt.ReceiptRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
@@ -26,8 +27,8 @@ public abstract class ReceiptSearcherAbstract<T extends ReceiptSearcher, J exten
     protected void updateEntity(@NonNull T entity, @NonNull Request request) {
         var newValue = (ReceiptSearcherRequest) request;
 
-        if(!newValue.getReceipt().isEmpty()) {
-            var receipt = getReceipt(newValue.getReceipt().getId());
+        if(!newValue.getReceipt().equals(Response.EMPTY_PARENT_ENTITY)) {
+            var receipt = getReceipt(newValue.getReceipt());
             entity.setReceipt(receipt);
         }
     }
@@ -35,7 +36,7 @@ public abstract class ReceiptSearcherAbstract<T extends ReceiptSearcher, J exten
     @Override
     protected Optional<T> findEntity(@NonNull Request request) {
         var receiptSearcher = (ReceiptSearcherRequest) request;
-        var receipt = getReceipt(receiptSearcher.getReceipt().getId());
+        var receipt = getReceipt(receiptSearcher.getReceipt());
 
         return repository.findByReceipt(receipt);
     }

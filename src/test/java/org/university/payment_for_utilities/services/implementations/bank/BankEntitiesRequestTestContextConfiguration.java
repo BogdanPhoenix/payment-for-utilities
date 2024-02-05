@@ -54,8 +54,8 @@ public class BankEntitiesRequestTestContextConfiguration {
 
         return BankPhoneNumRequest
                 .builder()
-                .bank(bank)
-                .phoneNum(privateBankPhoneNum)
+                .bank(bank.getId())
+                .phoneNum(privateBankPhoneNum.getId())
                 .build();
     }
 
@@ -66,8 +66,8 @@ public class BankEntitiesRequestTestContextConfiguration {
                 .builder()
                 .uaName("Приват Банк")
                 .enName("Private Bank")
-                .website(privateBankWebsite)
-                .edrpou(privateBankEdrpou)
+                .website(privateBankWebsite.getId())
+                .edrpou(privateBankEdrpou.getId())
                 .mfo("305299")
                 .build();
     }
@@ -85,8 +85,8 @@ public class BankEntitiesRequestTestContextConfiguration {
 
         return BankPhoneNumRequest
                 .builder()
-                .bank(bank)
-                .phoneNum(raiffeisenBankPhoneNum)
+                .bank(bank.getId())
+                .phoneNum(raiffeisenBankPhoneNum.getId())
                 .build();
     }
 
@@ -97,8 +97,8 @@ public class BankEntitiesRequestTestContextConfiguration {
                 .builder()
                 .uaName("Райффайзен Банк")
                 .enName("Raiffeisen Bank")
-                .website(raiffeisenBankWebsite)
-                .edrpou(raiffeisenBankEdrpou)
+                .website(raiffeisenBankWebsite.getId())
+                .edrpou(raiffeisenBankEdrpou.getId())
                 .mfo("380805")
                 .build();
     }

@@ -21,7 +21,7 @@ public class BlockMeterReadingServiceImpl extends CounterSearcherService<BlockMe
     @Override
     protected BlockMeterReading createEntity(Request request) {
         var blockRequest = (BlockMeterReadingRequest) request;
-        var receipt = getReceipt(blockRequest.getReceipt().getId());
+        var receipt = getReceipt(blockRequest.getReceipt());
 
         return BlockMeterReading
                 .builder()

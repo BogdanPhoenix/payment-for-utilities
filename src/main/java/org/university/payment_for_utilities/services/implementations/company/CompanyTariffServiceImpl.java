@@ -9,6 +9,7 @@ import org.university.payment_for_utilities.domains.company.TypeOffer;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyTariffRequest;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
 import org.university.payment_for_utilities.repositories.company.TypeOfferRepository;
@@ -46,8 +47,8 @@ public class CompanyTariffServiceImpl extends TransliterationService<CompanyTari
     protected CompanyTariff createEntity(Request request) {
         var builder = CompanyTariff.builder();
         var companyTariffRequest = (CompanyTariffRequest) request;
-        var company = getCompany(companyTariffRequest.getCompany().getId());
-        var type = getType(companyTariffRequest.getType().getId());
+        var company = getCompany(companyTariffRequest.getCompany());
+        var type = getType(companyTariffRequest.getType());
         var fixedCost = convertStringToBigDecimal(companyTariffRequest.getFixedCost());
 
         return super
@@ -68,12 +69,12 @@ public class CompanyTariffServiceImpl extends TransliterationService<CompanyTari
         super.updateEntity(entity, request);
         var newValue = (CompanyTariffRequest) request;
 
-        if(!newValue.getCompany().isEmpty()){
-            var company = getCompany(newValue.getCompany().getId());
+        if(!newValue.getCompany().equals(Response.EMPTY_PARENT_ENTITY)){
+            var company = getCompany(newValue.getCompany());
             entity.setCompany(company);
         }
-        if(!newValue.getType().isEmpty()){
-            var type = getType(newValue.getType().getId());
+        if(!newValue.getType().equals(Response.EMPTY_PARENT_ENTITY)){
+            var type = getType(newValue.getType());
             entity.setType(type);
         }
         if(!newValue.getFixedCost().isBlank()){
@@ -93,7 +94,7 @@ public class CompanyTariffServiceImpl extends TransliterationService<CompanyTari
     @Override
     protected Optional<CompanyTariff> findEntity(@NonNull Request request) {
         var companyTariffRequest = (CompanyTariffRequest) request;
-        var company = getCompany(companyTariffRequest.getCompany().getId());
+        var company = getCompany(companyTariffRequest.getCompany());
 
         return repository
                 .findByCompanyAndEnName(

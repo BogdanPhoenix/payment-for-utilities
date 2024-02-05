@@ -9,6 +9,7 @@ import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyTariffRepository;
 import org.university.payment_for_utilities.repositories.user.ContractEntityRepository;
 import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
@@ -45,8 +46,8 @@ public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntit
     @Override
     protected ContractEntity createEntity(Request request) {
         var contractRequest = (ContractEntityRequest) request;
-        var registeredUser = getRegisteredUser(contractRequest.getRegisteredUser().getId());
-        var companyTariff = getCompanyTariff(contractRequest.getCompanyTariff().getId());
+        var registeredUser = getRegisteredUser(contractRequest.getRegisteredUser());
+        var companyTariff = getCompanyTariff(contractRequest.getCompanyTariff());
 
         return ContractEntity
                 .builder()
@@ -65,12 +66,12 @@ public class ContractEntityServiceImpl extends CrudServiceAbstract<ContractEntit
     protected void updateEntity(@NonNull ContractEntity entity, @NonNull Request request) {
         var newValue = (ContractEntityRequest) request;
 
-        if(!newValue.getRegisteredUser().isEmpty()){
-            var registeredUser = getRegisteredUser(newValue.getRegisteredUser().getId());
+        if(!newValue.getRegisteredUser().equals(Response.EMPTY_PARENT_ENTITY)){
+            var registeredUser = getRegisteredUser(newValue.getRegisteredUser());
             entity.setRegisteredUser(registeredUser);
         }
-        if(!newValue.getCompanyTariff().isEmpty()){
-            var companyTariff = getCompanyTariff(newValue.getCompanyTariff().getId());
+        if(!newValue.getCompanyTariff().equals(Response.EMPTY_PARENT_ENTITY)){
+            var companyTariff = getCompanyTariff(newValue.getCompanyTariff());
             entity.setCompanyTariff(companyTariff);
         }
         if(!newValue.getNumContract().isBlank()){

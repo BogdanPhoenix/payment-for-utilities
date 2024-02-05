@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -16,13 +16,13 @@ import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class InfoAboutUserRequest extends Request {
-    private UserResponse registered;
+    private Long registered;
     private String firstName;
     private String lastName;
 
     @Override
     public boolean isEmpty() {
-        return registered.isEmpty() ||
+        return registered.equals(Response.EMPTY_PARENT_ENTITY) ||
                 firstName.isBlank() ||
                 lastName.isBlank();
     }
@@ -31,7 +31,7 @@ public class InfoAboutUserRequest extends Request {
     public static @NonNull InfoAboutUserRequest empty() {
         return InfoAboutUserRequest
                 .builder()
-                .registered(UserResponse.empty())
+                .registered(Response.EMPTY_PARENT_ENTITY)
                 .firstName("")
                 .lastName("")
                 .build();

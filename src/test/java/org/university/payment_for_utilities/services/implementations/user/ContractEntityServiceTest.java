@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.ContractEntityRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
 import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
@@ -25,6 +26,12 @@ public class ContractEntityServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("createKyivContractRequest")
     private ContractEntityRequest kyivContractRequest;
+    @Autowired
+    @Qualifier("registeredUserOlegResponse")
+    private UserResponse registeredUserOlegResponse;
+    @Autowired
+    @Qualifier("createRivneTariff")
+    private CompanyTariffResponse rivneTariff;
 
     @Autowired
     public ContractEntityServiceTest(ContractEntityService service) { super(service); }
@@ -43,8 +50,8 @@ public class ContractEntityServiceTest extends CrudServiceTest {
         return ContractEntityResponse
                 .builder()
                 .id(response.getId())
-                .registeredUser(kyivContractRequest.getRegisteredUser())
-                .companyTariff(rivneContractRequest.getCompanyTariff())
+                .registeredUser(registeredUserOlegResponse)
+                .companyTariff(rivneTariff)
                 .numContract("42316895121")
                 .build();
     }
@@ -54,8 +61,8 @@ public class ContractEntityServiceTest extends CrudServiceTest {
         var response = (ContractEntityResponse) expectedResponse;
         return ContractEntityRequest
                 .builder()
-                .registeredUser(UserResponse.empty())
-                .companyTariff(response.getCompanyTariff())
+                .registeredUser(Response.EMPTY_PARENT_ENTITY)
+                .companyTariff(response.getCompanyTariff().getId())
                 .numContract(response.getNumContract())
                 .build();
     }

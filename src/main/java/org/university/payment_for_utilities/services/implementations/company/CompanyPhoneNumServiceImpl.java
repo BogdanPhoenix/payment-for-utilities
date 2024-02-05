@@ -7,6 +7,7 @@ import org.university.payment_for_utilities.domains.company.Company;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.company.CompanyPhoneNumRepository;
 import org.university.payment_for_utilities.repositories.company.CompanyRepository;
 import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
@@ -37,8 +38,8 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     @Override
     protected CompanyPhoneNum createEntity(Request request) {
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
-        var company = getCompany(companyPhoneNumRequest.getCompany().getId());
-        var phoneNum = getPhoneNum(companyPhoneNumRequest.getPhoneNum().getId());
+        var company = getCompany(companyPhoneNumRequest.getCompany());
+        var phoneNum = getPhoneNum(companyPhoneNumRequest.getPhoneNum());
 
         return CompanyPhoneNum
                 .builder()
@@ -56,12 +57,12 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     protected void updateEntity(@NonNull CompanyPhoneNum entity, @NonNull Request request) {
         var newValue = (CompanyPhoneNumRequest) request;
 
-        if(!newValue.getCompany().isEmpty()){
-            var company = getCompany(newValue.getCompany().getId());
+        if(!newValue.getCompany().equals(Response.EMPTY_PARENT_ENTITY)){
+            var company = getCompany(newValue.getCompany());
             entity.setCompany(company);
         }
-        if (!newValue.getPhoneNum().isEmpty()){
-            var phoneNum = getPhoneNum(newValue.getPhoneNum().getId());
+        if (!newValue.getPhoneNum().equals(Response.EMPTY_PARENT_ENTITY)){
+            var phoneNum = getPhoneNum(newValue.getPhoneNum());
             entity.setPhoneNum(phoneNum);
         }
     }
@@ -69,8 +70,8 @@ public class CompanyPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<Comp
     @Override
     protected Optional<CompanyPhoneNum> findEntity(@NonNull Request request) {
         var companyPhoneNumRequest = (CompanyPhoneNumRequest) request;
-        var company = getCompany(companyPhoneNumRequest.getCompany().getId());
-        var phoneNum = getPhoneNum(companyPhoneNumRequest.getPhoneNum().getId());
+        var company = getCompany(companyPhoneNumRequest.getCompany());
+        var phoneNum = getPhoneNum(companyPhoneNumRequest.getPhoneNum());
 
         return repository.findByCompanyAndPhoneNum(company, phoneNum);
     }

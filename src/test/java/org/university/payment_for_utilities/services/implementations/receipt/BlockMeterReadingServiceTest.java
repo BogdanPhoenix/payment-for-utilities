@@ -31,6 +31,9 @@ class BlockMeterReadingServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("kyivBlockMeter")
     private BlockMeterReadingRequest kyivBlockMeter;
+    @Autowired
+    @Qualifier("kyivReceiptResponse")
+    private ReceiptResponse kyivReceiptResponse;
 
     @Autowired
     public BlockMeterReadingServiceTest(BlockMeterReadingService service) { super(service); }
@@ -49,7 +52,7 @@ class BlockMeterReadingServiceTest extends CrudServiceTest {
         return BlockMeterReadingResponse
                 .builder()
                 .id(response.getId())
-                .receipt(kyivBlockMeter.getReceipt())
+                .receipt(kyivReceiptResponse)
                 .prevValueCounter(101f)
                 .currentValueCounter(125.3f)
                 .build();
@@ -60,7 +63,7 @@ class BlockMeterReadingServiceTest extends CrudServiceTest {
         var response = (BlockMeterReadingResponse) expectedResponse;
         return BlockMeterReadingRequest
                 .builder()
-                .receipt(ReceiptResponse.empty())
+                .receipt(Response.EMPTY_PARENT_ENTITY)
                 .prevValueCounter(response.getPrevValueCounter())
                 .currentValueCounter(response.getCurrentValueCounter())
                 .build();

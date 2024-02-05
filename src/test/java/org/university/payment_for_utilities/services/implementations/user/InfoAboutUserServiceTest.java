@@ -31,6 +31,9 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("userOlegRequest")
     private InfoAboutUserRequest userOlegRequest;
+    @Autowired
+    @Qualifier("registeredUserOlegResponse")
+    private UserResponse registeredUserOlegResponse;
 
     @Autowired
     public InfoAboutUserServiceTest (InfoAboutUserService service) { super(service); }
@@ -49,7 +52,7 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
         return InfoAboutUserResponse
                 .builder()
                 .id(response.getId())
-                .registered(userOlegRequest.getRegistered())
+                .registered(registeredUserOlegResponse)
                 .firstName("Petro")
                 .lastName("Petro")
                 .build();
@@ -60,7 +63,7 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
         var response = (InfoAboutUserResponse) expectedResponse;
         return InfoAboutUserRequest
                 .builder()
-                .registered(UserResponse.empty())
+                .registered(Response.EMPTY_PARENT_ENTITY)
                 .firstName(response.getFirstName())
                 .lastName(response.getLastName())
                 .build();

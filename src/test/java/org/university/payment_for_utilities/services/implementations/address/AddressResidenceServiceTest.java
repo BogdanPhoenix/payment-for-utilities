@@ -27,6 +27,9 @@ class AddressResidenceServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("addressKyivRequest")
     private AddressResidenceRequest addressKyivRequest;
+    @Autowired
+    @Qualifier("settlementKyivResponse")
+    private SettlementResponse settlementKyivResponse;
 
     @Autowired
     public AddressResidenceServiceTest(AddressResidenceService service){
@@ -47,7 +50,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
         return AddressResidenceResponse
                 .builder()
                 .id(response.getId())
-                .settlement(addressKyivRequest.getSettlement())
+                .settlement(settlementKyivResponse)
                 .uaNameStreet("вулиця нова")
                 .enNameStreet("new street")
                 .numHouse("41")
@@ -62,7 +65,7 @@ class AddressResidenceServiceTest extends CrudServiceTest {
         var response = (AddressResidenceResponse) expectedResponse;
         return AddressResidenceRequest
                 .builder()
-                .settlement(SettlementResponse.empty())
+                .settlement(Response.EMPTY_PARENT_ENTITY)
                 .uaNameStreet("")
                 .enNameStreet("")
                 .numHouse(response.getNumHouse())

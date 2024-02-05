@@ -3,7 +3,7 @@ package org.university.payment_for_utilities.services.implementations;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +24,7 @@ class JwtServiceTest {
             .roles("USER")
             .build();
 
-    @InjectMocks
+    @Autowired
     private JwtServiceImpl jwtService;
 
     @Test

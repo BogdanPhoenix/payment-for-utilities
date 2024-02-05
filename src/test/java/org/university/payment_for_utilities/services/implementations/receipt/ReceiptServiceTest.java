@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
 import org.university.payment_for_utilities.pojo.responses.receipt.ReceiptResponse;
 import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
@@ -33,6 +34,12 @@ class ReceiptServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("kyivReceiptRequest")
     private ReceiptRequest kyivReceiptRequest;
+    @Autowired
+    @Qualifier("kyivContract")
+    private ContractEntityResponse kyivContract;
+    @Autowired
+    @Qualifier("privateBank")
+    private BankResponse privateBank;
 
     @Autowired
     public ReceiptServiceTest(ReceiptService service) { super(service); }
@@ -51,8 +58,8 @@ class ReceiptServiceTest extends CrudServiceTest {
         return ReceiptResponse
                 .builder()
                 .id(response.getId())
-                .contractEntity(kyivReceiptRequest.getContractEntity())
-                .bank(rivneReceiptRequest.getBank())
+                .contractEntity(kyivContract)
+                .bank(privateBank)
                 .billMonth(LocalDate.of(2023, Month.DECEMBER, 5))
                 .build();
     }
@@ -62,8 +69,8 @@ class ReceiptServiceTest extends CrudServiceTest {
         var response = (ReceiptResponse) expectedResponse;
         return ReceiptRequest
                 .builder()
-                .contractEntity(ContractEntityResponse.empty())
-                .bank(response.getBank())
+                .contractEntity(Response.EMPTY_PARENT_ENTITY)
+                .bank(response.getBank().getId())
                 .billMonth(response.getBillMonth())
                 .build();
     }

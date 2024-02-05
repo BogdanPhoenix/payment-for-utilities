@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.TransliterationRequest;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.UnitMeasurementResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -16,18 +16,19 @@ import org.university.payment_for_utilities.pojo.responses.service_information_i
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class TypeOfferRequest extends TransliterationRequest {
-    private UnitMeasurementResponse unitMeasurement;
+    private Long unitMeasurement;
+
     @Override
     public boolean isEmpty() {
         return super.isEmpty() ||
-                this.unitMeasurement.isEmpty();
+                unitMeasurement.equals(Response.EMPTY_PARENT_ENTITY);
     }
 
     @Contract(" -> new")
     public static @NonNull TypeOfferRequest empty(){
         return TransliterationRequest
                 .initEmpty(builder())
-                .unitMeasurement(UnitMeasurementResponse.empty())
+                .unitMeasurement(Response.EMPTY_PARENT_ENTITY)
                 .build();
     }
 }

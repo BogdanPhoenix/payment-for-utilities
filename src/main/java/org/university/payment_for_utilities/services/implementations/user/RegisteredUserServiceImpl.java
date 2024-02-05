@@ -281,7 +281,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         @Override
         protected RegisteredUser createEntity(Request request) {
             var userRequest = (RegisteredUserRequest) request;
-            var phoneNum = getPhoneNum(userRequest.getPhoneNum().getId());
+            var phoneNum = getPhoneNum(userRequest.getPhoneNum());
 
             return RegisteredUser
                     .builder()
@@ -340,8 +340,8 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             if(!newValue.getRole().equals(Role.EMPTY)){
                 entity.setRole(newValue.getRole());
             }
-            if(!newValue.getPhoneNum().isEmpty()){
-                var phoneNum = getPhoneNum(newValue.getPhoneNum().getId());
+            if(!newValue.getPhoneNum().equals(Response.EMPTY_PARENT_ENTITY)){
+                var phoneNum = getPhoneNum(newValue.getPhoneNum());
                 entity.setPhoneNum(phoneNum);
             }
         }

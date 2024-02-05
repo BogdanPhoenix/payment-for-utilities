@@ -5,8 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.company.CompanyTariffResponse;
-import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -17,14 +16,14 @@ import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ContractEntityRequest extends Request {
-    private UserResponse registeredUser;
-    private CompanyTariffResponse companyTariff;
+    private Long registeredUser;
+    private Long companyTariff;
     private String numContract;
 
     @Override
     public boolean isEmpty() {
-        return registeredUser.isEmpty() ||
-                companyTariff.isEmpty() ||
+        return registeredUser.equals(Response.EMPTY_PARENT_ENTITY) ||
+                companyTariff.equals(Response.EMPTY_PARENT_ENTITY) ||
                 numContract.isBlank();
     }
 
@@ -32,8 +31,8 @@ public class ContractEntityRequest extends Request {
     public static @NonNull ContractEntityRequest empty() {
         return ContractEntityRequest
                 .builder()
-                .registeredUser(UserResponse.empty())
-                .companyTariff(CompanyTariffResponse.empty())
+                .registeredUser(Response.EMPTY_PARENT_ENTITY)
+                .companyTariff(Response.EMPTY_PARENT_ENTITY)
                 .numContract("")
                 .build();
     }

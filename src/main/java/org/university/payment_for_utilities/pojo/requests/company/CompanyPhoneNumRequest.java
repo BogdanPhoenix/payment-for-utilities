@@ -5,8 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.company.CompanyResponse;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -17,21 +16,21 @@ import org.university.payment_for_utilities.pojo.responses.service_information_i
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class CompanyPhoneNumRequest extends Request {
-    private CompanyResponse company;
-    private PhoneNumResponse phoneNum;
+    private Long company;
+    private Long phoneNum;
 
     @Override
     public boolean isEmpty() {
-        return this.company.isEmpty() ||
-                this.phoneNum.isEmpty();
+        return company.equals(Response.EMPTY_PARENT_ENTITY) ||
+                phoneNum.equals(Response.EMPTY_PARENT_ENTITY);
     }
 
     @Contract(" -> new")
     public static @NonNull CompanyPhoneNumRequest empty(){
         return CompanyPhoneNumRequest
                 .builder()
-                .company(CompanyResponse.empty())
-                .phoneNum(PhoneNumResponse.empty())
+                .company(Response.EMPTY_PARENT_ENTITY)
+                .phoneNum(Response.EMPTY_PARENT_ENTITY)
                 .build();
     }
 }

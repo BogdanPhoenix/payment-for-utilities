@@ -31,6 +31,12 @@ class SettlementServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("settlementKyivRequest")
     private SettlementRequest settlementRequestKyiv;
+    @Autowired
+    @Qualifier("typeSettlementVillageResponse")
+    private TypeSettlementResponse typeSettlementVillageResponse;
+    @Autowired
+    @Qualifier("settlementNameKyivResponse")
+    private SettlementNameResponse settlementNameKyivResponse;
 
     @Autowired
     public SettlementServiceTest(SettlementService service) {
@@ -51,9 +57,9 @@ class SettlementServiceTest extends CrudServiceTest {
         return SettlementResponse
                 .builder()
                 .id(response.getId())
-                .type(settlementRequestKyiv.getType())
+                .type(typeSettlementVillageResponse)
                 .zipCode("14523")
-                .name(settlementRequestKyiv.getName())
+                .name(settlementNameKyivResponse)
                 .build();
     }
 
@@ -62,9 +68,9 @@ class SettlementServiceTest extends CrudServiceTest {
         var response = (SettlementResponse) expectedResponse;
         return SettlementRequest
                 .builder()
-                .type(TypeSettlementResponse.empty())
+                .type(Response.EMPTY_PARENT_ENTITY)
                 .zipCode(response.getZipCode())
-                .name(SettlementNameResponse.empty())
+                .name(Response.EMPTY_PARENT_ENTITY)
                 .build();
     }
 

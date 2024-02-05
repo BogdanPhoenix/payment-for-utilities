@@ -27,7 +27,7 @@ public class BlockAccrualAmountServiceImpl extends ReceiptSearcherAbstract<Block
     protected BlockAccrualAmount createEntity(Request request) {
         var blockRequest = (BlockAccrualAmountRequest) request;
 
-        var receipt = getReceipt(blockRequest.getReceipt().getId());
+        var receipt = getReceipt(blockRequest.getReceipt());
         var debtBeginMonth = convertStringToBigDecimal(blockRequest.getDebtBeginMonth());
         var debtEndMonth = convertStringToBigDecimal(blockRequest.getDebtEndMonth());
         var fine = convertStringToBigDecimal(blockRequest.getFine());

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.requests.company.CompanyPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.responses.company.CompanyPhoneNumResponse;
@@ -27,6 +26,9 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("companyKyivOblenergoPhoneNumRequest")
     private CompanyPhoneNumRequest companyKyivOblenergoPhoneNumRequest;
+    @Autowired
+    @Qualifier("companyKyivOblenergoResponse")
+    private CompanyResponse companyKyivOblenergoResponse;
     @Autowired
     @Qualifier("updateBankPhoneNum")
     private PhoneNumResponse updateBankPhoneNum;
@@ -48,7 +50,7 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
         return CompanyPhoneNumResponse
                 .builder()
                 .id(response.getId())
-                .company(companyKyivOblenergoPhoneNumRequest.getCompany())
+                .company(companyKyivOblenergoResponse)
                 .phoneNum(updateBankPhoneNum)
                 .build();
     }
@@ -58,8 +60,8 @@ class CompanyPhoneNumServiceTest extends CrudServiceTest {
         var response = (CompanyPhoneNumResponse) expectedResponse;
         return CompanyPhoneNumRequest
                 .builder()
-                .company(CompanyResponse.empty())
-                .phoneNum(response.getPhoneNum())
+                .company(Response.EMPTY_PARENT_ENTITY)
+                .phoneNum(response.getPhoneNum().getId())
                 .build();
     }
 }

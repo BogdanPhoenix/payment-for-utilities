@@ -34,6 +34,9 @@ class TypeOfferServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("typeOfferGasRequest")
     private TypeOfferRequest typeOfferGasRequest;
+    @Autowired
+    @Qualifier("unitCubicMeter")
+    private UnitMeasurementResponse unitCubicMeter;
 
     @Autowired
     public TypeOfferServiceTest(TypeOfferService service) { super(service); }
@@ -52,7 +55,7 @@ class TypeOfferServiceTest extends CrudServiceTest {
         return TypeOfferResponse
                 .builder()
                 .id(response.getId())
-                .unitMeasurement(typeOfferGasRequest.getUnitMeasurement())
+                .unitMeasurement(unitCubicMeter)
                 .uaName("Нічний")
                 .enName("Night")
                 .build();
@@ -63,7 +66,7 @@ class TypeOfferServiceTest extends CrudServiceTest {
         var response = (TypeOfferResponse) expectedResponse;
         return TypeOfferRequest
                 .builder()
-                .unitMeasurement(UnitMeasurementResponse.empty())
+                .unitMeasurement(Response.EMPTY_PARENT_ENTITY)
                 .uaName(response.getUaName())
                 .enName(response.getEnName())
                 .build();

@@ -42,7 +42,7 @@ public class AddressEntitiesRequestTestContextConfiguration {
 
         return AddressResidenceRequest
                 .builder()
-                .settlement(settlement)
+                .settlement(settlement.getId())
                 .uaNameStreet("вулиця")
                 .enNameStreet("street")
                 .numHouse("5a")
@@ -52,13 +52,19 @@ public class AddressEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "settlementKyivResponse")
+    public SettlementResponse settlementKyivResponse() {
+        return createSettlement(settlementKyivRequest());
+    }
+
+    @Lazy
     @Bean(name = "addressKyivRequest")
     public AddressResidenceRequest addressKyivRequest(){
-        var settlement = createSettlement(settlementKyivRequest());
+        var settlement = settlementKyivResponse();
 
         return AddressResidenceRequest
                 .builder()
-                .settlement(settlement)
+                .settlement(settlement.getId())
                 .uaNameStreet("вулиця нова")
                 .enNameStreet("new street")
                 .numHouse("4")
@@ -68,16 +74,28 @@ public class AddressEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "typeSettlementVillageResponse")
+    public TypeSettlementResponse typeSettlementVillageResponse() {
+        return createTypeSettlement(typeSettlementVillageRequest());
+    }
+
+    @Lazy
+    @Bean(name = "settlementNameKyivResponse")
+    public SettlementNameResponse settlementNameKyivResponse() {
+        return createSettlementName(settlementNameKyivRequest());
+    }
+
+    @Lazy
     @Bean(name = "settlementKyivRequest")
     public SettlementRequest settlementKyivRequest(){
-        var type = createTypeSettlement(typeSettlementVillageRequest());
-        var name = createSettlementName(settlementNameKyivRequest());
+        var type = typeSettlementVillageResponse();
+        var name = settlementNameKyivResponse();
 
         return SettlementRequest
                 .builder()
-                .type(type)
+                .type(type.getId())
                 .zipCode("43265")
-                .name(name)
+                .name(name.getId())
                 .build();
     }
 
@@ -89,9 +107,9 @@ public class AddressEntitiesRequestTestContextConfiguration {
 
         return SettlementRequest
                 .builder()
-                .type(type)
+                .type(type.getId())
                 .zipCode("12345")
-                .name(name)
+                .name(name.getId())
                 .build();
     }
 

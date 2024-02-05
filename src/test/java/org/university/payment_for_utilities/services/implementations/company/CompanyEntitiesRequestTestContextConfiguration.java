@@ -89,8 +89,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
 
         return CompanyTariffRequest
                 .builder()
-                .company(company)
-                .type(type)
+                .company(company.getId())
+                .type(type.getId())
                 .uaName("Денний")
                 .enName("Day")
                 .fixedCost("13.5")
@@ -100,13 +100,13 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     @Lazy
     @Bean(name = "createKyivTariffRequest")
     public CompanyTariffRequest createKyivTariffRequest() {
-        var company = createCompany(companyKyivOblenergoRequest());
+        var company = companyKyivOblenergoResponse();
         var type = createTypeOffer(typeOfferElectricRequest());
 
         return CompanyTariffRequest
                 .builder()
-                .company(company)
-                .type(type)
+                .company(company.getId())
+                .type(type.getId())
                 .uaName("Нічний")
                 .enName("Night")
                 .fixedCost("1.68")
@@ -119,7 +119,7 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     public TypeOfferRequest typeOfferGasRequest(){
         return TypeOfferRequest
                 .builder()
-                .unitMeasurement(unitCubicMeter)
+                .unitMeasurement(unitCubicMeter.getId())
                 .uaName("Денний")
                 .enName("Daytime")
                 .build();
@@ -130,7 +130,7 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     public TypeOfferRequest typeOfferElectricRequest(){
         return TypeOfferRequest
                 .builder()
-                .unitMeasurement(unitKilowatt)
+                .unitMeasurement(unitKilowatt.getId())
                 .uaName("Цілодобовий")
                 .enName("All day")
                 .build();
@@ -147,7 +147,7 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     public TypeOfferRequest typeOfferUpdateRequest(){
         return TypeOfferRequest
                 .builder()
-                .unitMeasurement(unitKilowatt)
+                .unitMeasurement(unitKilowatt.getId())
                 .uaName("Оновленні дані")
                 .enName("Update data")
                 .build();
@@ -160,8 +160,8 @@ public class CompanyEntitiesRequestTestContextConfiguration {
 
         return CompanyPhoneNumRequest
                 .builder()
-                .company(company)
-                .phoneNum(companyPhoneNum)
+                .company(company.getId())
+                .phoneNum(companyPhoneNum.getId())
                 .build();
     }
 
@@ -170,9 +170,9 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     public CompanyRequest companyRivneOblenergoRequest(){
         return CompanyRequest
                 .builder()
-                .address(addressResidence)
-                .edrpou(edrpou)
-                .website(website)
+                .address(addressResidence.getId())
+                .edrpou(edrpou.getId())
+                .website(website.getId())
                 .uaName("Рівне ОблЕнерго")
                 .enName("Rivne Oblenergo")
                 .currentAccount("96410247789652")
@@ -180,14 +180,20 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     }
 
     @Lazy
+    @Bean(name = "companyKyivOblenergoResponse")
+    public CompanyResponse companyKyivOblenergoResponse() {
+        return createCompany(companyKyivOblenergoRequest());
+    }
+
+    @Lazy
     @Bean(name = "companyKyivOblenergoPhoneNumRequest")
     public CompanyPhoneNumRequest companyKyivOblenergoPhoneNumRequest(){
-        var company = createCompany(companyKyivOblenergoRequest());
+        var company = companyKyivOblenergoResponse();
 
         return CompanyPhoneNumRequest
                 .builder()
-                .company(company)
-                .phoneNum(bankPhoneNum)
+                .company(company.getId())
+                .phoneNum(bankPhoneNum.getId())
                 .build();
     }
 
@@ -196,9 +202,9 @@ public class CompanyEntitiesRequestTestContextConfiguration {
     public CompanyRequest companyKyivOblenergoRequest(){
         return CompanyRequest
                 .builder()
-                .address(addressKyivResidence)
-                .edrpou(raiffeisenBankEdrpou)
-                .website(raiffeisenBankWebsite)
+                .address(addressKyivResidence.getId())
+                .edrpou(raiffeisenBankEdrpou.getId())
+                .website(raiffeisenBankWebsite.getId())
                 .uaName("Київ ОблЕнерго")
                 .enName("Kyiv Oblenergo")
                 .currentAccount("41203654129521")

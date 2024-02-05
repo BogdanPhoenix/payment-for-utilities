@@ -27,7 +27,7 @@ public class PaymentHistoryServiceImpl extends CounterSearcherService<PaymentHis
     protected PaymentHistory createEntity(Request request) {
         var historyRequest = (PaymentHistoryRequest) request;
         var payment = convertStringToBigDecimal(historyRequest.getFinalPaymentAmount());
-        var receipt = getReceipt(historyRequest.getReceipt().getId());
+        var receipt = getReceipt(historyRequest.getReceipt());
 
         return PaymentHistory
                 .builder()

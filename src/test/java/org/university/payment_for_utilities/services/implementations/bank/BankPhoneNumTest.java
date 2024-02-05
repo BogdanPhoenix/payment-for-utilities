@@ -27,6 +27,9 @@ class BankPhoneNumTest extends CrudServiceTest {
     @Qualifier("raiffeisenBankPhoneNumRequest")
     private BankPhoneNumRequest raiffeisenBankPhoneNumRequest;
     @Autowired
+    @Qualifier("raiffeisenBank")
+    private BankResponse raiffeisenBank;
+    @Autowired
     @Qualifier("updateBankPhoneNum")
     private PhoneNumResponse updateBankPhoneNum;
 
@@ -47,7 +50,7 @@ class BankPhoneNumTest extends CrudServiceTest {
         return BankPhoneNumResponse
                 .builder()
                 .id(response.getId())
-                .bank(raiffeisenBankPhoneNumRequest.getBank())
+                .bank(raiffeisenBank)
                 .phoneNum(updateBankPhoneNum)
                 .build();
     }
@@ -57,8 +60,8 @@ class BankPhoneNumTest extends CrudServiceTest {
         var response = (BankPhoneNumResponse) expectedResponse;
         return BankPhoneNumRequest
                 .builder()
-                .bank(BankResponse.empty())
-                .phoneNum(response.getPhoneNum())
+                .bank(Response.EMPTY_PARENT_ENTITY)
+                .phoneNum(response.getPhoneNum().getId())
                 .build();
     }
 }

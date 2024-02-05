@@ -6,6 +6,7 @@ import org.university.payment_for_utilities.domains.service_information_institut
 import org.university.payment_for_utilities.domains.service_information_institutions.Website;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.CommonInstitutionalDataRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.TableSearcherRepository;
 import org.university.payment_for_utilities.repositories.service_information_institutions.EdrpouRepository;
 import org.university.payment_for_utilities.repositories.service_information_institutions.WebsiteRepository;
@@ -37,8 +38,8 @@ public abstract class CommonInstitutionalDataService<T extends CommonInstitution
     }
 
     protected <B extends CommonInstitutionalDataBuilder<?, ?>> B initCommonInstitutionalDataBuilder(@NonNull B builder, @NonNull CommonInstitutionalDataRequest request) {
-        var website = getWebsite(request.getWebsite().getId());
-        var edrpou = getEdrpou(request.getEdrpou().getId());
+        var website = getWebsite(request.getWebsite());
+        var edrpou = getEdrpou(request.getEdrpou());
 
         super
                 .initTransliterationPropertyBuilder(builder, request)
@@ -58,12 +59,12 @@ public abstract class CommonInstitutionalDataService<T extends CommonInstitution
         super.updateEntity(entity, request);
         var newValue = (CommonInstitutionalDataRequest) request;
 
-        if(!newValue.getWebsite().isEmpty()){
-            var website = getWebsite(newValue.getWebsite().getId());
+        if(!newValue.getWebsite().equals(Response.EMPTY_PARENT_ENTITY)){
+            var website = getWebsite(newValue.getWebsite());
             entity.setWebsite(website);
         }
-        if(!newValue.getEdrpou().isEmpty()){
-            var edrpou = getEdrpou(newValue.getEdrpou().getId());
+        if(!newValue.getEdrpou().equals(Response.EMPTY_PARENT_ENTITY)){
+            var edrpou = getEdrpou(newValue.getEdrpou());
             entity.setEdrpou(edrpou);
         }
     }

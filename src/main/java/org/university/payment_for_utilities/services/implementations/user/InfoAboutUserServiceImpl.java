@@ -8,6 +8,7 @@ import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.user.InfoAboutUserRepository;
 import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
@@ -31,7 +32,7 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
     @Override
     protected InfoAboutUser createEntity(Request request) {
         var infoRequest = (InfoAboutUserRequest) request;
-        var registeredUser = getRegisteredUser(infoRequest.getRegistered().getId());
+        var registeredUser = getRegisteredUser(infoRequest.getRegistered());
 
         return InfoAboutUser
                 .builder()
@@ -45,8 +46,8 @@ public class InfoAboutUserServiceImpl extends CrudServiceAbstract<InfoAboutUser,
     protected void updateEntity(@NonNull InfoAboutUser entity, @NonNull Request request) {
         var newValue = (InfoAboutUserRequest) request;
 
-        if(!newValue.getRegistered().isEmpty()){
-            var registeredUser = getRegisteredUser(newValue.getRegistered().getId());
+        if(!newValue.getRegistered().equals(Response.EMPTY_PARENT_ENTITY)){
+            var registeredUser = getRegisteredUser(newValue.getRegistered());
             entity.setRegistered(registeredUser);
         }
         if(!newValue.getFirstName().isBlank()){

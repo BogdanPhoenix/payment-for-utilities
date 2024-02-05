@@ -33,6 +33,15 @@ class CompanyServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("companyKyivOblenergoRequest")
     private CompanyRequest companyKyivOblenergoRequest;
+    @Autowired
+    @Qualifier("addressKyivResidence")
+    private AddressResidenceResponse addressKyivResidence;
+    @Autowired
+    @Qualifier("raiffeisenBankEdrpou")
+    private EdrpouResponse raiffeisenBankEdrpou;
+    @Autowired
+    @Qualifier("raiffeisenBankWebsite")
+    private WebsiteResponse raiffeisenBankWebsite;
 
     @Autowired
     public CompanyServiceTest(CompanyService service) { super(service); }
@@ -51,9 +60,9 @@ class CompanyServiceTest extends CrudServiceTest {
         return CompanyResponse
                 .builder()
                 .id(response.getId())
-                .address(companyKyivOblenergoRequest.getAddress())
-                .edrpou(companyKyivOblenergoRequest.getEdrpou())
-                .website(companyKyivOblenergoRequest.getWebsite())
+                .address(addressKyivResidence)
+                .edrpou(raiffeisenBankEdrpou)
+                .website(raiffeisenBankWebsite)
                 .uaName("Київ-обленерго")
                 .enName("Kyivoblenergo")
                 .currentAccount("72341000245521")
@@ -65,9 +74,9 @@ class CompanyServiceTest extends CrudServiceTest {
         var response = (CompanyResponse) expectedResponse;
         return CompanyRequest
                 .builder()
-                .address(AddressResidenceResponse.empty())
-                .edrpou(EdrpouResponse.empty())
-                .website(WebsiteResponse.empty())
+                .address(Response.EMPTY_PARENT_ENTITY)
+                .edrpou(Response.EMPTY_PARENT_ENTITY)
+                .website(Response.EMPTY_PARENT_ENTITY)
                 .uaName(response.getUaName())
                 .enName(response.getEnName())
                 .currentAccount(response.getCurrentAccount())

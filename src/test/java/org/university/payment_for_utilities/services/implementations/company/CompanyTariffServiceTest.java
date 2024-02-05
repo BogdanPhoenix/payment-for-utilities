@@ -33,6 +33,9 @@ class CompanyTariffServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("typeOfferUpdate")
     private TypeOfferResponse typeOfferUpdate;
+    @Autowired
+    @Qualifier("companyKyivOblenergoResponse")
+    private CompanyResponse companyKyivOblenergoResponse;
 
     @Autowired
     public CompanyTariffServiceTest(CompanyTariffService service) { super(service); }
@@ -52,7 +55,7 @@ class CompanyTariffServiceTest extends CrudServiceTest {
         return CompanyTariffResponse
                 .builder()
                 .id(response.getId())
-                .company(createKyivTariffRequest.getCompany())
+                .company(companyKyivOblenergoResponse)
                 .type(typeOfferUpdate)
                 .uaName("Денний")
                 .enName("Day")
@@ -65,8 +68,8 @@ class CompanyTariffServiceTest extends CrudServiceTest {
         var response = (CompanyTariffResponse) expectedResponse;
         return CompanyTariffRequest
                 .builder()
-                .company(CompanyResponse.empty())
-                .type(response.getType())
+                .company(Response.EMPTY_PARENT_ENTITY)
+                .type(response.getType().getId())
                 .uaName(response.getUaName())
                 .enName(response.getEnName())
                 .fixedCost("")

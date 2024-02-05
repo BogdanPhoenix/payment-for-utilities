@@ -5,8 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -17,21 +16,21 @@ import org.university.payment_for_utilities.pojo.responses.service_information_i
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class BankPhoneNumRequest extends Request {
-    private BankResponse bank;
-    private PhoneNumResponse phoneNum;
+    private Long bank;
+    private Long phoneNum;
 
     @Override
     public boolean isEmpty() {
-        return this.bank.isEmpty() ||
-                this.phoneNum.isEmpty();
+        return bank.equals(Response.EMPTY_PARENT_ENTITY) ||
+                phoneNum.equals(Response.EMPTY_PARENT_ENTITY);
     }
 
     @Contract(" -> new")
     public static @NonNull BankPhoneNumRequest empty(){
         return BankPhoneNumRequest
                 .builder()
-                .bank(BankResponse.empty())
-                .phoneNum(PhoneNumResponse.empty())
+                .bank(Response.EMPTY_PARENT_ENTITY)
+                .phoneNum(Response.EMPTY_PARENT_ENTITY)
                 .build();
     }
 }

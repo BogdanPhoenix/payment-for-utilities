@@ -37,7 +37,7 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
     protected TypeOffer createEntity(Request request) {
         var builder = TypeOffer.builder();
         var typeOfferRequest = (TypeOfferRequest) request;
-        var unitMeasurement = getUnitMeasurement(typeOfferRequest.getUnitMeasurement().getId());
+        var unitMeasurement = getUnitMeasurement(typeOfferRequest.getUnitMeasurement());
 
         return super
                 .initTransliterationPropertyBuilder(builder, request)
@@ -53,7 +53,7 @@ public class TypeOfferServiceImpl extends TransliterationService<TypeOffer, Type
     @Override
     protected Optional<TypeOffer> findEntity(@NonNull Request request) {
         var typeOfferRequest = (TypeOfferRequest) request;
-        var unitMeasurement = getUnitMeasurement(typeOfferRequest.getUnitMeasurement().getId());
+        var unitMeasurement = getUnitMeasurement(typeOfferRequest.getUnitMeasurement());
 
         return repository
                 .findByUnitMeasurementAndEnName(

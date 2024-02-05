@@ -34,6 +34,9 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("kyivPaymentHistoryRequest")
     private PaymentHistoryRequest kyivPaymentHistoryRequest;
+    @Autowired
+    @Qualifier("kyivReceiptResponse")
+    private ReceiptResponse kyivReceiptResponse;
 
     @Autowired
     public PaymentHistoryServiceTest(PaymentHistoryService service) { super(service); }
@@ -52,7 +55,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
         return PaymentHistoryResponse
                 .builder()
                 .id(response.getId())
-                .receipt(kyivPaymentHistoryRequest.getReceipt())
+                .receipt(kyivReceiptResponse)
                 .prevValueCounter(kyivPaymentHistoryRequest.getPrevValueCounter())
                 .currentValueCounter(1500f)
                 .finalPaymentAmount(new BigDecimal("500.00"))
@@ -64,7 +67,7 @@ class PaymentHistoryServiceTest extends CrudServiceTest {
         var response = (PaymentHistoryResponse) expectedResponse;
         return PaymentHistoryRequest
                 .builder()
-                .receipt(ReceiptResponse.empty())
+                .receipt(Response.EMPTY_PARENT_ENTITY)
                 .prevValueCounter(EMPTY_COUNTER)
                 .currentValueCounter(response.getCurrentValueCounter())
                 .finalPaymentAmount(response.getFinalPaymentAmount().toString())

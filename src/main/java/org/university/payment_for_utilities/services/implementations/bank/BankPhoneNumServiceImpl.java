@@ -7,6 +7,7 @@ import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.pojo.requests.bank.BankPhoneNumRequest;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankPhoneNumRepository;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
 import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
@@ -37,8 +38,8 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     @Override
     protected BankPhoneNum createEntity(Request request) {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
-        var bank = getBank(bankPhoneNumRequest.getBank().getId());
-        var phoneNum = getPhoneNum(bankPhoneNumRequest.getPhoneNum().getId());
+        var bank = getBank(bankPhoneNumRequest.getBank());
+        var phoneNum = getPhoneNum(bankPhoneNumRequest.getPhoneNum());
 
         return BankPhoneNum
                 .builder()
@@ -56,12 +57,12 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     protected void updateEntity(@NonNull BankPhoneNum entity, @NonNull Request request) {
         var newValue = (BankPhoneNumRequest) request;
 
-        if(!newValue.getBank().isEmpty()){
-            var bank = getBank(newValue.getBank().getId());
+        if(!newValue.getBank().equals(Response.EMPTY_PARENT_ENTITY)){
+            var bank = getBank(newValue.getBank());
             entity.setBank(bank);
         }
-        if(!newValue.getPhoneNum().isEmpty()){
-            var phoneNum = getPhoneNum(newValue.getPhoneNum().getId());
+        if(!newValue.getPhoneNum().equals(Response.EMPTY_PARENT_ENTITY)){
+            var phoneNum = getPhoneNum(newValue.getPhoneNum());
             entity.setPhoneNum(phoneNum);
         }
     }
@@ -69,8 +70,8 @@ public class BankPhoneNumServiceImpl extends WorkingWithPhoneNumAbstract<BankPho
     @Override
     protected Optional<BankPhoneNum> findEntity(@NonNull Request request) {
         var bankPhoneNumRequest = (BankPhoneNumRequest) request;
-        var bank = getBank(bankPhoneNumRequest.getBank().getId());
-        var phoneNum = getPhoneNum(bankPhoneNumRequest.getPhoneNum().getId());
+        var bank = getBank(bankPhoneNumRequest.getBank());
+        var phoneNum = getPhoneNum(bankPhoneNumRequest.getPhoneNum());
 
         return repository.findByBankAndPhoneNum(bank, phoneNum);
     }

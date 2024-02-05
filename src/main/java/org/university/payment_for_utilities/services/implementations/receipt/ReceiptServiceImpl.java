@@ -9,6 +9,7 @@ import org.university.payment_for_utilities.domains.user.ContractEntity;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.receipt.ReceiptRequest;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.bank.BankRepository;
 import org.university.payment_for_utilities.repositories.receipt.ReceiptRepository;
 import org.university.payment_for_utilities.repositories.user.ContractEntityRepository;
@@ -55,8 +56,8 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     @Override
     protected Receipt createEntity(Request request) {
         var receiptRequest = (ReceiptRequest) request;
-        var contractEntity = getContractEntity(receiptRequest.getContractEntity().getId());
-        var bank = getBank(receiptRequest.getBank().getId());
+        var contractEntity = getContractEntity(receiptRequest.getContractEntity());
+        var bank = getBank(receiptRequest.getBank());
 
         return Receipt
                 .builder()
@@ -77,12 +78,12 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     protected void updateEntity(@NonNull Receipt entity, @NonNull Request request) {
         var newValue = (ReceiptRequest) request;
 
-        if(!newValue.getContractEntity().isEmpty()){
-            var contractEntity = getContractEntity(newValue.getContractEntity().getId());
+        if(!newValue.getContractEntity().equals(Response.EMPTY_PARENT_ENTITY)){
+            var contractEntity = getContractEntity(newValue.getContractEntity());
             entity.setContractEntity(contractEntity);
         }
-        if(!newValue.getBank().isEmpty()){
-            var bank = getBank(newValue.getBank().getId());
+        if(!newValue.getBank().equals(Response.EMPTY_PARENT_ENTITY)){
+            var bank = getBank(newValue.getBank());
             entity.setBank(bank);
         }
         if(!newValue.getBillMonth().equals(LocalDate.MIN)){
@@ -114,8 +115,8 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     @Override
     protected Optional<Receipt> findEntity(@NonNull Request request) {
         var receiptRequest = (ReceiptRequest) request;
-        var contractEntity = getContractEntity(receiptRequest.getContractEntity().getId());
-        var bank = getBank(receiptRequest.getBank().getId());
+        var contractEntity = getContractEntity(receiptRequest.getContractEntity());
+        var bank = getBank(receiptRequest.getBank());
 
         return repository
                 .findByContractEntityAndBankAndBillMonth(

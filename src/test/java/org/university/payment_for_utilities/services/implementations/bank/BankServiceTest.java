@@ -33,6 +33,12 @@ class BankServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("raiffeisenBankRequest")
     private BankRequest raiffeisenBankRequest;
+    @Autowired
+    @Qualifier("raiffeisenBankWebsite")
+    private WebsiteResponse raiffeisenBankWebsite;
+    @Autowired
+    @Qualifier("raiffeisenBankUpdateEdrpou")
+    private EdrpouResponse raiffeisenBankEdrpou;
 
     @Autowired
     public BankServiceTest(BankService service){ super(service); }
@@ -53,8 +59,8 @@ class BankServiceTest extends CrudServiceTest {
                 .id(response.getId())
                 .uaName(raiffeisenBankRequest.getUaName())
                 .enName("Raiffeisen Bank Ua")
-                .website(raiffeisenBankRequest.getWebsite())
-                .edrpou(raiffeisenBankRequest.getEdrpou())
+                .website(raiffeisenBankWebsite)
+                .edrpou(raiffeisenBankEdrpou)
                 .mfo("423147")
                 .build();
     }
@@ -66,8 +72,8 @@ class BankServiceTest extends CrudServiceTest {
                 .builder()
                 .uaName("")
                 .enName(response.getEnName())
-                .website(WebsiteResponse.empty())
-                .edrpou(EdrpouResponse.empty())
+                .website(Response.EMPTY_PARENT_ENTITY)
+                .edrpou(Response.EMPTY_PARENT_ENTITY)
                 .mfo(response.getMfo())
                 .build();
     }

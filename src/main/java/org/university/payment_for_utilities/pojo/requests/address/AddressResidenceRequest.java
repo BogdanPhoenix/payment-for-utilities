@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.address.SettlementResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ import org.university.payment_for_utilities.pojo.responses.address.SettlementRes
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class AddressResidenceRequest extends Request {
-    private SettlementResponse settlement;
+    private Long settlement;
     private String uaNameStreet;
     private String enNameStreet;
     private String numHouse;
@@ -25,17 +25,17 @@ public class AddressResidenceRequest extends Request {
 
     @Override
     public boolean isEmpty() {
-        return this.settlement.isEmpty() ||
-                this.uaNameStreet.isBlank() ||
-                this.enNameStreet.isBlank() ||
-                this.numHouse.isBlank();
+        return settlement.equals(Response.EMPTY_PARENT_ENTITY) ||
+                uaNameStreet.isBlank() ||
+                enNameStreet.isBlank() ||
+                numHouse.isBlank();
     }
 
     @Contract(" -> new")
     public static @NonNull AddressResidenceRequest empty(){
         return AddressResidenceRequest
                 .builder()
-                .settlement(SettlementResponse.empty())
+                .settlement(Response.EMPTY_PARENT_ENTITY)
                 .uaNameStreet("")
                 .enNameStreet("")
                 .numHouse("")

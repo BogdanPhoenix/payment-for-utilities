@@ -11,6 +11,7 @@ import org.university.payment_for_utilities.pojo.requests.abstract_class.Request
 import org.university.payment_for_utilities.exceptions.DuplicateException;
 import org.university.payment_for_utilities.exceptions.EmptyRequestException;
 import org.university.payment_for_utilities.exceptions.InvalidInputDataException;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.repositories.address.SettlementNameRepository;
 import org.university.payment_for_utilities.repositories.address.SettlementRepository;
 import org.university.payment_for_utilities.repositories.address.TypeSettlementRepository;
@@ -47,8 +48,8 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     @Override
     protected Settlement createEntity(Request request) {
         var settlementRequest = (SettlementRequest) request;
-        var type = getTypeSettlement(settlementRequest.getType().getId());
-        var name = getSettlementName(settlementRequest.getName().getId());
+        var type = getTypeSettlement(settlementRequest.getType());
+        var name = getSettlementName(settlementRequest.getName());
 
         return Settlement
                 .builder()
@@ -67,15 +68,15 @@ public class SettlementServiceImpl extends CrudServiceAbstract<Settlement, Settl
     protected void updateEntity(@NonNull Settlement entity, @NonNull Request request) {
         var newValue = (SettlementRequest) request;
 
-        if(!newValue.getType().isEmpty()){
-            var type = getTypeSettlement(newValue.getType().getId());
+        if(!newValue.getType().equals(Response.EMPTY_PARENT_ENTITY)){
+            var type = getTypeSettlement(newValue.getType());
             entity.setType(type);
         }
         if(!newValue.getZipCode().isBlank()){
             entity.setZipCode(newValue.getZipCode());
         }
-        if(!newValue.getName().isEmpty()){
-            var name = getSettlementName(newValue.getName().getId());
+        if(!newValue.getName().equals(Response.EMPTY_PARENT_ENTITY)){
+            var name = getSettlementName(newValue.getName());
             entity.setName(name);
         }
     }

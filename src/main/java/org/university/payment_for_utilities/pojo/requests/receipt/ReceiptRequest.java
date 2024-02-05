@@ -5,8 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.bank.BankResponse;
-import org.university.payment_for_utilities.pojo.responses.user.ContractEntityResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 import java.time.LocalDate;
 
@@ -19,14 +18,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ReceiptRequest extends Request {
-    private ContractEntityResponse contractEntity;
-    private BankResponse bank;
+    private Long contractEntity;
+    private Long bank;
     private LocalDate billMonth;
 
     @Override
     public boolean isEmpty() {
-        return contractEntity.isEmpty() ||
-                bank.isEmpty() ||
+        return contractEntity.equals(Response.EMPTY_PARENT_ENTITY) ||
+                bank.equals(Response.EMPTY_PARENT_ENTITY) ||
                 billMonth == LocalDate.MIN;
     }
 
@@ -34,8 +33,8 @@ public class ReceiptRequest extends Request {
     public static @NonNull ReceiptRequest empty() {
         return ReceiptRequest
                 .builder()
-                .contractEntity(ContractEntityResponse.empty())
-                .bank(BankResponse.empty())
+                .contractEntity(Response.EMPTY_PARENT_ENTITY)
+                .bank(Response.EMPTY_PARENT_ENTITY)
                 .billMonth(LocalDate.MIN)
                 .build();
     }

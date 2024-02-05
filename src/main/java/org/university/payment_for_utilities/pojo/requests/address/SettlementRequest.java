@@ -5,8 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
-import org.university.payment_for_utilities.pojo.responses.address.SettlementNameResponse;
-import org.university.payment_for_utilities.pojo.responses.address.TypeSettlementResponse;
+import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
 @Getter
 @Setter
@@ -17,24 +16,24 @@ import org.university.payment_for_utilities.pojo.responses.address.TypeSettlemen
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class SettlementRequest extends Request {
-    private TypeSettlementResponse type;
+    private Long type;
     private String zipCode;
-    private SettlementNameResponse name;
+    private Long name;
 
     @Override
     public boolean isEmpty() {
-        return this.type.isEmpty() ||
-                this.zipCode.isBlank() ||
-                this.name.isEmpty();
+        return type.equals(Response.EMPTY_PARENT_ENTITY) ||
+                zipCode.isBlank() ||
+                name.equals(Response.EMPTY_PARENT_ENTITY);
     }
 
     @Contract(" -> new")
     public static @NonNull SettlementRequest empty(){
         return SettlementRequest
                 .builder()
-                .type(TypeSettlementResponse.empty())
+                .type(Response.EMPTY_PARENT_ENTITY)
                 .zipCode("")
-                .name(SettlementNameResponse.empty())
+                .name(Response.EMPTY_PARENT_ENTITY)
                 .build();
     }
 }

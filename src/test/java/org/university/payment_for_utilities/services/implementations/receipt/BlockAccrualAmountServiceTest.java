@@ -32,6 +32,9 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("kyivAccrualAmountRequest")
     private BlockAccrualAmountRequest kyivAccrualAmountRequest;
+    @Autowired
+    @Qualifier("kyivReceiptResponse")
+    private ReceiptResponse kyivReceiptResponse;
 
     @Autowired
     public BlockAccrualAmountServiceTest(BlockAccrualAmountService service) { super(service); }
@@ -53,7 +56,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
         return BlockAccrualAmountResponse
                 .builder()
                 .id(response.getId())
-                .receipt(kyivAccrualAmountRequest.getReceipt())
+                .receipt(kyivReceiptResponse)
                 .debtBeginMonth(new BigDecimal("455.02"))
                 .debtEndMonth(new BigDecimal("202.20"))
                 .fine(new BigDecimal("510.00"))
@@ -67,7 +70,7 @@ class BlockAccrualAmountServiceTest extends CrudServiceTest {
         var response = (BlockAccrualAmountResponse) expectedResponse;
         return BlockAccrualAmountRequest
                 .builder()
-                .receipt(ReceiptResponse.empty())
+                .receipt(Response.EMPTY_PARENT_ENTITY)
                 .debtBeginMonth(response.getDebtBeginMonth().toString())
                 .debtEndMonth(response.getDebtEndMonth().toString())
                 .fine(response.getFine().toString())
