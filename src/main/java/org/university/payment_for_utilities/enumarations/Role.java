@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.university.payment_for_utilities.enumarations.Permission.*;
+
 /**
  * An enumeration representing the different roles in the system.
  * Each constant represents a specific role that a user can have.
@@ -18,10 +20,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public enum Role {
     EMPTY("", "", Set.of()),
-    ADMIN("Адмін", "Admin", Set.of()),
-    BANK_ADMIN("Адміністратор банку", "Bank administrator", Set.of()),
-    COMPANY_ADMIN("Адміністратор компанії", "Company administrator", Set.of()),
-    USER("Користувач", "User", Set.of());
+    ADMIN("Адмін", "Admin",
+            Set.of(
+                    ADMIN_READ, ADMIN_CREATE, ADMIN_DELETE, ADMIN_UPDATE
+            )
+    ),
+
+    BANK_ADMIN("Адміністратор банку", "Bank administrator",
+            Set.of(
+                    BANK_ADMIN_READ, BANK_ADMIN_CREATE, BANK_ADMIN_DELETE, BANK_ADMIN_UPDATE
+            )
+    ),
+
+    COMPANY_ADMIN("Адміністратор компанії", "Company administrator",
+            Set.of(
+                    COMPANY_ADMIN_READ, COMPANY_ADMIN_CREATE, COMPANY_ADMIN_DELETE, COMPANY_ADMIN_UPDATE
+            )
+    ),
+
+    USER("Користувач", "User",
+            Set.of(
+                    USER_READ, USER_CREATE, USER_DELETE, USER_UPDATE
+            )
+    );
 
     private final String uaName;
     private final String enName;
