@@ -22,7 +22,7 @@ import static jakarta.persistence.CascadeType.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "names_administrative_units")
+@Table(name = "names_settlements")
 public class SettlementName extends TransliterationProperty {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

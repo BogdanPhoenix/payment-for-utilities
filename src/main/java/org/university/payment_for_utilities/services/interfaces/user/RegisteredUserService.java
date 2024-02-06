@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.exceptions.*;
 import org.university.payment_for_utilities.pojo.requests.user.ChangePasswordRequest;
+import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 
@@ -26,6 +27,22 @@ public interface RegisteredUserService extends AuthenticationService {
      * @return a non-zero response value indicating that the deactivation was successful.
      */
     @NonNull Response deactivate(@NonNull Long id);
+
+    /**
+     * Deactivates the user account and all associated data based on the data provided in the request.
+     *
+     * @param request must not be {@literal null}.
+     * @return response for the deactivate entity; never {@literal null}.
+     * @throws NotFindEntityInDataBaseException if the table does not contain the entity to be deleted.
+     */
+    @NonNull Response deactivate(@NonNull RegisteredUserRequest request) throws NotFindEntityInDataBaseException;
+
+    /**
+     * Deactivate all users in the table.
+     *
+     * @return the number of deactivated entities.
+     */
+    @NonNull Long deactivateAll();
 
     /**
      * Changes the password for the authenticated user based on the provided ChangePasswordRequest.

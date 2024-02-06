@@ -20,14 +20,10 @@ spring:
   freemarker:
     expose-request-attributes: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 572821026041-ri1ka1qjfhcq41fbrojcmriosp07pbps.apps.googleusercontent.com
-            client-secret: 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
-
 logging:
   file:
     name: ./logs/payment_for_utilities_test.log
+
+application:
+  uri:
+    main: payment-for-utilities

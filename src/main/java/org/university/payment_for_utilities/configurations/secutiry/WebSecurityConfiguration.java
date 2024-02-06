@@ -28,11 +28,27 @@ import static org.springframework.http.HttpMethod.*;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfiguration {
-    private static final String DEFAULT_URL = "/payment_for_utilities";
+    private static final String DEFAULT_URL = "/payment-for-utilities";
     private static final String[] WHITE_LIST = {
             DEFAULT_URL,
-            "/payment_for_utilities/users/registration",
-            "/payment_for_utilities/users/auth"
+            DEFAULT_URL + "/users/registration",
+            DEFAULT_URL + "/users/auth"
+    };
+
+    private static final String[] USER_LIST = {
+            DEFAULT_URL + "/*/users/**"
+    };
+
+    private static final String[] ADMIN_LIST = {
+            DEFAULT_URL + "/*/admin/**"
+    };
+
+    private static final String[] BANK_ADMIN_LIST = {
+            DEFAULT_URL + "/*/bank-admin/**"
+    };
+
+    private static final String[] COMPANY_ADMIN_LIST = {
+            DEFAULT_URL + "/*/company-admin/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -59,14 +75,14 @@ public class WebSecurityConfiguration {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST).permitAll()
-                        .requestMatchers(GET, "/payment_for_utilities/users/**").hasAnyAuthority(USER.name())
-                        .requestMatchers(GET, "/payment_for_utilities/users/**").authenticated()
-                        .requestMatchers(GET, "/payment_for_utilities/admin/**").hasAnyAuthority(ADMIN.name())
-                        .requestMatchers(GET, "/payment_for_utilities/admin/**").authenticated()
-                        .requestMatchers(GET, "/payment_for_utilities/bank-admin/**").hasAnyAuthority(BANK_ADMIN.name())
-                        .requestMatchers(GET, "/payment_for_utilities/bank-admin/**").authenticated()
-                        .requestMatchers(GET, "/payment_for_utilities/company-admin/**").hasAnyAuthority(COMPANY_ADMIN.name())
-                        .requestMatchers(GET, "/payment_for_utilities/company-admin/**").authenticated()
+                        .requestMatchers(GET, USER_LIST).hasAnyAuthority(USER.name())
+                        .requestMatchers(GET, USER_LIST).authenticated()
+                        .requestMatchers(GET, ADMIN_LIST).hasAnyAuthority(ADMIN.name())
+                        .requestMatchers(GET, ADMIN_LIST).authenticated()
+                        .requestMatchers(GET, BANK_ADMIN_LIST).hasAnyAuthority(BANK_ADMIN.name())
+                        .requestMatchers(GET, BANK_ADMIN_LIST).authenticated()
+                        .requestMatchers(GET, COMPANY_ADMIN_LIST).hasAnyAuthority(COMPANY_ADMIN.name())
+                        .requestMatchers(GET, COMPANY_ADMIN_LIST).authenticated()
                 )
                 .formLogin(login ->
                         login.loginPage("/login")

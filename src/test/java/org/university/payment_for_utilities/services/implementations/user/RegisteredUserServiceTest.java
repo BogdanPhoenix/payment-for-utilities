@@ -268,8 +268,8 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("Checking the correctness of user account deactivation.")
-    void testDeactivateCorrect() {
+    @DisplayName("Checking the correctness of user account deactivation using the provided ID.")
+    void testDeactivateCorrectById() {
         var username = userIvanRequest.getUsername();
         service.registration(userIvanRequest);
 
@@ -285,13 +285,51 @@ class RegisteredUserServiceTest {
     }
 
     @Test
-    @DisplayName("Check for an exception when there is an attempt to deactivate an account that is either not in the system or has already been deactivated.")
-    void testDeactivateThrowNotFindEntityInDataBaseException() {
+    @DisplayName("Check for an exception when an attempt is made to deactivate an account with an identifier that either does not exist in the system or has already been deactivated.")
+    void testDeactivateByIdThrowNotFindEntityInDataBaseException() {
+        var userId = 1L;
+        assertThrows(
+                NotFindEntityInDataBaseException.class,
+                () -> service.deactivate(userId)
+        );
+    }
+
+    @Test
+    @DisplayName("Checking the correctness of deactivating a user account at the request.")
+    void testDeactivateCorrectByRequest() {
         var username = userIvanRequest.getUsername();
+        service.registration(userIvanRequest);
+
+        var findBeforeRemove = service.getByUsername(username);
+        var responseRemove = service.deactivate(userIvanRequest);
+
+        assertNotNull(findBeforeRemove);
+        assertNotNull(responseRemove);
         assertThrows(
                 NotFindEntityInDataBaseException.class,
                 () -> service.getByUsername(username)
         );
+    }
+
+    @Test
+    @DisplayName("Check for an exception when an attempt is made to deactivate an account by a specified request that either does not exist in the system or has already been deactivated.")
+    void testDeactivateByRequestThrowNotFindEntityInDataBaseException() {
+        assertThrows(
+                NotFindEntityInDataBaseException.class,
+                () -> service.deactivate(userIvanRequest)
+        );
+    }
+
+    @Test
+    @DisplayName("Check that all data has been deactivated in the table.")
+    void testDeactivateAll(){
+        service.registration(userIvanRequest);
+        service.registration(userOlegRequest);
+
+        var numDeleteItems = service.deactivateAll();
+
+        assertThat(numDeleteItems)
+                .isEqualTo(2L);
     }
 
     @Test

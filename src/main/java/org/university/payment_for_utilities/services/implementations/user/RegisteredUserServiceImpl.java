@@ -239,6 +239,16 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
+    public @NonNull Response deactivate(@NonNull RegisteredUserRequest request) throws NotFindEntityInDataBaseException {
+        return crudService.removeValue(request);
+    }
+
+    @Override
+    public @NonNull Long deactivateAll() {
+        return crudService.removeAll();
+    }
+
+    @Override
     public void changePassword(
             @NonNull ChangePasswordRequest request,
             @NonNull Authentication authentication

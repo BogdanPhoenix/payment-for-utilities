@@ -3,6 +3,7 @@ package org.university.payment_for_utilities.services.implementations.receipt;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.bank.Bank;
 import org.university.payment_for_utilities.domains.receipt.Receipt;
 import org.university.payment_for_utilities.domains.user.ContractEntity;
@@ -21,6 +22,7 @@ import org.university.payment_for_utilities.services.interfaces.receipt.ReceiptS
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.Optional;
 
 import static org.university.payment_for_utilities.services.implementations.tools.ExceptionTools.throwRuntimeException;
@@ -134,5 +136,15 @@ public class ReceiptServiceImpl extends CrudServiceAbstract<Receipt, ReceiptRepo
     private @NonNull Bank getBank(@NonNull Long id) {
         return CrudServiceAbstract
                 .getEntity(bankRepository, id);
+    }
+
+    @Override
+    public List<Response> findByUserId(Long id) {
+        return repository
+                .findByUserId(id)
+                .stream()
+                .filter(TableInfo::isEnabled)
+                .map(TableInfo::getResponse)
+                .toList();
     }
 }

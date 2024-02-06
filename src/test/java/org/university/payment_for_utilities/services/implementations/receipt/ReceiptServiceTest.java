@@ -3,6 +3,7 @@ package org.university.payment_for_utilities.services.implementations.receipt;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -24,6 +25,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @Import(ReceiptEntitiesRequestTestContextConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -31,6 +34,9 @@ class ReceiptServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("rivneReceiptRequest")
     private ReceiptRequest rivneReceiptRequest;
+    @Autowired
+    @Qualifier("rivneContract")
+    private ContractEntityResponse rivneContract;
     @Autowired
     @Qualifier("kyivReceiptRequest")
     private ReceiptRequest kyivReceiptRequest;
@@ -89,5 +95,33 @@ class ReceiptServiceTest extends CrudServiceTest {
                 Arguments.of(LocalDate.of(2022, Month.APRIL, 1)),
                 Arguments.of(LocalDate.of(2024, Month.JULY, 1))
         );
+    }
+
+    @Test
+    @DisplayName("Check for receipt of all receipts of a registered user by his/her ID.")
+    void testFindUserByIdCorrect() {
+        service.addValue(firstRequest);
+        service.addValue(secondRequest);
+
+        var userId = rivneContract.getRegisteredUser().getId();
+        var receipts = ((ReceiptService)service).findByUserId(userId);
+
+        assertThat(receipts)
+                .isNotNull()
+                .hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Check for an empty list of receipts if the registered user does not have them yet.")
+    void testNotFindUserById() {
+        service.addValue(firstRequest);
+        service.addValue(secondRequest);
+
+        var userId = Long.MAX_VALUE;
+        var receipts = ((ReceiptService)service).findByUserId(userId);
+
+        assertThat(receipts)
+                .isNotNull()
+                .isEmpty();
     }
 }
