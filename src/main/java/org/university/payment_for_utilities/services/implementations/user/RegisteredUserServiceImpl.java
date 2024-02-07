@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -238,6 +240,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return crudService.removeValue(id);
     }
 
+    @PreAuthorize("authentication.name == #request.username")
     @Override
     public @NonNull Response deactivate(@NonNull RegisteredUserRequest request) throws NotFindEntityInDataBaseException {
         return crudService.removeValue(request);
@@ -464,6 +467,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             return findOldEntity(requestRegistered);
         }
 
+        @PostAuthorize("returnObject.get().username == authentication.name")
         @Override
         protected Optional<RegisteredUser> findEntity(@NonNull Request request) {
             var userRequest = (UserRequest) request;

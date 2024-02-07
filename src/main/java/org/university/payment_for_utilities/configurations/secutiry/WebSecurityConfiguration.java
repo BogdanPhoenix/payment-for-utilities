@@ -9,12 +9,14 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.List;
 
 import static org.university.payment_for_utilities.enumarations.Role.*;
-import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -54,6 +55,7 @@ public class WebSecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
+    private final UserDetailsService userDetailsService;
     private final String rememberMeKey;
 
     @Autowired
@@ -61,28 +63,30 @@ public class WebSecurityConfiguration {
             JwtAuthenticationFilter jwtAuthFilter,
             AuthenticationProvider authenticationProvider,
             LogoutHandler logoutHandler,
+            UserDetailsService userDetailsService,
             Dotenv dotenv
     ) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.authenticationProvider = authenticationProvider;
         this.logoutHandler = logoutHandler;
+        this.userDetailsService = userDetailsService;
 
         this.rememberMeKey = dotenv.get("REMEMBER_ME_KEY");
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(@NonNull HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+        return http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST).permitAll()
-                        .requestMatchers(GET, USER_LIST).hasAnyAuthority(USER.name())
-                        .requestMatchers(GET, USER_LIST).authenticated()
-                        .requestMatchers(GET, ADMIN_LIST).hasAnyAuthority(ADMIN.name())
-                        .requestMatchers(GET, ADMIN_LIST).authenticated()
-                        .requestMatchers(GET, BANK_ADMIN_LIST).hasAnyAuthority(BANK_ADMIN.name())
-                        .requestMatchers(GET, BANK_ADMIN_LIST).authenticated()
-                        .requestMatchers(GET, COMPANY_ADMIN_LIST).hasAnyAuthority(COMPANY_ADMIN.name())
-                        .requestMatchers(GET, COMPANY_ADMIN_LIST).authenticated()
+                        .requestMatchers(USER_LIST).authenticated()
+                        .requestMatchers(USER_LIST).hasAnyAuthority(USER.name())
+                        .requestMatchers(ADMIN_LIST).authenticated()
+                        .requestMatchers(ADMIN_LIST).hasAnyAuthority(ADMIN.name())
+                        .requestMatchers(BANK_ADMIN_LIST).authenticated()
+                        .requestMatchers(BANK_ADMIN_LIST).hasAnyAuthority(BANK_ADMIN.name())
+                        .requestMatchers(COMPANY_ADMIN_LIST).authenticated()
+                        .requestMatchers(COMPANY_ADMIN_LIST).hasAnyAuthority(COMPANY_ADMIN.name())
                 )
                 .formLogin(login ->
                         login.loginPage("/login")
@@ -101,12 +105,17 @@ public class WebSecurityConfiguration {
                 )
                 .rememberMe(remember ->
                         remember
-                                .key(rememberMeKey)
+                                .rememberMeServices(rememberMeServices())
                                 .tokenValiditySeconds(604800)
                 )
                 .exceptionHandling(exception -> exception.accessDeniedPage("/access-denied"))
                 .cors(cors -> cors.configurationSource(corsConfiguration()))
                 .build();
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        return new TokenBasedRememberMeServices(rememberMeKey, userDetailsService);
     }
 
     @Bean
