@@ -19,10 +19,12 @@ public class InfoAboutUserRequest extends Request {
     private Long registered;
     private String firstName;
     private String lastName;
+    private Long phoneNum;
 
     @Override
     public boolean isEmpty() {
         return registered.equals(Response.EMPTY_PARENT_ENTITY) ||
+                phoneNum.equals(Response.EMPTY_PARENT_ENTITY) ||
                 firstName.isBlank() ||
                 lastName.isBlank();
     }
@@ -32,6 +34,7 @@ public class InfoAboutUserRequest extends Request {
         return InfoAboutUserRequest
                 .builder()
                 .registered(Response.EMPTY_PARENT_ENTITY)
+                .phoneNum(Response.EMPTY_PARENT_ENTITY)
                 .firstName("")
                 .lastName("")
                 .build();

@@ -7,7 +7,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.domains.user.Token;
 import org.university.payment_for_utilities.enumarations.Role;
@@ -30,12 +28,10 @@ import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
 import org.university.payment_for_utilities.pojo.responses.user.AuthenticationResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
-import org.university.payment_for_utilities.repositories.service_information_institutions.PhoneNumRepository;
 import org.university.payment_for_utilities.repositories.user.RegisteredUserRepository;
 import org.university.payment_for_utilities.repositories.user.TokenRepository;
 import org.university.payment_for_utilities.services.implementations.CrudServiceAbstract;
 import org.university.payment_for_utilities.services.interfaces.JwtService;
-import org.university.payment_for_utilities.services.interfaces.service_information_institutions.PhoneNumService;
 import org.university.payment_for_utilities.services.interfaces.user.ContractEntityService;
 import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUserService;
 import org.university.payment_for_utilities.services.interfaces.user.RegisteredUserService;
@@ -80,9 +76,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             TokenRepository tokenRepository,
             AuthenticationManager authenticationManager,
             ContractEntityService contractEntityService,
-            InfoAboutUserService infoAboutUserService,
-            PhoneNumService phoneNumService,
-            PhoneNumRepository phoneNumRepository
+            InfoAboutUserService infoAboutUserService
     ) {
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
@@ -93,8 +87,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 passwordEncoder,
                 contractEntityService,
                 infoAboutUserService,
-                phoneNumService,
-                phoneNumRepository,
                 tokenRepository
         );
     }
@@ -240,7 +232,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return crudService.removeValue(id);
     }
 
-    @PreAuthorize("authentication.name == #request.username")
     @Override
     public @NonNull Response deactivate(@NonNull RegisteredUserRequest request) throws NotFindEntityInDataBaseException {
         return crudService.removeValue(request);
@@ -268,8 +259,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         private final PasswordEncoder passwordEncoder;
         private final ContractEntityService contractEntityService;
         private final InfoAboutUserService infoAboutUserService;
-        private final PhoneNumService phoneNumService;
-        private final PhoneNumRepository phoneNumRepository;
         private final TokenRepository tokenRepository;
 
         protected RegisteredUserCrudService(
@@ -277,8 +266,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 PasswordEncoder passwordEncoder,
                 ContractEntityService contractEntityService,
                 InfoAboutUserService infoAboutUserService,
-                PhoneNumService phoneNumService,
-                PhoneNumRepository phoneNumRepository,
                 TokenRepository tokenRepository
         ) {
             super(repository, "Registered users");
@@ -286,43 +273,36 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             this.passwordEncoder = passwordEncoder;
             this.contractEntityService = contractEntityService;
             this.infoAboutUserService = infoAboutUserService;
-            this.phoneNumService = phoneNumService;
-            this.phoneNumRepository = phoneNumRepository;
             this.tokenRepository = tokenRepository;
         }
 
         @Override
         protected RegisteredUser createEntity(Request request) {
             var userRequest = (RegisteredUserRequest) request;
-            var phoneNum = getPhoneNum(userRequest.getPhoneNum());
 
             return RegisteredUser
                     .builder()
                     .username(userRequest.getUsername())
                     .password(passwordEncoder.encode(userRequest.getPassword()))
                     .role(userRequest.getRole())
-                    .phoneNum(phoneNum)
                     .build();
         }
 
         protected RegisteredUser createEntity(Response response, String password) {
             var userResponse = (UserResponse) response;
             var builder = RegisteredUser.builder();
-            var phoneNum = getPhoneNum(userResponse.getPhoneNum().getId());
 
             return super
                     .initEntityBuilder(builder, response)
                     .username(userResponse.getUsername())
                     .password(passwordEncoder.encode(password))
                     .role(userResponse.getRole())
-                    .phoneNum(phoneNum)
                     .build();
         }
 
         @Override
         protected void deactivatedChildren(@NonNull RegisteredUser entity) {
             deactivateChild(entity.getInfoUser(), infoAboutUserService);
-            deactivateChild(entity.getPhoneNum(), phoneNumService);
             deactivateChildrenCollection(entity.getContractEntities(), contractEntityService);
             deactivateToken(entity);
         }
@@ -353,15 +333,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             if(!newValue.getRole().equals(Role.EMPTY)){
                 entity.setRole(newValue.getRole());
             }
-            if(!newValue.getPhoneNum().equals(Response.EMPTY_PARENT_ENTITY)){
-                var phoneNum = getPhoneNum(newValue.getPhoneNum());
-                entity.setPhoneNum(phoneNum);
-            }
-        }
-
-        private @NonNull PhoneNum getPhoneNum(@NonNull Long id) {
-            return CrudServiceAbstract
-                    .getEntity(phoneNumRepository, id);
         }
 
         @Override

@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
+import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
 
 import static jakarta.persistence.CascadeType.*;
@@ -37,6 +38,11 @@ public class InfoAboutUser extends TableInfo {
     @NonNull
     private String lastName;
 
+    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
+    @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
+    @NonNull
+    private PhoneNum phoneNum;
+
     @Override
     public InfoAboutUserResponse getResponse() {
         var responseBuilder = InfoAboutUserResponse.builder();
@@ -45,6 +51,7 @@ public class InfoAboutUser extends TableInfo {
                 .registered(this.registered.getResponse())
                 .firstName(this.firstName)
                 .lastName(this.lastName)
+                .phoneNum(this.phoneNum.getResponse())
                 .build();
     }
 }

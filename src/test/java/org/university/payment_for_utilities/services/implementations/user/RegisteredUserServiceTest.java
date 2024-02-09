@@ -87,7 +87,6 @@ class RegisteredUserServiceTest {
                 .builder()
                 .username(userIvanRequest.getUsername())
                 .role(userIvanRequest.getRole())
-                .phoneNum(userIvanRequest.getPhoneNum())
                 .build();
     }
 
@@ -398,13 +397,11 @@ class RegisteredUserServiceTest {
                 .id(userResponse.getId())
                 .username("update@gmail.com")
                 .role(Role.BANK_ADMIN)
-                .phoneNum(userResponse.getPhoneNum())
                 .build();
         var requestUpdate = UserRequest
                 .builder()
                 .username(expectedResponse.getUsername())
                 .role(expectedResponse.getRole())
-                .phoneNum(0L)
                 .build();
 
         var updateResponse = service.updateData(userResponse.getId(), requestUpdate);

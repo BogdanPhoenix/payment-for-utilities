@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 
 @Getter
 @Setter
@@ -17,12 +18,14 @@ public class InfoAboutUserResponse extends Response {
     private UserResponse registered;
     private String firstName;
     private String lastName;
+    private PhoneNumResponse phoneNum;
 
     @Override
     public boolean isEmpty() {
         return registered.isEmpty() ||
                 firstName.isBlank() ||
-                lastName.isBlank();
+                lastName.isBlank() ||
+                phoneNum.isEmpty();
     }
 
     @Contract(" -> new")
@@ -32,6 +35,7 @@ public class InfoAboutUserResponse extends Response {
                 .registered(UserResponse.empty())
                 .firstName("")
                 .lastName("")
+                .phoneNum(PhoneNumResponse.empty())
                 .build();
     }
 }

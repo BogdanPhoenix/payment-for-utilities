@@ -66,7 +66,7 @@ class ReceiptServiceTest extends CrudServiceTest {
                 .id(response.getId())
                 .contractEntity(kyivContract)
                 .bank(privateBank)
-                .billMonth(LocalDate.of(2023, Month.DECEMBER, 5))
+                .billMonth(LocalDate.of(2024, Month.JANUARY, 5))
                 .build();
     }
 

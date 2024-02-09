@@ -8,7 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.university.payment_for_utilities.domains.bank.BankPhoneNum;
 import org.university.payment_for_utilities.domains.company.CompanyPhoneNum;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
-import org.university.payment_for_utilities.domains.user.RegisteredUser;
+import org.university.payment_for_utilities.domains.user.InfoAboutUser;
 import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 
 import static jakarta.persistence.CascadeType.*;
@@ -42,7 +42,7 @@ public class PhoneNum extends TableInfo {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "phoneNum", cascade={MERGE, REMOVE, REFRESH, DETACH}, fetch = FetchType.LAZY)
-    private RegisteredUser user;
+    private InfoAboutUser user;
 
     @Override
     public PhoneNumResponse getResponse() {

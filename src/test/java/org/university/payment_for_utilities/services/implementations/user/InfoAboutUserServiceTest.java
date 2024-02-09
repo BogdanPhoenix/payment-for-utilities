@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.pojo.requests.abstract_class.Request;
 import org.university.payment_for_utilities.pojo.requests.user.InfoAboutUserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 import org.university.payment_for_utilities.pojo.responses.user.InfoAboutUserResponse;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 import org.university.payment_for_utilities.services.implementations.CrudServiceTest;
@@ -31,6 +32,9 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
     @Autowired
     @Qualifier("userOlegRequest")
     private InfoAboutUserRequest userOlegRequest;
+    @Autowired
+    @Qualifier("bankPhoneNum")
+    private PhoneNumResponse olegPhoneNumber;
     @Autowired
     @Qualifier("registeredUserOlegResponse")
     private UserResponse registeredUserOlegResponse;
@@ -55,6 +59,7 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
                 .registered(registeredUserOlegResponse)
                 .firstName("Petro")
                 .lastName("Petro")
+                .phoneNum(olegPhoneNumber)
                 .build();
     }
 
@@ -66,6 +71,7 @@ class InfoAboutUserServiceTest extends CrudServiceTest {
                 .registered(Response.EMPTY_PARENT_ENTITY)
                 .firstName(response.getFirstName())
                 .lastName(response.getLastName())
+                .phoneNum(Response.EMPTY_PARENT_ENTITY)
                 .build();
     }
 

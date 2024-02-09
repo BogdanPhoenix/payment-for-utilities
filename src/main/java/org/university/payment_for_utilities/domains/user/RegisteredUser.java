@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.university.payment_for_utilities.domains.abstract_class.TableInfo;
 import org.university.payment_for_utilities.domains.address.AddressResidence;
 import org.university.payment_for_utilities.domains.bank.Bank;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.responses.user.UserResponse;
 
@@ -42,11 +41,6 @@ public class RegisteredUser extends TableInfo implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @OneToOne(cascade={MERGE, REMOVE, REFRESH, DETACH})
-    @JoinColumn(name = "id_phone_num", nullable = false, unique = true)
-    @NonNull
-    private PhoneNum phoneNum;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -92,7 +86,6 @@ public class RegisteredUser extends TableInfo implements UserDetails {
                 .responseBuilder(responseBuilder)
                 .username(this.username)
                 .role(this.role)
-                .phoneNum(this.phoneNum.getResponse())
                 .build();
     }
 

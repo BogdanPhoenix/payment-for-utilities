@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.Contract;
 import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
-import org.university.payment_for_utilities.pojo.responses.service_information_institutions.PhoneNumResponse;
 
 @Getter
 @Setter
@@ -18,12 +17,10 @@ import org.university.payment_for_utilities.pojo.responses.service_information_i
 public class UserResponse extends Response {
     private Role role;
     private String username;
-    private PhoneNumResponse phoneNum;
 
     @Override
     public boolean isEmpty() {
         return username.isBlank() ||
-                phoneNum.isEmpty() ||
                 role == Role.EMPTY;
     }
 
@@ -33,7 +30,6 @@ public class UserResponse extends Response {
                 .initEmpty(builder())
                 .role(Role.EMPTY)
                 .username("")
-                .phoneNum(PhoneNumResponse.empty())
                 .build();
     }
 }

@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.university.payment_for_utilities.configurations.secutiry.JwtAuthenticationFilter;
-import org.university.payment_for_utilities.domains.service_information_institutions.PhoneNum;
 import org.university.payment_for_utilities.domains.user.RegisteredUser;
 import org.university.payment_for_utilities.domains.user.Token;
 import org.university.payment_for_utilities.enumarations.Role;
@@ -79,7 +78,6 @@ class JwtAuthenticationFilterTest {
                 .username(USER_NAME)
                 .password("")
                 .role(Role.USER)
-                .phoneNum(new PhoneNum())
                 .build();
 
         var token = Token

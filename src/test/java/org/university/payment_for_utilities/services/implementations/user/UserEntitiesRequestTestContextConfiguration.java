@@ -83,6 +83,7 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .registered(registered.getId())
                 .firstName("Ivan")
                 .lastName("Ivanov")
+                .phoneNum(ivanPhoneNumber.getId())
                 .build();
     }
 
@@ -94,7 +95,6 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .username("test@gmail.com")
                 .password("qwerTy4iop$")
                 .role(Role.USER)
-                .phoneNum(ivanPhoneNumber.getId())
                 .build();
     }
 
@@ -137,6 +137,7 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .registered(registered.getId())
                 .firstName("Oleg")
                 .lastName("Nick")
+                .phoneNum(olegPhoneNumber.getId())
                 .build();
     }
 
@@ -154,7 +155,6 @@ public class UserEntitiesRequestTestContextConfiguration {
                 .username("oleg@ukr.net")
                 .password("qWerty5iop$@")
                 .role(Role.ADMIN)
-                .phoneNum(olegPhoneNumber.getId())
                 .build();
     }
 
