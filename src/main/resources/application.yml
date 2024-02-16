@@ -10,7 +10,7 @@ spring:
             platform: org.jboss.narayana.jta
         format_sql: true
         hbm2ddl:
-          auto: create-drop
+          auto: update
     show-sql: false
 
   thymeleaf:

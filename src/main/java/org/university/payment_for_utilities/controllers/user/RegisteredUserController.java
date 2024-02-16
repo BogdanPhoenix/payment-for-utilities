@@ -1,11 +1,9 @@
 package org.university.payment_for_utilities.controllers.user;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.university.payment_for_utilities.pojo.requests.user.AuthenticationRequest;
 import org.university.payment_for_utilities.pojo.requests.user.ChangePasswordRequest;
@@ -35,11 +33,10 @@ public class RegisteredUserController {
 
     @PostMapping("/refresh-token")
     @ResponseStatus(HttpStatus.OK)
-    public void refreshToken(
-            @RequestBody HttpServletRequest request,
-            @RequestBody HttpServletResponse response
+    public AuthenticationResponse refreshToken(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
     ) {
-        service.refreshToken(request, response);
+        return service.refreshToken(refreshToken);
     }
 
     @GetMapping("/find/{username}")
@@ -56,11 +53,11 @@ public class RegisteredUserController {
 
     @PatchMapping("/change-password")
     @ResponseStatus(HttpStatus.OK)
-    public void changePassword(
+    public AuthenticationResponse changePassword(
             @RequestBody ChangePasswordRequest request,
-            @RequestBody Authentication authentication
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken
     ) {
-        service.changePassword(request, authentication);
+        return service.changePassword(request, refreshToken);
     }
 
     @PatchMapping("/{id}")

@@ -1,7 +1,5 @@
 package org.university.payment_for_utilities.services.interfaces.user;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,12 +36,8 @@ public interface AuthenticationService {
     /**
      * Refreshes the authentication token for a user based on the provided HttpServletRequest and HttpServletResponse.
      *
-     * @param request  the HttpServletRequest containing the Authorization header with the refresh token.
-     * @param response the HttpServletResponse to write the new authentication response.
+     * @param refreshToken A JWT token that identifies the user and gives permission to interact with his or her data.
      * @throws TokenRefreshException if an input/output error occurs while updating the user's token.
      */
-    void refreshToken(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response
-    ) throws TokenRefreshException;
+    AuthenticationResponse refreshToken(@NonNull String refreshToken) throws TokenRefreshException;
 }

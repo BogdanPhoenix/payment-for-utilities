@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -76,17 +77,16 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(@NonNull HttpSecurity http) throws Exception {
-        return http
+        return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(WHITE_LIST).permitAll()
-                        .requestMatchers(USER_LIST).authenticated()
+                        .requestMatchers(WHITE_LIST)
+                        .permitAll()
                         .requestMatchers(USER_LIST).hasAnyAuthority(USER.name())
-                        .requestMatchers(ADMIN_LIST).authenticated()
                         .requestMatchers(ADMIN_LIST).hasAnyAuthority(ADMIN.name())
-                        .requestMatchers(BANK_ADMIN_LIST).authenticated()
                         .requestMatchers(BANK_ADMIN_LIST).hasAnyAuthority(BANK_ADMIN.name())
-                        .requestMatchers(COMPANY_ADMIN_LIST).authenticated()
                         .requestMatchers(COMPANY_ADMIN_LIST).hasAnyAuthority(COMPANY_ADMIN.name())
+                        .anyRequest()
+                        .authenticated()
                 )
                 .formLogin(login ->
                         login.loginPage("/login")

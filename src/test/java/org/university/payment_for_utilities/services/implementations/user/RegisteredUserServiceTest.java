@@ -1,10 +1,8 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
-import org.jetbrains.annotations.Contract;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,8 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.annotation.DirtiesContext;
 import org.university.payment_for_utilities.enumarations.Role;
 import org.university.payment_for_utilities.exceptions.*;
@@ -73,14 +69,6 @@ class RegisteredUserServiceTest {
     private HttpServletResponse response;
     @Mock
     private JwtService jwtService;
-
-    @Contract(" -> new")
-    private @NonNull Authentication authenticationData() {
-        return new UsernamePasswordAuthenticationToken(
-                userIvanRequest.getUsername(),
-                userIvanRequest.getPassword()
-        );
-    }
 
     private @NonNull UserRequest updateData() {
         return UserRequest
@@ -199,38 +187,30 @@ class RegisteredUserServiceTest {
     @DisplayName("Checking the successful update of the registered user's token.")
     void testRefreshTokenCorrect() {
         var authenticationResponse = service.registration(userIvanRequest);
-        var authHeader = HEADER_START + authenticationResponse.getRefreshToken();
-        var outputStream = mock(ServletOutputStream.class);
+        var authHeader = HEADER_START + authenticationResponse.getAccessToken();
 
         await()
-                .atMost(500L, TimeUnit.MILLISECONDS)
+                .atMost(1000L, TimeUnit.MILLISECONDS)
                 .untilAsserted(() -> {
-                    when(request.getHeader(anyString())).thenReturn(authHeader);
-                    when(response.getOutputStream()).thenReturn(outputStream);
+                    var response = service.refreshToken(authHeader);
 
-                    service.refreshToken(request, response);
-
-                    verify(response, times(1)).getOutputStream();
+                    assertEquals(authHeader, response.getRefreshToken());
+                    assertNotNull(response.getAccessToken());
                 });
     }
 
     @ParameterizedTest
     @MethodSource("testInputHeaders")
     @DisplayName("Check when an empty header or a missing token was sent in the request.")
-    void testRefreshTokenInvalidHeader(String header) throws IOException {
-        when(request.getHeader(anyString())).thenReturn(header);
-
-        service.refreshToken(request, response);
-
-        verify(jwtService, never()).extractUsername(anyString());
-        verify(jwtService, never()).isTokenValid(anyString(), any());
-        verify(tokenRepository, never()).save(any());
-        verify(response, never()).getOutputStream();
+    void testRefreshTokenInvalidHeader(String header) {
+        assertThrows(TokenRefreshException.class,
+                () -> service.refreshToken(header)
+        );
     }
 
     private static @NonNull Stream<Arguments> testInputHeaders() {
         return Stream.of(
-                Arguments.of((Object) null),
+                Arguments.of((String) null),
                 Arguments.of("InvalidHeader")
         );
     }
@@ -334,55 +314,51 @@ class RegisteredUserServiceTest {
     @Test
     @DisplayName("Checking the correctness of changing the user account password.")
     void testChangePasswordCorrect() {
-        var authenticated = authenticationData();
-        service.registration(userIvanRequest);
-        service.changePassword(changePasswordRequest, authenticated);
+        var response = service.registration(userIvanRequest);
+        var token = HEADER_START + response.getAccessToken();
+
+        service.changePassword(changePasswordRequest, token);
     }
 
     @Test
-    @DisplayName("Check for an exception when data was transmitted that does not match the authentication data.")
-    void testChangePasswordThrowInvalidAuthenticationData() {
-        var authenticated = new UsernamePasswordAuthenticationToken(
-                UserResponse.empty(),
-                userIvanRequest.getPassword()
-        );
-        assertThrows(InvalidAuthenticationData.class,
-                () -> service.changePassword(changePasswordRequest, authenticated)
+    @DisplayName("Check if there is an exception when a token was transferred that did not pass verification.")
+    void testChangePasswordThrowInvalidToken() {
+        var invalidToken = "invalidToken";
+        assertThrows(TokenRefreshException.class,
+                () -> service.changePassword(changePasswordRequest, invalidToken)
         );
     }
 
     @Test
     @DisplayName("Check for an exception when an unregistered user was passed in the authentication data.")
     void testChangePasswordThrowNotFindEntityInDataBaseException() {
-        var authenticated = authenticationData();
+        var invalidToken = HEADER_START + "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTcwODA3OTIzOSwiZXhwIjoxNzA4MTY1NjM5fQ.Gv_Vf1Dng5elpVJWHQinRxJsqSfqmprU1THBFoqdFogR1J-AHl4mQ3H2wgnUyiiuG-TiXX35AyKvkU4AnJCbpw";
         assertThrows(NotFindEntityInDataBaseException.class,
-                () -> service.changePassword(changePasswordRequest, authenticated)
+                () -> service.changePassword(changePasswordRequest, invalidToken)
         );
     }
 
     @Test
     @DisplayName("Check for an exception when the \"current password\" in the variable request is not the same as the user's.")
     void testChangePasswordWrongPassword() {
-        var authenticated = authenticationData();
-
-        service.registration(userIvanRequest);
+        var response = service.registration(userIvanRequest);
+        var token = HEADER_START + response.getAccessToken();
         changePasswordRequest.setCurrentPassword("fail_password");
 
         assertThrows(IllegalStateException.class,
-                () -> service.changePassword(changePasswordRequest, authenticated)
+                () -> service.changePassword(changePasswordRequest, token)
         );
     }
 
     @Test
     @DisplayName("Check for an exception when \"new password\" and \"password confirmation\" in the request variables are different.")
     void testChangePasswordSamePassword() {
-        var authenticated = authenticationData();
-
-        service.registration(userIvanRequest);
+        var response = service.registration(userIvanRequest);
+        var token = HEADER_START + response.getAccessToken();
         changePasswordRequest.setConfirmationPassword("another_password");
 
         assertThrows(IllegalStateException.class,
-                () -> service.changePassword(changePasswordRequest, authenticated)
+                () -> service.changePassword(changePasswordRequest, token)
         );
     }
 

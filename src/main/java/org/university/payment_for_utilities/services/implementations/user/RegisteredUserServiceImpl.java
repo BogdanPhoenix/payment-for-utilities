@@ -1,16 +1,11 @@
 package org.university.payment_for_utilities.services.implementations.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +31,6 @@ import org.university.payment_for_utilities.services.interfaces.user.ContractEnt
 import org.university.payment_for_utilities.services.interfaces.user.InfoAboutUserService;
 import org.university.payment_for_utilities.services.interfaces.user.RegisteredUserService;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -83,6 +77,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         this.authenticationManager = authenticationManager;
 
         this.crudService = new RegisteredUserCrudService(
+                jwtService,
                 repository,
                 passwordEncoder,
                 contractEntityService,
@@ -116,59 +111,18 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public void refreshToken(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response
-    ) throws TokenRefreshException {
-        try {
-            updateToken(request, response);
-        } catch (IOException e) {
-            var message = String.format("The following error occurred while updating the token: %s.", e.getMessage());
-            throw new TokenRefreshException(message);
-        }
-    }
+    public AuthenticationResponse refreshToken(@NonNull String refreshToken) throws TokenRefreshException {
+        var user = crudService.userFromToken(refreshToken);
 
-    private void updateToken(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response
-    ) throws IOException {
-        var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (!hasValidHeader(authHeader)) {
-            return;
-        }
-
-        var refreshToken = authHeader.substring(HEADER_START_FROM.length());
-        var username = jwtService.extractUsername(refreshToken);
-
-        if(!hasValidUser(username)) {
-            return;
-        }
-
-        var authenticationRequest = AuthenticationRequest
-                .builder()
-                .username(username)
-                .build();
-
-        var user = crudService.findAuthenticatedUser(authenticationRequest);
-
-        if (!jwtService.isTokenValid(refreshToken, user)) {
-            return;
-        }
+        var accessToken = jwtService.generateToken(user);
 
         revokeAllUserTokens(user);
-        var authResponse = createAuthenticationResponse(user, refreshToken);
+        saveUserToken(user, accessToken);
 
-        new ObjectMapper()
-                .writeValue(response.getOutputStream(), authResponse);
-    }
-
-    private boolean hasValidHeader(String header) {
-        return header != null && header.startsWith(HEADER_START_FROM);
-    }
-
-    private boolean hasValidUser(String username) {
-        return username != null && !username.isBlank();
+        return AuthenticationResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     private void revokeAllUserTokens(@NonNull RegisteredUser user) {
@@ -206,22 +160,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
                 .build();
     }
 
-    private void saveUserToken(
-            @NonNull RegisteredUser user,
-            @NonNull String jwtToken
-    ) {
-        var token = Token
-                .builder()
-                .user(user)
-                .accessToken(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
-                .build();
-
-        tokenRepository.save(token);
-    }
-
     @Override
     public @NonNull Response getByUsername(@NonNull String username) throws NotFindEntityInDataBaseException {
         return crudService.getByUsername(username);
@@ -243,11 +181,28 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public void changePassword(
+    public AuthenticationResponse changePassword(
             @NonNull ChangePasswordRequest request,
-            @NonNull Authentication authentication
-    ) throws NotFindEntityInDataBaseException, InvalidAuthenticationData, IllegalStateException {
-        crudService.changePassword(request, authentication);
+            @NonNull String refreshToken
+    ) throws TokenRefreshException, NotFindEntityInDataBaseException, IllegalStateException {
+        crudService.changePassword(request, refreshToken);
+        return refreshToken(refreshToken);
+    }
+
+    private void saveUserToken(
+            @NonNull RegisteredUser user,
+            @NonNull String jwtToken
+    ) {
+        var token = Token
+                .builder()
+                .user(user)
+                .accessToken(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+
+        tokenRepository.save(token);
     }
 
     @Override
@@ -256,12 +211,14 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     private static class RegisteredUserCrudService extends CrudServiceAbstract<RegisteredUser, RegisteredUserRepository> {
+        private final JwtService jwtService;
         private final PasswordEncoder passwordEncoder;
         private final ContractEntityService contractEntityService;
         private final InfoAboutUserService infoAboutUserService;
         private final TokenRepository tokenRepository;
 
         protected RegisteredUserCrudService(
+                JwtService jwtService,
                 RegisteredUserRepository repository,
                 PasswordEncoder passwordEncoder,
                 ContractEntityService contractEntityService,
@@ -270,6 +227,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         ) {
             super(repository, "Registered users");
 
+            this.jwtService = jwtService;
             this.passwordEncoder = passwordEncoder;
             this.contractEntityService = contractEntityService;
             this.infoAboutUserService = infoAboutUserService;
@@ -386,16 +344,9 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         @Transactional
         public void changePassword(
                 @NonNull ChangePasswordRequest request,
-                @NonNull Authentication authentication
-        ) throws NotFindEntityInDataBaseException, InvalidAuthenticationData, IllegalStateException {
-            validateAuthentication(authentication);
-
-            var userRequest = AuthenticationRequest
-                    .builder()
-                    .username((String) authentication.getPrincipal())
-                    .password((String) authentication.getCredentials())
-                    .build();
-            var user = findAuthenticatedUser(userRequest);
+                @NonNull String refreshToken
+        ) throws TokenRefreshException, NotFindEntityInDataBaseException, IllegalStateException {
+           var user = userFromToken(refreshToken);
 
             validateCurrentPassword(request.getCurrentPassword(), user.getPassword());
             validateNotSamePassword(request);
@@ -404,13 +355,38 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
             repository.save(user);
         }
 
-        private void validateAuthentication(@NonNull Authentication authentication) throws InvalidAuthenticationData {
-            if(authentication.getPrincipal() instanceof String && authentication.getCredentials() instanceof String) {
-                return;
+        public RegisteredUser userFromToken(String refreshToken) {
+            if (!hasValidRefreshToken(refreshToken)) {
+                throw new TokenRefreshException("Invalid refresh token");
             }
 
-            var message = "The data you provide for authentication may not be used to verify your identity. Your username and password are required for authentication.";
-            throwRuntimeException(message, InvalidAuthenticationData::new);
+            refreshToken = refreshToken.substring(HEADER_START_FROM.length());
+            var username = jwtService.extractUsername(refreshToken);
+
+            if(!hasValidUser(username)) {
+                throw new TokenRefreshException("User for token not found");
+            }
+
+            var authenticationRequest = AuthenticationRequest
+                    .builder()
+                    .username(username)
+                    .build();
+
+            var user = findAuthenticatedUser(authenticationRequest);
+
+            if (!jwtService.isTokenValid(refreshToken, user)) {
+                throw new TokenRefreshException("Invalid refresh token");
+            }
+
+            return user;
+        }
+
+        private boolean hasValidRefreshToken(String refreshToken) {
+            return refreshToken != null && refreshToken.startsWith(HEADER_START_FROM);
+        }
+
+        private boolean hasValidUser(String username) {
+            return username != null && !username.isBlank();
         }
 
         private void validateCurrentPassword(String currentPassword, String userPassword) throws IllegalStateException {

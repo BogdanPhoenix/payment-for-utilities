@@ -1,13 +1,13 @@
 package org.university.payment_for_utilities.services.interfaces.user;
 
 import lombok.NonNull;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.university.payment_for_utilities.exceptions.*;
 import org.university.payment_for_utilities.pojo.requests.user.ChangePasswordRequest;
 import org.university.payment_for_utilities.pojo.requests.user.RegisteredUserRequest;
 import org.university.payment_for_utilities.pojo.requests.user.UserRequest;
 import org.university.payment_for_utilities.pojo.responses.abstract_class.Response;
+import org.university.payment_for_utilities.pojo.responses.user.AuthenticationResponse;
 
 @Transactional
 public interface RegisteredUserService extends AuthenticationService {
@@ -48,15 +48,15 @@ public interface RegisteredUserService extends AuthenticationService {
      * Changes the password for the authenticated user based on the provided ChangePasswordRequest.
      *
      * @param request        the ChangePasswordRequest containing old and new password information.
-     * @param authentication the authentication details of the user initiating the password change.
+     * @param refreshToken   a user token that initiates a password change.
      * @throws NotFindEntityInDataBaseException if the authenticated user is not found in the database.
      * @throws InvalidAuthenticationData      if the provided authentication data is invalid.
-     * @throws IllegalStateException           if the password change operation cannot be performed.
+     * @throws TokenRefreshException           if there are problems with the transferred token.
      */
-    void changePassword(
+    AuthenticationResponse changePassword(
             @NonNull ChangePasswordRequest request,
-            @NonNull Authentication authentication
-    ) throws NotFindEntityInDataBaseException, InvalidAuthenticationData, IllegalStateException;
+            @NonNull String refreshToken
+    ) throws TokenRefreshException, NotFindEntityInDataBaseException, IllegalStateException;
 
     /**
      * Updates user data based on the provided user ID and UserRequest.
